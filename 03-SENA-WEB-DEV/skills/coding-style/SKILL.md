@@ -1,0 +1,54 @@
+---
+name: coding-style
+description: >
+  ③ SENA-WEB-DEV 레이어 스킬. Backend(Spring Boot)와 Frontend(React + Vite + TypeScript
+  + Tailwind + shadcn/ui)의 코딩 컨벤션 — 패키지/폴더 구조, 네이밍, 예외 처리, 레이어 분리 —
+  을 정의한다. speckit.implement로 코드를 작성·리뷰하거나 "코딩 컨벤션", "패키지 구조",
+  "네이밍", "예외 처리"를 언급할 때 사용.
+when_to_use: backend·frontend 코드 작성/리뷰, 패키지 구조·네이밍·예외 처리 결정 시.
+allowed-tools: Read Write Edit
+layer: 03-SENA-WEB-DEV
+phase: [Phase 0, Phase β, Phase γ]
+version: 1.0.0
+owner: 개발자 (VSCode + Claude Code)
+tags: [coding-style, spring-boot, react, typescript, convention]
+references:
+  - ../../rules/tech-stack.md
+  - ../../rules/commit-convention.md
+---
+
+# Skill: coding-style
+
+## 역할
+
+`app_repo` 전체에서 일관된 코드 스타일을 강제한다. tech-stack(①)에 고정된 스택 위에서
+패키지 구조·네이밍·예외 처리 패턴을 통일해, code-reviewer subagent가 기계적으로 점검할 수 있게 한다.
+
+---
+
+## Backend — Spring Boot
+
+- **레이어 분리**: `controller → service → repository` 단방향. 도메인 단위 패키지(`com.app.<domain>`).
+- **네이밍**: 클래스 `PascalCase`, 메서드/필드 `camelCase`, 상수 `UPPER_SNAKE`, 엔티티 `<Domain>Entity`.
+- **DTO 경계**: controller는 DTO만 주고받는다. 엔티티를 외부로 직접 노출하지 않는다.
+- **예외 처리**: 도메인 예외 → `@ControllerAdvice` 전역 핸들러에서 표준 에러 응답으로 변환. 빈 catch 금지.
+- **트랜잭션**: 쓰기 서비스 메서드에 `@Transactional`. 읽기는 `readOnly = true`.
+
+---
+
+## Frontend — React + Vite + TypeScript + Tailwind + shadcn/ui
+
+- **폴더 구조**: `src/pages/<Screen>/`(shell + components), `src/api/`, `src/hooks/`, `src/router/`.
+- **네이밍**: 컴포넌트 파일·심볼 `PascalCase`, hook `useXxx`, 타입 `PascalCase`.
+- **타입**: `any` 금지. API 응답/요청은 명시 타입. props 인터페이스 명시.
+- **스타일**: Tailwind 유틸 + shadcn/ui + design token. 임의 색·간격 하드코딩 금지(design-system-usage 참조).
+- **상태/데이터**: API 호출은 `src/hooks`의 데이터 hook으로 격리. 컴포넌트는 표현에 집중.
+- **에러 처리**: 사용자 노출 에러는 표준 토스트/배너 패턴. 콘솔 무시 금지.
+
+---
+
+## 규칙 (Rules)
+
+- 식별자는 영어, 주석/문서는 한국어 허용.
+- 한 파일 한 책임. layout 구조(Phase α shell)는 wiring 단계에서 바꾸지 않는다.
+- 커밋은 스파인 ID 포함(`rules/commit-convention.md`).

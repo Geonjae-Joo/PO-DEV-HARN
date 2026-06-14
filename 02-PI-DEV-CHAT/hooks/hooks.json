@@ -1,0 +1,47 @@
+{
+  "description": "PI-DEV-CHAT layer hooks — screen model YAML 저장 시 자동 검증 체인",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Write(model_repo/screens/SCR-*.yaml)",
+            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/on-save-schema-validate.py",
+            "args": ["${tool_input.file_path}"],
+            "statusMessage": "Schema 검증 중..."
+          },
+          {
+            "type": "command",
+            "if": "Edit(model_repo/screens/SCR-*.yaml)",
+            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/on-save-schema-validate.py",
+            "args": ["${tool_input.file_path}"],
+            "statusMessage": "Schema 검증 중..."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Write(model_repo/screens/SCR-*.yaml)",
+            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/on-save-lint-L1-L4.py",
+            "args": ["${tool_input.file_path}"],
+            "statusMessage": "Lint L1~L4 실행 중..."
+          },
+          {
+            "type": "command",
+            "if": "Edit(model_repo/screens/SCR-*.yaml)",
+            "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/on-save-lint-L1-L4.py",
+            "args": ["${tool_input.file_path}"],
+            "statusMessage": "Lint L1~L4 실행 중..."
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -19,6 +19,10 @@ import re
 SPEC_RE = re.compile(r"^\[(PACK|SPEC|MOD)-?[A-Z0-9-]*\/T\d+\]")
 SCAFFOLD_RE = re.compile(r"^\[SCAFFOLD\]")
 CO_RE = re.compile(r"^\[CO\/(dismiss|amend|regenerate)\]")
+# spec-kit SDD 산출물(spec/plan/tasks 등) 자동 커밋 예외.
+# 이 커밋들은 코드가 아니라 명세 문서이며 아직 T###/REQ-가 없으므로 면제한다.
+# git-config.yml의 auto_commit 메시지가 이 형식을 사용한다: [spec-kit/<stage>] ...
+SPECKIT_RE = re.compile(r"^\[spec-kit\/(constitution|specify|clarify|plan|tasks|analyze|checklist|taskstoissues)\]")
 REQ_RE = re.compile(r"REQ-[A-Z][A-Z0-9-]+\.\d{3}")
 
 
@@ -45,6 +49,10 @@ def main() -> int:
 
     if CO_RE.match(first):
         print("[commit-spine-id] PASS (change-order)")
+        return 0
+
+    if SPECKIT_RE.match(first):
+        print("[commit-spine-id] PASS (spec-kit artifact)")
         return 0
 
     m = SPEC_RE.match(first)

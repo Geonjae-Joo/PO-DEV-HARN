@@ -1,0 +1,66 @@
+# Git Branching Workflow Extension Configuration
+# Copied to .specify/extensions/git/git-config.yml on install
+#
+# 하니스 연동: 메시지 prefix를 [spec-kit/<stage>] 로 맞춰 commit-spine-id.py 게이트의
+# "spec-kit artifact" 예외를 통과시킨다(SDD 산출물 = 명세 문서, T###/REQ- 면제).
+# 실제 코드 구현 커밋은 spec-kit이 아니라 /speckit-implement 루프가 만들며
+# [PACK-…/T###] 요약 (REQ-…) 형식을 직접 사용한다(tdd-gate + commit-spine-id 강제).
+
+# Branch numbering strategy: "sequential" (001, 002, ...) or "timestamp" (YYYYMMDD-HHMMSS)
+branch_numbering: sequential
+
+# Commit message used by `git commit` during repository initialization
+init_commit_message: "[spec-kit/constitution] Initialize harness repository"
+
+# Auto-commit before/after core commands.
+# default: true 로 SDD 파이프라인 전 구간 자동 커밋. 코드 구현은 implement 루프가 별도 처리.
+auto_commit:
+  default: true
+  before_clarify:
+    enabled: false
+    message: "[spec-kit/clarify] WIP before clarification"
+  before_plan:
+    enabled: false
+    message: "[spec-kit/plan] WIP before planning"
+  before_tasks:
+    enabled: false
+    message: "[spec-kit/tasks] WIP before task generation"
+  before_implement:
+    enabled: false
+    message: "[spec-kit/tasks] WIP before implementation (Gate B)"
+  before_checklist:
+    enabled: false
+    message: "[spec-kit/checklist] WIP before checklist"
+  before_analyze:
+    enabled: false
+    message: "[spec-kit/analyze] WIP before analysis"
+  before_taskstoissues:
+    enabled: false
+    message: "[spec-kit/taskstoissues] WIP before issue sync"
+  after_constitution:
+    enabled: true
+    message: "[spec-kit/constitution] Sync harness constitution"
+  after_specify:
+    enabled: true
+    message: "[spec-kit/specify] Add spec-pack feature spec"
+  after_clarify:
+    enabled: true
+    message: "[spec-kit/clarify] Resolve open_items in spec"
+  after_plan:
+    enabled: true
+    message: "[spec-kit/plan] Add domain plan (Data Model/ERD/API/wiring)"
+  after_tasks:
+    enabled: true
+    message: "[spec-kit/tasks] Add test-first task breakdown"
+  after_implement:
+    enabled: false
+    message: "[spec-kit/tasks] Implementation progress (see [PACK/T###] commits)"
+  after_checklist:
+    enabled: true
+    message: "[spec-kit/checklist] Add gate checklist"
+  after_analyze:
+    enabled: true
+    message: "[spec-kit/analyze] Add Gate B consistency report"
+  after_taskstoissues:
+    enabled: true
+    message: "[spec-kit/taskstoissues] Sync tasks to issues"

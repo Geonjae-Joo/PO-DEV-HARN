@@ -114,7 +114,9 @@ def main() -> int:
               "테스트를 먼저 작성하세요(red→green→refactor).", file=sys.stderr)
         return 1
 
-    if not run_tests():
+    # 테스트 스위트는 구현 파일이 스테이징된 commit에만 적용한다.
+    # (spec/plan/tasks 등 문서-only 커밋은 코드 스위트의 red 여부로 막지 않는다.)
+    if impl_changed and not run_tests():
         print("[tdd-gate] BLOCK: 테스트가 실패했습니다. green 상태에서만 commit 가능합니다.", file=sys.stderr)
         return 1
 

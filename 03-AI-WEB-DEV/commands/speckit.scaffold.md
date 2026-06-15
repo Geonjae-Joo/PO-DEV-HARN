@@ -30,17 +30,19 @@ foundation/design-pages/        (DP-MAIN, DP-POPUP 등 템플릿)
 2. 각 screen model에 대해:
    a. `screen.template.page` 로 design page 템플릿 선택.
    b. `layout[]` 의 컴포넌트를 `position.slot + position.order` 순서대로 배치.
-   c. DS 컴포넌트를 React 컴포넌트로 매핑 (design-system-usage skill 참조).
-   d. `props` 를 그대로 React props로 전달 (placeholder 데이터).
-   e. `meta.interactive: true` 컴포넌트에 빈 이벤트 핸들러 stub 추가 (`onClick={() => {}}`).
+   c. DS 컴포넌트를 ①의 `frontend.framework` 컴포넌트로 매핑 (design-system-usage skill 참조).
+   d. `props` 를 그대로 컴포넌트 props로 전달 (placeholder 데이터).
+   e. `meta.interactive: true` 컴포넌트에 빈 이벤트 핸들러 stub 추가 (프레임워크 관용 표기 — 예: React `onClick={() => {}}`, Vue `@click="() => {}"`).
    f. 데이터 fetch 없음, API 호출 없음, 상태 관리 없음.
-3. 라우팅 연결: `app_repo/frontend/src/router/` 에 모든 화면의 Route 등록.
+3. 라우팅 연결: ①의 프레임워크 라우터(예: React `src/router/`)에 모든 화면의 Route 등록.
 4. `app_repo/specs/PACK-*/spec.yaml` 의 `screens[].shell_ref` 업데이트.
 
 ## 산출물
 
+> 경로·확장자·디렉터리 규약은 ①의 `frontend.framework`에서 파생한다. 아래는 **React + Vite 선택 시의 예시**다(Vue면 `src/views/*.vue`, Svelte면 `src/routes/*.svelte` 등 동일 원칙).
+
 ```
-app_repo/frontend/src/pages/
+app_repo/frontend/src/pages/          # (예시: React)
   OrderList/
     index.tsx           ← shell (layout only)
     components/
@@ -65,7 +67,7 @@ app_repo/frontend/src/router/index.tsx  ← 전체 화면 Route 등록
 tdd-gate hook은 scaffold commit에서 skip. commit-spine-id hook 실행.
 
 ```
-[SCAFFOLD] 전체 화면 React shell 생성 (SCR-ORDER-LIST, SCR-ORDER-DETAIL, ...)
+[SCAFFOLD] 전체 화면 shell 생성 (SCR-ORDER-LIST, SCR-ORDER-DETAIL, ...)
 ```
 
 ## 주의

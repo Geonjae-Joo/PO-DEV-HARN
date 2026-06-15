@@ -13,7 +13,7 @@
 | 무엇을 | 어떻게 |
 |---|---|
 | 공통 기능(인증·권한·레이아웃) 확립 | **Phase 0** — SPEC-000을 받아 각 공통 기능의 *전달 방식*(가이드 코드블럭 vs 직접 코드 주입)을 명세화하고 그에 맞춰 산출 |
-| 전체 화면 골격 일괄 생성 | **Phase α** — confirmed screen model → React shell 일괄 scaffold (layout만, wiring 없음) |
+| 전체 화면 골격 일괄 생성 | **Phase α** — confirmed screen model → 프론트엔드 shell 일괄 scaffold (①의 tech-stack.md 프레임워크, layout만, wiring 없음) |
 | 도메인 기능 구현 | **Phase β** — spec 팩 단위 backend + frontend wiring, T### TDD 루프 |
 | 통합·비기능 요건 | **Phase γ** — E2E·성능·동시성·보안 |
 | 계약 변경 흡수 | Change Order — 자동 재생성 금지, pin·freeze 위에서 개발자 판정 |
@@ -27,7 +27,7 @@
 | 단계 | 이름 | 범위 | 주기 |
 |---|---|---|---|
 | Phase 0 | SPEC-000 Baseline | 앱 골격·인증·공통 인프라 | 프로젝트 1회 |
-| Phase α | Layout Scaffold | 전체 화면 React shell 일괄 생성 | 전체 screen 확정 후 1회 |
+| Phase α | Layout Scaffold | 전체 화면 프론트엔드 shell 일괄 생성 (①의 프레임워크에서 파생) | 전체 screen 확정 후 1회 |
 | Phase β | Spec Pack Iteration | 도메인 팩별 backend + frontend wiring | 팩마다 반복 |
 | Phase γ | Integration & NFR | E2E·성능·동시성·보안 | 배포 전 |
 
@@ -78,7 +78,8 @@ input/harness/ 에서 SPEC-000.md(①이 작성한 명세) 수신
 
 ## Phase α — Layout Scaffold
 
-**모든 확정 screen model → React 페이지 컴포넌트 shell 일괄 생성.**
+**모든 확정 screen model → 프론트엔드 페이지 컴포넌트 shell 일괄 생성.**
+대상 프레임워크·파일 확장자·디렉터리 구조는 **①의 tech-stack.md `frontend.framework`에서 파생**한다(고정값 아님 — 예: React→`.tsx`/`src/pages`, Vue→`.vue`/`src/views`, Svelte→`.svelte`/`src/routes`). screen model 자체는 프레임워크 중립(위치·DS 컴포넌트 종류)이라, scaffold는 그 모델을 선택된 프레임워크로 투영할 뿐이다.
 각 화면 컴포넌트를 layout만 있는 상태(데이터 없음, 이벤트 없음)로 만든다.
 이후 Phase β에서 각 팩이 shell에 wiring만 추가한다 — layout을 다시 건드리지 않는다.
 
@@ -98,7 +99,7 @@ hook: tdd-gate.py (scaffold는 테스트 불필요 — skip 마커)
 hook: commit-spine-id.py → [SCAFFOLD] 커밋
 ```
 
-**산출물**: `app_repo/frontend/src/pages/` 아래 모든 화면의 React shell 컴포넌트
+**산출물**: `app_repo/frontend/` 아래 모든 화면의 페이지 shell 컴포넌트 (경로·확장자는 ①의 프레임워크 규약 — 예: React `src/pages/*.tsx`)
 
 **왜 선행하는가**:
 - 한 화면이 여러 팩에 걸쳐 개발될 때 layout 중복·충돌 방지
@@ -198,7 +199,7 @@ E2E 시나리오 (여러 팩에 걸친 플로우)
 | 파일 | 설명 |
 |---|---|
 | `speckit.specify.md` | 팩 scope 확인·확정. 너무 크면 sub-pack 분할. open_items 처리 방향 결정. |
-| `speckit.scaffold.md` | **[Phase α 전용]** 전체 확정 screen model → React shell 컴포넌트 일괄 생성. |
+| `speckit.scaffold.md` | **[Phase α 전용]** 전체 확정 screen model → 프론트엔드 shell 컴포넌트 일괄 생성 (①의 `frontend.framework`에서 확장자·구조 파생). |
 | `speckit.plan.md` | 도메인 Data Model, ERD, API 설계. complexity:high 노트 → bl-analyst 호출. |
 | `speckit.tasks.md` | T### 태스크 목록 생성. test-first 정렬. [P] 병렬 마커. |
 | `speckit.implement.md` | T### 단위 TDD 구현 루프. test-author → red → green → refactor → commit. |
@@ -207,18 +208,21 @@ E2E 시나리오 (여러 팩에 걸친 플로우)
 
 | 파일 | 설명 |
 |---|---|
-| `design-system-usage/SKILL.md` | DS 컴포넌트를 React로 구현하는 방법. design token 참조 규칙. shell 생성 패턴. |
+| `design-system-usage/SKILL.md` | DS 컴포넌트를 ①의 프론트엔드 프레임워크(예: React)로 구현하는 방법. design token 참조 규칙. shell 생성 패턴. |
 | `coding-style/SKILL.md` | ①의 tech-stack.md가 정한 스택의 코딩 컨벤션(패키지 구조, 네이밍, 예외 처리). 현재 예시: Spring Boot + React. |
 | `complex-bl/SKILL.md` | decision table·state machine을 코드로 구현하는 방법. bl-analyst 산출물 해석·적용. |
-| `baseline-guides/<feature>/SKILL.md` | **[Phase 0 산출 — 모드 A]** 공통 기능의 예시 코드블럭 + 적용 패턴 가이드. Phase β가 도메인 코드 구현 시 로드해 변형 적용 (예: 권한 조건부 렌더, 감사 로그 삽입). manifest에서 mode:A로 지정된 기능만 존재. |
+| `baseline-guides/SKILL.md` | **[Phase 0 모드 A 템플릿]** 공통 기능 가이드의 *산출 형식*을 정의하는 하네스 스킬. Phase 0가 mode:A 기능마다 이 템플릿에 맞춰 `app_repo/.claude/skills/baseline-guides/<feature>/SKILL.md`(예시 코드블럭 + 적용 패턴)를 생성하고, Phase β가 도메인 코드 구현 시 로드해 변형 적용 (예: 권한 조건부 렌더, 감사 로그 삽입). |
 
 ### Hooks — 생애주기 이벤트 자동 실행 (AI 없는 결정론)
 
 | 파일 | 트리거 | 설명 |
 |---|---|---|
-| `tdd-gate.py` | pre-commit | 테스트 없음 또는 실패 시 commit 차단. scaffold commit은 skip 마커로 예외 처리. |
-| `commit-spine-id.py` | pre-commit | 커밋 메시지에 스파인 ID 포함 여부 검증. 형식: `[<PACK\|SPEC\|MOD>/T###] 요약 (REQ-...)`. PACK/MOD은 REQ- 필수, SPEC-(baseline)은 면제. |
-| `manifest-sync.py` | post-commit | spec 팩의 link-manifest를 app_repo/specs/ 와 동기화. |
+| `tdd-gate.py` | commit-msg | 테스트 없음 또는 실패 시 commit 차단(blocking). `[SCAFFOLD]` 커밋은 skip 마커로 예외 처리. |
+| `commit-spine-id.py` | commit-msg | 커밋 메시지에 스파인 ID 포함 여부 검증(blocking). 형식: `[<PACK\|SPEC\|MOD>/<task>] 요약 (REQ-...)`. PACK/MOD은 REQ- 필수, SPEC-(baseline)은 면제. `[SCAFFOLD]`·`[CO/...]` prefix는 예외. |
+| `manifest-sync.py` | post-commit | `input/spec-pack/PACK-*` → `app_repo/specs/` 동기화 + shell_ref 갱신. 비차단(non-blocking) — 실패해도 commit 유지. |
+| `hooks.json` | — | 위 3개 훅의 생애주기 선언(pre-commit 차단 체인 + post-commit 동기화)과 인자·blocking 여부를 한곳에 정의. |
+| `install-git-hooks.sh` | — | hooks.json 선언을 실제 git 훅으로 설치(bash/Git Bash·Linux·macOS). 메시지 파일이 필요한 tdd-gate·commit-spine-id는 `commit-msg`, manifest-sync는 `post-commit` 훅으로 `.git/hooks/`에 설치. `PYTHON`·`HARNESS_TEST_CMD` 환경변수 지원. |
+| `install-git-hooks.ps1` | — | 동일 설치기의 Windows/PowerShell 버전(설치되는 훅 본문은 셸 스크립트). |
 
 ### Subagents — 격리 컨텍스트 전문 에이전트
 
@@ -235,7 +239,7 @@ E2E 시나리오 (여러 팩에 걸친 플로우)
 |---|---|
 | `gate-b-checklist.md` | Gate B 통과 조건. Data Model·ERD·BL·Task 확정 + bl_sections 미해결 0 + 개발자 approve. |
 | `tdd-policy.md` | red→green→refactor 3겹 강제. 테스트 없는 구현 금지. |
-| `commit-convention.md` | `[<SPEC\|MOD>/<task>] 요약 (REQ-...)` 형식. scaffold는 `[SCAFFOLD]` prefix. |
+| `commit-convention.md` | `[<PACK\|SPEC\|MOD>/<task>] 요약 (REQ-...)` 형식. scaffold는 `[SCAFFOLD]`, Change Order는 `[CO/<dismiss\|amend\|regenerate>]` prefix. |
 | `change-order-policy.md` | Pin·Freeze·Change Order·dismiss/amend/regenerate 판정 규칙. |
 
 ---
@@ -245,6 +249,8 @@ E2E 시나리오 (여러 팩에 걸친 플로우)
 ```
 03-AI-WEB-DEV/
 ├── README.md
+├── PLAN-speckit-tdd-fusion.md      # speckit + TDD 융합 설계 노트
+├── SPECKIT-HARNESS-INTEGRATION.md  # speckit ↔ 하네스 통합 가이드
 ├── input/
 │   ├── spec-pack/          # ②의 spec 팩 (PACK-X/ 단위)
 │   └── harness/            # ①의 .claude/(commands·skills·hooks·subagents·rules) + foundation(design-system·design-guide·design-pages) + SPEC-000 명세
@@ -257,11 +263,15 @@ E2E 시나리오 (여러 팩에 걸친 플로우)
 ├── skills/
 │   ├── design-system-usage/SKILL.md
 │   ├── coding-style/SKILL.md
-│   └── complex-bl/SKILL.md
+│   ├── complex-bl/SKILL.md
+│   └── baseline-guides/SKILL.md   # [Phase 0 모드 A] feature별 가이드 스킬 생성 템플릿
 ├── hooks/
 │   ├── tdd-gate.py
 │   ├── commit-spine-id.py
-│   └── manifest-sync.py
+│   ├── manifest-sync.py
+│   ├── hooks.json                 # 훅 생애주기 선언 (pre/post-commit 체인)
+│   ├── install-git-hooks.sh       # git 훅 설치기 (bash)
+│   └── install-git-hooks.ps1      # git 훅 설치기 (PowerShell)
 ├── subagents/
 │   ├── bl-analyst.md
 │   ├── test-author.md

@@ -145,7 +145,7 @@ spec-generator              confirmed 화면 → 도메인 단위 PACK-* 팩 발
 - **모드 B (직접 코드 주입)**: *완성 코드*를 통째로 app_repo에 구현(테스트 green). 변형 불필요한 기능(로그인/SSO 모듈, JWT 필터, RBAC 엔티티) → Phase β는 호출만.
 - 판정 한 줄: **"프로젝트마다 변형되나?"** → 예면 A, 아니면 B. 결과는 `baseline-delivery-manifest.yaml`에 기록.
 
-**핵심 자산**: 5개 speckit 명령(specify·scaffold·plan·tasks·implement), 스킬(design-system-usage·coding-style·complex-bl·baseline-guides), 생애주기 훅(tdd-gate·commit-spine-id·manifest-sync), 서브에이전트(bl-analyst·test-author·code-reviewer·spec-generator), 규칙(gate-b-checklist·tdd-policy·commit-convention·change-order-policy).
+**핵심 자산**: 5개 speckit 명령(specify·scaffold·plan·tasks·implement), 스킬(design-system-usage·coding-style·complex-bl·baseline-guides), 생애주기 훅(tdd-gate·commit-spine-id·manifest-sync — `hooks.json` 선언 + `install-git-hooks.sh/.ps1`로 `.git/hooks/`에 설치), 서브에이전트(bl-analyst·test-author·code-reviewer·spec-generator), 규칙(gate-b-checklist·tdd-policy·commit-convention·change-order-policy).
 
 **산출물**: `app_repo/` — 테스트 green 코드 + 스파인 ID 커밋 히스토리.
 

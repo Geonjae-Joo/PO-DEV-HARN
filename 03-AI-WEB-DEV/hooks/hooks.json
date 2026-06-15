@@ -1,0 +1,33 @@
+﻿{
+  "description": "AI-WEB-DEV layer hooks — commit 생애주기 자동 검증/동기화 체인. tdd-gate·commit-spine-id는 pre-commit에서 차단(exit 1), manifest-sync는 post-commit에서 동기화(비차단). git hook으로 .git/hooks/ 에 설치되어 동작한다.",
+  "lifecycle": {
+    "pre-commit": [
+      {
+        "type": "command",
+        "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/tdd-gate.py",
+        "args": ["${commit.msg_file}"],
+        "blocking": true,
+        "statusMessage": "TDD 게이트 검사 중...",
+        "note": "테스트 없음/실패 시 commit 차단. [SCAFFOLD] 커밋은 skip."
+      },
+      {
+        "type": "command",
+        "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/commit-spine-id.py",
+        "args": ["${commit.msg_file}"],
+        "blocking": true,
+        "statusMessage": "스파인 ID 검증 중...",
+        "note": "[<SPEC|MOD>/<task>] 요약 (REQ-...) 형식 + REQ- 포함 강제. SCAFFOLD/CO prefix 예외."
+      }
+    ],
+    "post-commit": [
+      {
+        "type": "command",
+        "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/manifest-sync.py",
+        "args": [],
+        "blocking": false,
+        "statusMessage": "spec 팩 manifest 동기화 중...",
+        "note": "input/spec-pack/PACK-* → app_repo/specs/ 동기화 + shell_ref 갱신. 실패해도 commit 유지."
+      }
+    ]
+  }
+}

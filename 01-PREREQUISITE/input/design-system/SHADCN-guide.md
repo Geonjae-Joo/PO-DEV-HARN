@@ -1,4 +1,4 @@
-# SHADCN Design System 가이드 (① PREREQUISITE)
+﻿# SHADCN Design System 가이드 (① PREREQUISITE)
 
 > 이 문서는 **shadcn/ui**를 npm으로 설치해 ①의 `input/design-system/` 폴더를 채우고,
 > 그 결과를 `design-guide.md`(허용 집합 원본)로 등록해 ②·③이 쓰게 만드는 **예시 절차**다.
@@ -225,7 +225,7 @@ python hooks/ds-guide-validate.py output/foundation/design-system/design-guide.m
 [① design-page-builder]  design-guide.md 허용 집합만으로 DP-* 템플릿 골격 생성
    │  (design-page-lint.py가 DS 폐쇄 검증)
    ▼
-[② layout-recommend]  PI 발화 → design-guide.md의 컴포넌트로만 매핑 (DS 밖 발명 금지)
+[② layout-recommend]  PO 발화 → design-guide.md의 컴포넌트로만 매핑 (DS 밖 발명 금지)
    │  (on-save-lint-L1이 DS 폐쇄 검증)
    ▼
 [③ design-system-usage]  design-system/components 를 React로 구현, 토큰만 참조해 스타일링
@@ -238,7 +238,7 @@ python hooks/ds-guide-validate.py output/foundation/design-system/design-guide.m
 
 ## 8. 새 컴포넌트가 더 필요해질 때
 
-PI가 허용 집합에 없는 컴포넌트를 원하면, 임의로 추가하지 않고 절차를 밟는다(`rules/ds-closure.md`).
+PO가 허용 집합에 없는 컴포넌트를 원하면, 임의로 추가하지 않고 절차를 밟는다(`rules/ds-closure.md`).
 
 ```bash
 # 1) 워크벤치에서 새 컴포넌트 추가

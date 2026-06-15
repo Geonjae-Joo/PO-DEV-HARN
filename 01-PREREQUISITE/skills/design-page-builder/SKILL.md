@@ -1,4 +1,4 @@
----
+﻿---
 name: design-page-builder
 description: >
   ① PREREQUISITE 레이어 스킬. design-guide.md의 허용 집합(DS 컴포넌트)만 조합해
@@ -28,7 +28,7 @@ spine-ids: [DP-]
 
 ①의 준비 단계에서, 사용자가 `input/design-system/`에 투입한 기존 DS와 그 허용 목록인
 `design-guide.md`를 토대로 **빈 페이지 템플릿(design page)** 을 만든다.
-PI(②)에게 백지 캔버스를 주지 않기 위해, archetype별 레이아웃 골격을 상류에서 못 박는 것이 목적이다.
+PO(②)에게 백지 캔버스를 주지 않기 위해, archetype별 레이아웃 골격을 상류에서 못 박는 것이 목적이다.
 
 **경계:** 이 스킬은 *템플릿(레이아웃 골격)* 까지만 만든다. 실제 화면 정의(SCR-*)는 ②,
 구현 코드는 ③의 책임이다. DS 집합 밖 컴포넌트는 절대 발명하지 않는다(ds-closure).

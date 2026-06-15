@@ -1,9 +1,9 @@
-# DS Closure Rule — DS 집합 밖 컴포넌트 금지
+﻿# DS Closure Rule — DS 집합 밖 컴포넌트 금지
 
 ## 원칙
 
 **design-guide.md에 정의된 DS 컴포넌트만 screen model과 design page에 사용할 수 있다.**
-DS 집합 밖의 컴포넌트는 PI가 요청하더라도 layout-recommend skill이 발명하지 않는다.
+DS 집합 밖의 컴포넌트는 PO가 요청하더라도 layout-recommend skill이 발명하지 않는다.
 
 ## 적용 범위
 
@@ -13,7 +13,7 @@ DS 집합 밖의 컴포넌트는 PI가 요청하더라도 layout-recommend skill
 | ② screen model 작성 | on-save-lint-L1.py가 저장 시 자동 검증 |
 | ③ frontend 구현 | code-reviewer subagent가 PR 단계에서 검증 |
 
-## PI가 DS 밖 컴포넌트를 요청하는 경우
+## PO가 DS 밖 컴포넌트를 요청하는 경우
 
 1. **가장 근접한 DS 컴포넌트를 대안으로 제안**한다.
    - "커스텀 달력 위젯" → DS의 `DatePicker` 컴포넌트 + `FilterBar` 조합 제안

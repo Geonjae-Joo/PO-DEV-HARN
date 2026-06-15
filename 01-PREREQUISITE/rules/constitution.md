@@ -1,4 +1,4 @@
-# Constitution — 하드 룰 (불변)
+﻿# Constitution — 하드 룰 (불변)
 
 이 파일은 전 레이어 공통으로 항상 적용된다. 변경 시 모든 레이어 README와 CLAUDE.md를 함께 갱신해야 한다.
 
@@ -9,7 +9,7 @@
 **screen model(YAML)이 단일 원본(single source of truth)이다.**
 
 - HTML 파일은 screen model에서 자동 생성된 **파생 뷰**다. 저장은 허용하되 직접 편집은 금지한다.
-- PI와 개발자가 화면을 확인할 때는 HTML 뷰를 본다. 수정이 필요하면 반드시 screen model YAML을 수정하고, 렌더링이 자동으로 HTML을 업데이트한다.
+- PO와 개발자가 화면을 확인할 때는 HTML 뷰를 본다. 수정이 필요하면 반드시 screen model YAML을 수정하고, 렌더링이 자동으로 HTML을 업데이트한다.
 - HTML을 직접 편집한 내용은 다음 렌더링 시 덮어씌워진다(소실 보장).
 - 모든 렌더된 HTML 파일 상단에는 다음 주석을 포함해야 한다:
 

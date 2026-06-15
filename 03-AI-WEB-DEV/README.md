@@ -148,7 +148,7 @@ Gate B  (개발자 소유 — rules/gate-b-checklist.md)
      (API 레벨 + 화면 레벨 2계층)
   ② 구현: red → green → refactor
   ③ hook: tdd-gate.py — 테스트 없음/실패 시 commit 차단
-  ④ hook: commit-spine-id.py → [SPEC-014/T1] 메시지 자동 커밋
+  ④ hook: commit-spine-id.py → [PACK-ORDER/T001] 메시지 자동 커밋
   │
   ▼
 subagent: code-reviewer
@@ -208,7 +208,7 @@ E2E 시나리오 (여러 팩에 걸친 플로우)
 | 파일 | 설명 |
 |---|---|
 | `design-system-usage/SKILL.md` | DS 컴포넌트를 React로 구현하는 방법. design token 참조 규칙. shell 생성 패턴. |
-| `coding-style/SKILL.md` | Spring Boot + React 코딩 컨벤션. 패키지 구조, 네이밍, 예외 처리 패턴. |
+| `coding-style/SKILL.md` | ①의 tech-stack.md가 정한 스택의 코딩 컨벤션(패키지 구조, 네이밍, 예외 처리). 현재 예시: Spring Boot + React. |
 | `complex-bl/SKILL.md` | decision table·state machine을 코드로 구현하는 방법. bl-analyst 산출물 해석·적용. |
 | `baseline-guides/<feature>/SKILL.md` | **[Phase 0 산출 — 모드 A]** 공통 기능의 예시 코드블럭 + 적용 패턴 가이드. Phase β가 도메인 코드 구현 시 로드해 변형 적용 (예: 권한 조건부 렌더, 감사 로그 삽입). manifest에서 mode:A로 지정된 기능만 존재. |
 
@@ -217,7 +217,7 @@ E2E 시나리오 (여러 팩에 걸친 플로우)
 | 파일 | 트리거 | 설명 |
 |---|---|---|
 | `tdd-gate.py` | pre-commit | 테스트 없음 또는 실패 시 commit 차단. scaffold commit은 skip 마커로 예외 처리. |
-| `commit-spine-id.py` | pre-commit | 커밋 메시지에 스파인 ID 포함 여부 검증. 형식: `[SPEC-014/T1] 요약 (REQ-...)`. |
+| `commit-spine-id.py` | pre-commit | 커밋 메시지에 스파인 ID 포함 여부 검증. 형식: `[<PACK\|SPEC\|MOD>/T###] 요약 (REQ-...)`. PACK/MOD은 REQ- 필수, SPEC-(baseline)은 면제. |
 | `manifest-sync.py` | post-commit | spec 팩의 link-manifest를 app_repo/specs/ 와 동기화. |
 
 ### Subagents — 격리 컨텍스트 전문 에이전트
@@ -278,7 +278,7 @@ E2E 시나리오 (여러 팩에 걸친 플로우)
         │   └── skills/
         │       └── baseline-guides/   # [Phase 0 모드 A] 공통 기능 예시 코드블럭·패턴 가이드
         ├── baseline-delivery-manifest.yaml  # [Phase 0] 공통 기능별 전달 모드(A/B)+사유
-        ├── backend/         # Spring Boot — 테스트 green 코드 ([모드 B] baseline 구현 포함)
+        ├── backend/         # 백엔드(①의 tech-stack.md, 예: Spring Boot) — 테스트 green 코드 ([모드 B] baseline 구현 포함)
         ├── frontend/
         │   └── src/pages/   # Phase α shell → Phase β wiring 완료
         └── specs/           # 동기화된 spec 팩
@@ -296,4 +296,4 @@ E2E 시나리오 (여러 팩에 걸친 플로우)
 | **Output** | `app_repo/` — 테스트 green 코드 + 스파인 ID 커밋 히스토리 | `output/app_repo/` |
 | **Output → ②** | Change Order 판정 결과 (dismiss/amend/regenerate + re-pin 버전) | model_repo spec 보드 반영 |
 
-**추적 그래프**: `SCR → CMP → REQ → acceptance → test → SPEC → task → commit`
+**추적 그래프**: `SCR → CMP → REQ → acceptance → PACK → task → test → commit`

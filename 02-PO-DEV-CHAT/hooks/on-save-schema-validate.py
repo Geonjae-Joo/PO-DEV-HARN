@@ -4,6 +4,12 @@ Hook: on-save-schema-validate.py
 트리거: screen model YAML 저장 시 (Claude Code pre-tool-use hook)
 목적:  screen-model-schema-v2의 필수 필드·enum 유효성 검증
 종료코드: 0 = pass, 1 = fail (stderr에 에러 목록)
+
+스키마 v2 기준:
+  - 최상위 키는 `screen:` (구 스키마의 `meta:`가 아님)
+  - layout item은 `source: {kind, ref, version}` (구 스키마의 `component:`가 아님)
+  - action.status enum: proposed | user_confirmed
+  - 최상위 `schema_version: 2`
 """
 
 import sys
@@ -15,12 +21,13 @@ ERRORS = []
 WARNINGS = []
 
 # ── 허용 enum 값 ──────────────────────────────────────────────────────────────
-STATUS_VALUES = {"draft", "layout_confirmed", "actions_in_progress", "review", "confirmed"}
-OUTCOME_TYPES = {"navigate", "query", "mutate", "export", "open", "validate"}
-NOTE_KINDS    = {"business_rule", "nfr", "ux", "constraint", "assumption", "open_question"}
-COMPLEXITY    = {"low", "med", "high"}
-PERMISSIONS   = {"all", "admin", "manager", "viewer"}   # 프로젝트별 확장 가능
-ACTION_STATUS = {"draft", "user_confirmed"}
+STATUS_VALUES   = {"draft", "layout_confirmed", "actions_in_progress", "review", "confirmed"}
+OUTCOME_TYPES   = {"navigate", "query", "mutate", "export", "open", "validate", "noop"}
+NOTE_KINDS      = {"business_rule", "nfr", "ux", "constraint", "assumption", "open_question"}
+COMPLEXITY      = {"low", "med", "high"}
+PERMISSIONS     = {"all", "login", "admin", "manager", "viewer"}   # 프로젝트별 확장 가능
+ACTION_STATUS   = {"proposed", "user_confirmed"}
+SOURCE_KINDS    = {"ds", "page-region"}
 
 # ── spine ID 패턴 ─────────────────────────────────────────────────────────────
 SCR_RE  = re.compile(r"^SCR-[A-Z][A-Z0-9-]+$")
@@ -39,28 +46,39 @@ def warn(msg: str):
     WARNINGS.append(f"[WARN]  {msg}")
 
 
-def validate_meta(meta: dict, path: str):
-    if not meta:
-        err(f"{path}: meta 섹션 없음")
+def validate_schema_version(doc: dict, path: str):
+    sv = doc.get("schema_version")
+    if sv is None:
+        warn(f"{path}: schema_version 없음 (schema_version: 2 권장)")
+    elif sv != 2:
+        err(f"{path}: schema_version={sv} — 이 검증기는 v2 전용")
+
+
+def validate_screen(screen: dict, path: str):
+    """구 스키마의 meta 섹션을 대체하는 screen 섹션 검증."""
+    if not screen:
+        err(f"{path}: screen 섹션 없음 (스키마 v2 최상위 키는 'screen')")
         return
     # 필수 필드
-    for field in ("id", "title", "status", "version"):
-        if field not in meta:
-            err(f"{path}.meta: 필수 필드 '{field}' 없음")
+    for field in ("id", "name", "status", "version"):
+        if field not in screen:
+            err(f"{path}.screen: 필수 필드 '{field}' 없음")
     # ID 패턴
-    if "id" in meta and not SCR_RE.match(str(meta["id"])):
-        err(f"{path}.meta.id: SCR- 패턴 불일치 (값: {meta['id']})")
+    if "id" in screen and not SCR_RE.match(str(screen["id"])):
+        err(f"{path}.screen.id: SCR- 패턴 불일치 (값: {screen['id']})")
     # status enum
-    if "status" in meta and meta["status"] not in STATUS_VALUES:
-        err(f"{path}.meta.status: 허용되지 않은 값 '{meta['status']}' (허용: {STATUS_VALUES})")
+    if "status" in screen and screen["status"] not in STATUS_VALUES:
+        err(f"{path}.screen.status: 허용되지 않은 값 '{screen['status']}' (허용: {STATUS_VALUES})")
     # version 정수
-    if "version" in meta and not isinstance(meta["version"], int):
-        err(f"{path}.meta.version: 정수 타입 필요 (값: {meta['version']})")
-    # hash 형식
-    if "hash" in meta:
-        h = str(meta["hash"])
-        if not (h.startswith("sha256:") and len(h) == 71):
-            warn(f"{path}.meta.hash: sha256:... 형식 권장 (값: {h[:20]}...)")
+    if "version" in screen and not isinstance(screen["version"], int):
+        err(f"{path}.screen.version: 정수 타입 필요 (값: {screen['version']})")
+    # permission enum (있을 때만, 비표준은 warn)
+    if "permission" in screen and screen["permission"] not in PERMISSIONS:
+        warn(f"{path}.screen.permission: 비표준 값 '{screen['permission']}' — 역할 목록과 일치하는지 확인")
+    # template.page 패턴
+    tmpl = screen.get("template", {})
+    if isinstance(tmpl, dict) and "page" in tmpl and not DP_RE.match(str(tmpl["page"])):
+        warn(f"{path}.screen.template.page: DP- 패턴 불일치 (값: {tmpl['page']})")
 
 
 def validate_layout(layout: list, path: str):
@@ -70,7 +88,7 @@ def validate_layout(layout: list, path: str):
     ids_seen = set()
     for i, item in enumerate(layout):
         loc = f"{path}.layout[{i}]"
-        for field in ("id", "component", "position"):
+        for field in ("id", "source", "position"):
             if field not in item:
                 err(f"{loc}: 필수 필드 '{field}' 없음")
         if "id" in item:
@@ -80,6 +98,18 @@ def validate_layout(layout: list, path: str):
             if cmp_id in ids_seen:
                 err(f"{loc}.id: 중복 CMP ID '{cmp_id}'")
             ids_seen.add(cmp_id)
+        # source: kind + ref
+        src = item.get("source")
+        if isinstance(src, dict):
+            if "ref" not in src:
+                err(f"{loc}.source: 'ref' 없음 (DS 컴포넌트 키)")
+            kind = src.get("kind")
+            if kind is None:
+                warn(f"{loc}.source: 'kind' 없음 (ds | page-region)")
+            elif kind not in SOURCE_KINDS:
+                err(f"{loc}.source.kind: 허용되지 않은 값 '{kind}' (허용: {SOURCE_KINDS})")
+        elif "source" in item:
+            err(f"{loc}.source: dict 타입 필요 ({{kind, ref, version}})")
         if "position" in item:
             pos = item["position"]
             if "slot" not in pos:
@@ -109,7 +139,7 @@ def validate_actions(actions: list, layout: list, path: str):
             if req_id in ids_seen:
                 err(f"{loc}.id: 중복 REQ ID '{req_id}'")
             ids_seen.add(req_id)
-        # component → layout 참조 검증
+        # action.component → layout[].id 참조 검증
         if "component" in action and action["component"] not in layout_ids:
             err(f"{loc}.component: layout에 존재하지 않는 CMP 참조 '{action['component']}'")
         # outcome.type enum
@@ -125,7 +155,7 @@ def validate_actions(actions: list, layout: list, path: str):
             warn(f"{loc}: acceptance 없음 — Stage 2에서 추가 필요")
         # status
         if "status" in action and action["status"] not in ACTION_STATUS:
-            err(f"{loc}.status: 허용되지 않은 값 '{action['status']}'")
+            err(f"{loc}.status: 허용되지 않은 값 '{action['status']}' (허용: {ACTION_STATUS})")
 
 
 def validate_notes(notes: list, layout: list, path: str):
@@ -162,8 +192,8 @@ def validate_prompt_log(prompt_log: list, path: str):
             err(f"{loc}.id: PRM- 패턴 불일치 (값: {entry['id']})")
         if "applied_version" in entry:
             v = entry["applied_version"]
-            if isinstance(v, int) and v <= prev_id:
-                warn(f"{loc}: applied_version이 역순 ({v} ≤ {prev_id}) — append-only 원칙 확인")
+            if isinstance(v, int) and v < prev_id:
+                warn(f"{loc}: applied_version이 역순 ({v} < {prev_id}) — append-only 원칙 확인")
             if isinstance(v, int):
                 prev_id = v
 
@@ -198,9 +228,10 @@ def validate_file(file_path: Path):
         err(f"{file_path.name}: 최상위 구조가 dict가 아님")
         return
     p = file_path.stem
-    meta   = doc.get("meta", {})
+    screen = doc.get("screen", {})
     layout = doc.get("layout", [])
-    validate_meta(meta, p)
+    validate_schema_version(doc, p)
+    validate_screen(screen, p)
     validate_layout(layout, p)
     validate_actions(doc.get("actions", []), layout, p)
     validate_notes(doc.get("notes", []), layout, p)

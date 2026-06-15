@@ -1,7 +1,7 @@
 # Spine IDs — 스파인 ID 채번 규칙
 
 전 레이어 공통 적용. 모든 아티팩트는 스파인 ID를 가진다.
-추적 그래프: `SCR → CMP → REQ → PACK → task → test → commit`
+추적 그래프: `SCR → CMP → REQ → acceptance → PACK → task → test → commit`
 
 ---
 
@@ -17,8 +17,11 @@
 | `NFR-` | 비기능 요구사항 | `NFR-ORDER-LIST.001` | ② |
 | `Q-` | HITL 질문 | `Q-001` | ② |
 | `PRM-` | prompt log 항목 | `PRM-0001` | ② |
-| `PACK-` | spec 팩(도메인 모듈) | `PACK-ORDER`, `PACK-AUTH` | ② |
+| `PACK-` | 도메인 spec 팩(도메인 모듈) | `PACK-ORDER`, `PACK-AUTH` | ② |
+| `SPEC-` | 플랫폼/baseline spec | `SPEC-000` | ① |
 | `T` | 태스크(3자리) | `T001`, `T012` | ③ |
+
+> **PACK- vs SPEC- 구분:** 도메인 화면·기능을 묶은 ②의 계약 팩은 `PACK-`(예: `PACK-ORDER`). 로그인·SSO·RBAC 등 공통 baseline은 ①이 명세하는 `SPEC-`(현재 `SPEC-000` 1개). 커밋 머리말은 `[PACK-…/T###]` 또는 `[SPEC-000/T###]`을 쓴다 (③ commit-convention.md).
 
 ---
 
@@ -51,6 +54,13 @@ PACK-{도메인}[-{액터}]
 예: PACK-ORDER / PACK-ORDER-ADMIN / PACK-MEMBER / PACK-AUTH / PACK-DASHBOARD
 ```
 Actor가 달라 API 권한 구조가 다를 때만 접미사 추가.
+
+### SPEC-
+```
+SPEC-{3자리}
+예: SPEC-000 (공통 baseline — 로그인/SSO/RBAC/admin)
+```
+SPEC-000은 ①이 명세하고 ③ Phase 0가 구현하는 플랫폼 baseline 전용. 도메인 계약은 PACK-을 쓴다.
 
 ### T (Task)
 ```

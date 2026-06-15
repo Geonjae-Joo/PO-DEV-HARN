@@ -1,10 +1,11 @@
 ﻿---
 name: coding-style
 description: >
-  ③ AI-WEB-DEV 레이어 스킬. Backend(Spring Boot)와 Frontend(React + Vite + TypeScript
-  + Tailwind + shadcn/ui)의 코딩 컨벤션 — 패키지/폴더 구조, 네이밍, 예외 처리, 레이어 분리 —
-  을 정의한다. speckit.implement로 코드를 작성·리뷰하거나 "코딩 컨벤션", "패키지 구조",
-  "네이밍", "예외 처리"를 언급할 때 사용.
+  ③ AI-WEB-DEV 레이어 스킬. ①의 tech-stack.md가 정한 백엔드·프론트엔드 스택의 코딩 컨벤션
+  — 패키지/폴더 구조, 네이밍, 예외 처리, 레이어 분리 — 을 정의한다. 아래 본문은 현재 스택 선택
+  (백엔드 Spring Boot / 프론트엔드 React+Vite+TS+Tailwind+shadcn/ui)의 예시이며, ①이 다른 스택을
+  정했으면 그 스택 컨벤션으로 대체한다. speckit.implement로 코드를 작성·리뷰하거나 "코딩 컨벤션",
+  "패키지 구조", "네이밍", "예외 처리"를 언급할 때 사용.
 when_to_use: backend·frontend 코드 작성/리뷰, 패키지 구조·네이밍·예외 처리 결정 시.
 allowed-tools: Read Write Edit
 layer: 03-AI-WEB-DEV
@@ -21,12 +22,15 @@ references:
 
 ## 역할
 
-`app_repo` 전체에서 일관된 코드 스타일을 강제한다. tech-stack(①)에 고정된 스택 위에서
-패키지 구조·네이밍·예외 처리 패턴을 통일해, code-reviewer subagent가 기계적으로 점검할 수 있게 한다.
+`app_repo` 전체에서 일관된 코드 스타일을 강제한다. **스택은 ①의 tech-stack.md가 단일 출처**이며 고정값이 아니다.
+그 스택 위에서 패키지 구조·네이밍·예외 처리 패턴을 통일해, code-reviewer subagent가 기계적으로 점검할 수 있게 한다.
+
+> 아래 Backend/Frontend 절은 **현재 스택 선택(Spring Boot / React)** 기준의 예시다.
+> ①이 다른 스택(예: NestJS·FastAPI·Go / Vue·Svelte·Angular)을 정했으면, 그 스택의 레이어 분리·네이밍·예외 처리 컨벤션으로 같은 골격을 채운다.
 
 ---
 
-## Backend — Spring Boot
+## Backend — 예시: Spring Boot
 
 - **레이어 분리**: `controller → service → repository` 단방향. 도메인 단위 패키지(`com.app.<domain>`).
 - **네이밍**: 클래스 `PascalCase`, 메서드/필드 `camelCase`, 상수 `UPPER_SNAKE`, 엔티티 `<Domain>Entity`.
@@ -36,7 +40,7 @@ references:
 
 ---
 
-## Frontend — React + Vite + TypeScript + Tailwind + shadcn/ui
+## Frontend — 예시: React + Vite + TypeScript + Tailwind + shadcn/ui
 
 - **폴더 구조**: `src/pages/<Screen>/`(shell + components), `src/api/`, `src/hooks/`, `src/router/`.
 - **네이밍**: 컴포넌트 파일·심볼 `PascalCase`, hook `useXxx`, 타입 `PascalCase`.

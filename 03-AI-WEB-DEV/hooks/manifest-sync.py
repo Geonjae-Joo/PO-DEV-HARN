@@ -4,18 +4,76 @@ Hook: manifest-sync.py
 트리거: commit 이후 (post-commit)
 목적:  ②의 spec 팩 link-manifest를 app_repo/specs/ 와 동기화한다.
        - input/spec-pack/PACK-*/spec.yaml → app_repo/specs/PACK-*/spec.yaml 반영
-       - Phase α 이후 생성된 shell 경로를 screens[].shell_ref 에 갱신
+       - Phase α 이후 생성된 shell 경로를 screens[].shell_ref 에 갱신 (실존 파일만)
 종료코드: 0 = 성공(비차단 — post-commit이므로 실패해도 commit은 유지)
 정책: README(③) Phase α/β, ②의 link-manifest
 """
 
+import os
 import sys
 import shutil
 from pathlib import Path
 
+import yaml
+
 
 SRC = Path("input/spec-pack")
 DST = Path("app_repo/specs")
+
+# 프론트엔드 pages 디렉터리·shell 확장자는 ①의 tech-stack.md 스택에 따른다(고정값 아님).
+# 다른 스택은 환경변수로 덮어쓴다: HARNESS_PAGES_DIR, HARNESS_SHELL_EXT(쉼표구분).
+PAGES_DIR = Path(os.environ.get("HARNESS_PAGES_DIR", "app_repo/frontend/src/pages"))
+DEFAULT_SHELL_EXT = (".tsx", ".jsx", ".ts", ".js", ".vue", ".svelte")
+
+
+def shell_exts() -> tuple:
+    extra = os.environ.get("HARNESS_SHELL_EXT", "")
+    extra_list = tuple(e.strip() for e in extra.split(",") if e.strip())
+    return (extra_list + DEFAULT_SHELL_EXT) if extra_list else DEFAULT_SHELL_EXT
+
+
+def scr_to_pascal(scr_id: str) -> str:
+    """SCR-ORDER-LIST → OrderList (pages 디렉터리 컴포넌트명)."""
+    body = scr_id[4:] if scr_id.startswith("SCR-") else scr_id
+    return "".join(part.capitalize() for part in body.split("-") if part)
+
+
+def resolve_shell_ref(scr_id: str) -> str | None:
+    """Phase α가 생성한 shell 파일이 실존하면 그 경로를 반환, 없으면 None.
+    프레임워크별 확장자(.tsx/.vue/.svelte 등)와 'index' 또는 동명 파일을 모두 탐색."""
+    name = scr_to_pascal(scr_id)
+    for ext in shell_exts():
+        for cand in (PAGES_DIR / name / f"index{ext}", PAGES_DIR / f"{name}{ext}"):
+            if cand.exists():
+                return cand.as_posix()
+    return None
+
+
+def update_shell_refs(spec_path: Path) -> int:
+    """동기화된 spec.yaml의 screens[].shell_ref를 실존 shell 경로로 갱신."""
+    try:
+        doc = yaml.safe_load(spec_path.read_text(encoding="utf-8"))
+    except Exception:
+        return 0
+    if not isinstance(doc, dict):
+        return 0
+    changed = 0
+    for screen in (doc.get("screens") or []):
+        if not isinstance(screen, dict):
+            continue
+        scr_id = screen.get("id")
+        if not scr_id:
+            continue
+        shell = resolve_shell_ref(str(scr_id))
+        if shell and screen.get("shell_ref") != shell:
+            screen["shell_ref"] = shell
+            changed += 1
+    if changed:
+        spec_path.write_text(
+            yaml.dump(doc, allow_unicode=True, sort_keys=False, default_flow_style=False),
+            encoding="utf-8",
+        )
+    return changed
 
 
 def sync_packs() -> int:
@@ -23,7 +81,8 @@ def sync_packs() -> int:
         print(f"[manifest-sync] SKIP: {SRC} 없음.")
         return 0
     DST.mkdir(parents=True, exist_ok=True)
-    count = 0
+    file_count = 0
+    shell_count = 0
     for pack in sorted(SRC.glob("PACK-*")):
         if not pack.is_dir():
             continue
@@ -32,8 +91,11 @@ def sync_packs() -> int:
         for f in pack.glob("*"):
             if f.is_file():
                 shutil.copy2(f, target / f.name)
-                count += 1
-    print(f"[manifest-sync] {count}개 파일 동기화 (→ {DST}).")
+                file_count += 1
+        spec_yaml = target / "spec.yaml"
+        if spec_yaml.exists():
+            shell_count += update_shell_refs(spec_yaml)
+    print(f"[manifest-sync] {file_count}개 파일 동기화, shell_ref {shell_count}건 갱신 (→ {DST}).")
     return 0
 
 

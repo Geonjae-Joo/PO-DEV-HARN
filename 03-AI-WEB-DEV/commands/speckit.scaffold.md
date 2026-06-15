@@ -2,10 +2,12 @@
 
 ## 목적
 
-**Phase α 전용.** 전체 confirmed screen model → React 페이지 컴포넌트 shell 일괄 생성.
+**Phase α 전용.** 전체 confirmed screen model → 프론트엔드 페이지 컴포넌트 shell 일괄 생성.
 
 모든 화면이 layout만 있는 상태(데이터 없음, 이벤트 없음)로 먼저 존재하게 만든다.
 이후 각 spec pack의 speckit.implement가 이 shell에 wiring만 추가한다.
+
+> **프레임워크:** shell 생성 대상 프레임워크·파일 구조는 **①의 tech-stack.md**를 따른다(고정값 아님). 이 문서의 예시·파일 트리는 현재 선택인 **React + Vite + TS**(`.tsx`, `src/pages/`) 기준이며, ①이 다른 프론트엔드(예: Vue→`.vue`, Svelte→`.svelte`)를 정했으면 해당 확장자·구조로 동일 원칙을 적용한다.
 
 ## 실행 조건
 

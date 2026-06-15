@@ -111,7 +111,7 @@ meta:
 # ─────────────────────────────────────────────
 # SCREENS — 이 팩에 묶인 화면들 (복수 가능)
 # screen model YAML과 render HTML의 경로를 참조한다 (복사 아님).
-# Phase α에서 만들어진 React shell 컴포넌트 경로도 참조.
+# Phase α에서 만들어진 shell 컴포넌트 경로도 참조 (확장자·구조는 ①의 tech-stack.md 프론트엔드 스택을 따름. 예시는 React .tsx).
 # ─────────────────────────────────────────────
 screens:
   - id: SCR-ORDER-LIST

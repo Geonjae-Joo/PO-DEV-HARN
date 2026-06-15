@@ -16,7 +16,7 @@
         "args": ["${commit.msg_file}"],
         "blocking": true,
         "statusMessage": "스파인 ID 검증 중...",
-        "note": "[<SPEC|MOD>/<task>] 요약 (REQ-...) 형식 + REQ- 포함 강제. SCAFFOLD/CO prefix 예외."
+        "note": "[<PACK|SPEC|MOD>/<task>] 요약 (REQ-...) 형식. PACK/MOD은 REQ- 포함 강제, SPEC-(baseline)은 면제. SCAFFOLD/CO prefix 예외."
       }
     ],
     "post-commit": [

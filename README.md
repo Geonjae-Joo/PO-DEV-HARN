@@ -26,7 +26,7 @@
         │  ┌────────────────────────────────────────────────┐   │
         │  │  app_repo/  ★ 최종 수렴점                          │   │
         │  │   .claude/ (하네스: command·skill·hook·subagent·rule)│ │
-        │  │   backend(Spring Boot) + frontend(React)          │   │
+        │  │   backend + frontend (스택은 ①의 tech-stack.md)   │   │
         │  │   design-system · specs                           │   │
         │  └────────────────────────────────────────────────┘   │
         └──────────────────────────────┬───────────────────────┘
@@ -36,7 +36,7 @@
                                  ② model_repo 반영
 ```
 
-세 레이어가 만드는 산출물은 모두 **스파인 ID로 연결**되어 화면→요구사항→spec→task→test→commit까지 끝까지 추적된다. 화면 model(②)이 단일 진실원이고, 코드(③)와 렌더 HTML은 그로부터 파생된다.
+세 레이어가 만드는 산출물은 모두 **스파인 ID로 연결**되어 화면→요구사항→팩→task→test→commit까지 끝까지 추적된다. 화면 model(②)이 단일 진실원이고, 코드(③)와 렌더 HTML은 그로부터 파생된다.
 
 ---
 
@@ -59,11 +59,11 @@
 세 레이어 모두가 따르는 불변 규칙. ①의 `rules/constitution.md`에 정의되고 `.claude/`로 번들되어 ②·③의 hook·lint가 기계적으로 강제한다.
 
 1. **단일 진실원** — screen model(YAML)이 원본이다. HTML 렌더·React 코드는 파생 뷰이며 model을 거치지 않고 직접 편집하지 않는다.
-2. **스파인 ID** — 모든 아티팩트는 ID를 가진다. 화면→요구사항→spec→task→test→commit이 ID로 끝까지 추적된다.
+2. **스파인 ID** — 모든 아티팩트는 ID를 가진다. 화면→요구사항→팩→task→test→commit이 ID로 끝까지 추적된다.
 3. **DS 폐쇄(closure)** — design system 집합 밖의 컴포넌트는 model·design page에 들어올 수 없다. lint L1이 강제한다 (발명 금지).
 4. **Optimistic locking** — 저장은 `version` 필드 체크 기반. 동시 편집 충돌을 기계적으로 차단한다.
 5. **TDD** — 테스트 없는 구현 금지. red → green → refactor 3겹. `tdd-gate` hook이 commit을 차단한다.
-6. **커밋 규칙** — 커밋 메시지에 스파인 ID 포함: `[SPEC-014/T1] 요약 (REQ-...)`.
+6. **커밋 규칙** — 커밋 메시지에 스파인 ID 포함: `[PACK-ORDER/T001] 요약 (REQ-...)` (baseline은 `[SPEC-000/T###]`).
 
 ---
 
@@ -79,10 +79,13 @@
 | `REQ-` | requirement (요구사항) | ② |
 | `NOTE-` | PO 자유 노트 (verbatim) | ② |
 | `NFR-` | 비기능 요구사항 | ② |
-| `SPEC-` | spec (수직 슬라이스, SPEC-000=baseline) | ① 명세 / ② 팩 |
+| `Q-` | HITL 질문 | ② |
+| `PRM-` | prompt log 항목 | ② |
+| `PACK-` | 도메인 spec 팩 (구현 단위) | ② |
+| `SPEC-` | 플랫폼/baseline spec (SPEC-000) | ① |
 | `T###` | task (구현 단위) | ③ |
 
-**추적 그래프:** `SCR → CMP → REQ → acceptance → test → SPEC → task → commit`
+**추적 그래프:** `SCR → CMP → REQ → acceptance → PACK → task → test → commit`
 
 ---
 

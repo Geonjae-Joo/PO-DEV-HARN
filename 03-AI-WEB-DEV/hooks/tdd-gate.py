@@ -6,13 +6,27 @@ Hook: tdd-gate.py
        scaffold 커밋([SCAFFOLD] 마커)은 예외 처리(skip).
 종료코드: 0 = 통과(commit 허용), 1 = 차단(commit 거부)
 정책: rules/tdd-policy.md
+
+스택 비고: 테스트 명령·소스 확장자는 ①의 tech-stack.md가 정한 스택에 따른다(고정값 아님).
+  - 명시 지정: 환경변수 HARNESS_TEST_CMD="<테스트 실행 명령>" 이 있으면 그대로 실행한다.
+  - 미지정 시: 아래 자동 탐지(JVM/Node/Python/Go 등 일반 생태계)로 폴백한다.
 """
 
+import os
 import sys
 import subprocess
 
 
 SKIP_MARKERS = ("[SCAFFOLD]",)
+
+# 구현/테스트 판별용 소스 확장자 (스택 중립). 필요 시 HARNESS_SRC_EXT로 확장.
+DEFAULT_SRC_EXT = (".java", ".kt", ".ts", ".tsx", ".js", ".jsx",
+                   ".py", ".go", ".rb", ".cs", ".vue", ".svelte", ".php", ".rs")
+
+def src_exts() -> tuple:
+    extra = os.environ.get("HARNESS_SRC_EXT", "")
+    extra_list = tuple(e.strip() for e in extra.split(",") if e.strip())
+    return DEFAULT_SRC_EXT + extra_list
 
 
 def read_commit_message() -> str:
@@ -37,21 +51,38 @@ def staged_files() -> list[str]:
 
 
 def run_tests() -> bool:
-    """프로젝트 테스트 실행. backend(gradle/maven)·frontend(npm) 중 존재하는 것을 시도."""
-    # 실제 프로젝트 구성에 맞게 커맨드를 조정한다. 하나라도 실패하면 False.
+    """프로젝트 테스트 실행.
+    1순위: HARNESS_TEST_CMD 환경변수(① tech-stack.md가 지정한 명시 명령).
+    2순위: 일반 생태계 자동 탐지(JVM/Node/Python/Go). 하나라도 실패하면 False.
+    """
+    override = os.environ.get("HARNESS_TEST_CMD")
+    if override:
+        return subprocess.run(["bash", "-lc", override]).returncode == 0
+
     commands = []
-    import os
-    if os.path.exists("app_repo/backend/build.gradle") or os.path.exists("app_repo/backend/pom.xml"):
-        commands.append(["bash", "-lc", "cd app_repo/backend && (./gradlew test || mvn -q test)"])
+    # JVM (Gradle/Maven)
+    if os.path.exists("app_repo/backend/build.gradle") or os.path.exists("app_repo/backend/build.gradle.kts"):
+        commands.append(["bash", "-lc", "cd app_repo/backend && ./gradlew test"])
+    elif os.path.exists("app_repo/backend/pom.xml"):
+        commands.append(["bash", "-lc", "cd app_repo/backend && mvn -q test"])
+    # Node (package.json에 test 스크립트가 있을 때)
     if os.path.exists("app_repo/frontend/package.json"):
         commands.append(["bash", "-lc", "cd app_repo/frontend && npm test --silent"])
+    # Python
+    if any(os.path.exists(f"app_repo/backend/{f}") for f in ("pyproject.toml", "pytest.ini", "setup.cfg", "tox.ini")):
+        commands.append(["bash", "-lc", "cd app_repo/backend && python -m pytest -q"])
+    # Go
+    if os.path.exists("app_repo/backend/go.mod"):
+        commands.append(["bash", "-lc", "cd app_repo/backend && go test ./..."])
+
     if not commands:
-        # 테스트 러너를 못 찾으면 보수적으로 통과(다른 게이트가 잡도록). 경고만 출력.
-        print("[tdd-gate] WARN: 테스트 러너를 찾지 못했습니다. 테스트 구성 여부를 확인하세요.", file=sys.stderr)
+        # 러너를 못 찾으면 보수적으로 통과(다른 게이트가 잡도록). HARNESS_TEST_CMD로 명시 권장.
+        print("[tdd-gate] WARN: 테스트 러너 자동 탐지 실패. "
+              "HARNESS_TEST_CMD 환경변수로 테스트 명령을 지정하세요(① tech-stack.md 참조).",
+              file=sys.stderr)
         return True
     for cmd in commands:
-        r = subprocess.run(cmd)
-        if r.returncode != 0:
+        if subprocess.run(cmd).returncode != 0:
             return False
     return True
 
@@ -63,15 +94,18 @@ def main() -> int:
         return 0
 
     files = staged_files()
+    exts = src_exts()
+
+    def is_test_path(f: str) -> bool:
+        low = f.lower()
+        return ("test" in low or "spec" in low or "__tests__" in low or "_test." in low)
+
     impl_changed = any(
-        f.endswith((".java", ".ts", ".tsx"))
-        and "test" not in f.lower()
-        and "spec" not in f.lower()
+        f.endswith(exts) and not is_test_path(f)
         for f in files
     )
     test_changed = any(
-        ("test" in f.lower() or "spec" in f.lower())
-        and f.endswith((".java", ".ts", ".tsx"))
+        f.endswith(exts) and is_test_path(f)
         for f in files
     )
 

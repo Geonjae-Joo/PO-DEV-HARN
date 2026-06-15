@@ -19,6 +19,9 @@ RESULTS = {
     "pass":     [],   # 정상
 }
 
+# navigate target 실존 검증용 — main()에서 model_repo 전체 SCR id 로드
+KNOWN_SCREENS: set = set()
+
 def error(item_id: str, msg: str, target: str = "screen"):
     RESULTS["error"].append({"id": item_id, "msg": msg, "target": target})
 
@@ -30,13 +33,25 @@ def passed(item_id: str, msg: str):
 
 
 def _cmp_ref(item: dict) -> str:
-    """layout item의 DS 컴포넌트 ref 반환 (source.ref)."""
-    return item.get("source", {}).get("ref", "").lower()
+    """layout item의 DS 컴포넌트 ref 반환 (source.ref). null-안전."""
+    return ((item.get("source") or {}).get("ref") or "").lower()
 
 
 # ── 컴포넌트 레벨 체크 ────────────────────────────────────────────────────────
 
-def check_component_level(layout: list, actions: list, screen_id: str, screen_permission: str):
+def _has_validation_signal(cid: str, action: dict, notes: list) -> bool:
+    """입력 컴포넌트의 validation 규칙 존재 신호 탐지."""
+    if action and action.get("type") == "validation":
+        return True
+    kws = ("검증", "validation", "필수", "required", "형식", "valid", "정규식", "regex", "최대", "최소")
+    for n in (notes or []):
+        if n.get("scope") in (cid, "screen"):
+            if any(kw in str(n.get("body", "")).lower() for kw in kws):
+                return True
+    return False
+
+
+def check_component_level(layout: list, actions: list, notes: list, screen_id: str, screen_permission: str):
     action_map = {a.get("component"): a for a in (actions or [])}
 
     for item in (layout or []):
@@ -58,13 +73,8 @@ def check_component_level(layout: list, actions: list, screen_id: str, screen_pe
                 else:
                     passed(f"CHK-CMP-ACC-{cid}", f"{cid}: acceptance 존재")
 
-                # [WARN] outcome.target 미상 (navigate/mutate/export)
+                # (outcome_target / data_source 검증은 check_action_level에서 일괄 처리)
                 outcome = action.get("outcome", {})
-                if isinstance(outcome, dict):
-                    ot  = outcome.get("type")
-                    tgt = outcome.get("target")
-                    if ot in ("navigate", "mutate", "export") and not tgt:
-                        warning(f"CHK-CMP-TARGET-{cid}", f"{cid}: outcome.type={ot}인데 target 없음", cid)
 
                 # [WARN] permission 미정의
                 if "permission" not in action:
@@ -101,9 +111,16 @@ def check_component_level(layout: list, actions: list, screen_id: str, screen_pe
                             cid,
                         )
 
-        # [WARN] 입력 CMP인데 validation 확인 필요
+        # [ERROR] 입력(form 계열) CMP인데 validation 규칙 미정의
         if any(kw in ref for kw in ("input", "form", "select", "datepicker", "textfield")):
-            warning(f"CHK-CMP-VALID-{cid}", f"{cid}: 입력 컴포넌트인데 validation/기본값 확인 필요", cid)
+            if not _has_validation_signal(cid, action_map.get(cid), notes):
+                error(
+                    f"CHK-CMP-VALID-{cid}",
+                    f"{cid}: 입력(form 계열) 컴포넌트인데 validation 규칙 미정의 (필수/형식/범위 등)",
+                    cid,
+                )
+            else:
+                passed(f"CHK-CMP-VALID-{cid}", f"{cid}: validation 규칙 확인됨")
 
 
 # ── 화면 레벨 체크 ────────────────────────────────────────────────────────────
@@ -242,14 +259,30 @@ def check_action_level(actions: list, screen_id: str):
         if not action.get("acceptance"):
             error(f"CHK-ACT-ACC-{aid}", f"{aid}: acceptance 없음", aid)
 
-        # [WARN] outcome.target 없음
+        # outcome_target / data_source
         outcome = action.get("outcome", {})
         if isinstance(outcome, dict):
             ot  = outcome.get("type")
             tgt = outcome.get("target")
+            # [ERROR] outcome_target: navigate/mutate/export는 대상이 명확해야 함
             if ot in ("navigate", "mutate", "export") and not tgt:
-                warning(f"CHK-ACT-TARGET-{aid}",
-                        f"{aid}: outcome.type={ot}인데 target 없음", aid)
+                error(f"CHK-ACT-TARGET-{aid}",
+                      f"{aid}: outcome.type={ot}인데 target 없음 (대상 SCR-/ENT-/EXT- 식별 필요)", aid)
+            # [ERROR] data_source: query/mutate/export는 ENT-/EXT- 데이터 출처 식별 필요
+            if ot in ("query", "mutate", "export"):
+                if not tgt:
+                    error(f"CHK-ACT-DATASOURCE-{aid}",
+                          f"{aid}: outcome.type={ot}인데 데이터 출처(ENT-/EXT-) 미식별", aid)
+                elif not (str(tgt).startswith("ENT-") or str(tgt).startswith("EXT-")):
+                    error(f"CHK-ACT-DATASOURCE-{aid}",
+                          f"{aid}: outcome.type={ot}의 target '{tgt}'이 ENT-/EXT- 형식이 아님 (데이터 출처 미식별)", aid)
+                else:
+                    passed(f"CHK-ACT-DATASOURCE-{aid}", f"{aid}: 데이터 출처 {tgt} 식별됨")
+            # [WARN] navigate target 실존 여부
+            if ot == "navigate" and tgt and not str(tgt).startswith("EXT-"):
+                if KNOWN_SCREENS and tgt not in KNOWN_SCREENS:
+                    warning(f"CHK-ACT-NAV-EXIST-{aid}",
+                            f"{aid}: navigate target '{tgt}'이 model_repo에 없음 (미래 화면이면 무시)", aid)
 
 
 # ── sufficiency 판정 ──────────────────────────────────────────────────────────
@@ -275,6 +308,11 @@ def main():
         print(json.dumps(output, ensure_ascii=False, indent=2))
         sys.exit(0)
 
+    # navigate target 실존 검증용 — model_repo 전체 SCR id 로드
+    screens_dir = targets[0].parent if targets[0].parent.name == "screens" else Path("model_repo/screens")
+    for f in screens_dir.glob("SCR-*.yaml"):
+        KNOWN_SCREENS.add(f.stem)
+
     processed = []
     for fp in targets:
         if not fp.exists():
@@ -289,9 +327,10 @@ def main():
         screen_id       = doc.get("screen", {}).get("id", fp.stem)   # ← "screen" 키
         layout          = doc.get("layout", [])
         actions         = doc.get("actions", [])
+        notes           = doc.get("notes", [])
 
         screen_permission = check_screen_level(doc, screen_id)
-        check_component_level(layout, actions, screen_id, screen_permission or "all")
+        check_component_level(layout, actions, notes, screen_id, screen_permission or "all")
         check_action_level(actions, screen_id)
         processed.append(screen_id)
 

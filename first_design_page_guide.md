@@ -268,8 +268,8 @@ layout:
 
 ### 참고 파일
 
-- 디자인 페이지 스킬: `01-PREREQUISITE/skills/design-page-builder/SKILL.md`
-- 검증기: `01-PREREQUISITE/skills/design-page-builder/scripts/design-page-lint.py`
-- DS 폐쇄 규칙: `01-PREREQUISITE/rules/ds-closure.md`
-- 화면 모델 스키마(②에서 DP를 어떻게 쓰는지): `02-PO-DEV-CHAT/rules/screen-model-schema-v2.md`
+- 디자인 페이지 스킬: `01-PREREQUISITE/.claude/skills/design-page-builder/SKILL.md`
+- 검증기: `01-PREREQUISITE/.claude/skills/design-page-builder/scripts/design-page-lint.py`
+- DS 폐쇄 규칙: `01-PREREQUISITE/.claude/rules/ds-closure.md`
+- 화면 모델 스키마(②에서 DP를 어떻게 쓰는지): `02-PO-DEV-CHAT/.claude/rules/screen-model-schema-v2.md`
 - 허용 컴포넌트 목록: `output/foundation/design-system/design-guide.md`

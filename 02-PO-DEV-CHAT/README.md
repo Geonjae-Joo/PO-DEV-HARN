@@ -55,7 +55,7 @@ Stage 2.5  entity-intake / external-intake   (action의 데이터 출처 식별 
   outcome.type ∈ {query, mutate, export} → outcome.target 이 ENT-/EXT- 여야 함
   → entity-intake: 개념 엔티티(ENT-) 의미·속성·관계 계약 (물리 타입 없음 — ③ 파생)
   → external-intake: 외부 연동(EXT-) 엔드포인트·인증·장애처리 규약
-  (포맷: rules/data-contract-schema.md / 미정의 참조는 sufficiency-check gap)
+  (포맷: .claude/rules/data-contract-schema.md / 미정의 참조는 sufficiency-check gap)
   │
   ▼
 Stage 3  note-intake
@@ -85,11 +85,11 @@ spec-generator  [disable-model-invocation: true]
 journey-map  (복수 화면 confirmed 후, 횡단)
   전체 SCR의 navigate action 집계 → 화면 간 여정 JRN-*.yaml + 고립 화면 탐지
   → ③ Phase γ Playwright(+BDD) E2E 시나리오 출처
-  (포맷: rules/journey-schema.md)
+  (포맷: .claude/rules/journey-schema.md)
 ```
 
 상태 머신: `draft → layout_confirmed → actions_in_progress → review → confirmed`  
-상세 전환 조건: [state-machine.md](rules/state-machine.md)
+상세 전환 조건: [state-machine.md](.claude/rules/state-machine.md)
 
 ---
 
@@ -111,7 +111,7 @@ journey-map  (복수 화면 confirmed 후, 횡단)
 
 ### Hooks
 
-hooks는 `hooks/hooks.json`에 Claude Code hook 이벤트로 정의된다.  
+hooks는 `.claude/hooks/hooks.json`에 Claude Code hook 이벤트로 정의된다.  
 스크립트 경로: `${CLAUDE_PROJECT_DIR}/.claude/hooks/`
 
 | 스크립트 | 이벤트 | 트리거 | 설명 |
@@ -123,17 +123,17 @@ hooks는 `hooks/hooks.json`에 Claude Code hook 이벤트로 정의된다.
 
 ### Rules (Supporting Files — 공유)
 
-공유 rules는 여러 스킬이 참조하므로 `rules/`에 위치.  
+공유 rules는 여러 스킬이 참조하므로 `.claude/rules/`에 위치.  
 단일 스킬 전용 파일은 해당 스킬 폴더에 공존.
 
 | 파일 | 참조하는 스킬 | 설명 |
 |---|---|---|
-| `rules/screen-model-schema-v2.md` | 전체 | YAML 6부 구성 스키마. (0)meta (1)layout (2)actions (3)notes (4)prompt_log (5)intake |
-| `rules/state-machine.md` | gate-a-check, layout-recommend | 상태 전환 조건·optimistic locking·Gate A 규칙 |
-| `rules/spec-readiness-checklist.md` | sufficiency-check | 충분성 기준. error/warn 항목별 Gate A 영향 |
-| `rules/prompt-log-policy.md` | action-interview, note-intake | 하이브리드 적재: prompt_log 원문 + provenance.intent 요약 |
-| `rules/data-contract-schema.md` | entity-intake, external-intake, sufficiency-check, spec-generator | ENT-*.yaml·EXT-*.yaml 스키마. 개념 계약(②)과 물리 설계(③) 경계 명시 |
-| `rules/journey-schema.md` | journey-map, spec-generator | JRN-*.yaml 스키마. navigate 집계 → 여정. ③ Phase γ Playwright 매핑 |
+| `.claude/rules/screen-model-schema-v2.md` | 전체 | YAML 6부 구성 스키마. (0)meta (1)layout (2)actions (3)notes (4)prompt_log (5)intake |
+| `.claude/rules/state-machine.md` | gate-a-check, layout-recommend | 상태 전환 조건·optimistic locking·Gate A 규칙 |
+| `.claude/rules/spec-readiness-checklist.md` | sufficiency-check | 충분성 기준. error/warn 항목별 Gate A 영향 |
+| `.claude/rules/prompt-log-policy.md` | action-interview, note-intake | 하이브리드 적재: prompt_log 원문 + provenance.intent 요약 |
+| `.claude/rules/data-contract-schema.md` | entity-intake, external-intake, sufficiency-check, spec-generator | ENT-*.yaml·EXT-*.yaml 스키마. 개념 계약(②)과 물리 설계(③) 경계 명시 |
+| `.claude/rules/journey-schema.md` | journey-map, spec-generator | JRN-*.yaml 스키마. navigate 집계 → 여정. ③ Phase γ Playwright 매핑 |
 | `skills/action-interview/question-bank.md` | action-interview (전용) | archetype·outcome.type별 인터뷰 질문 목록 |
 | `skills/spec-generator/spec-pack-schema.md` | spec-generator (전용) | PACK-* 팩 포맷 + 절단 기준 + speckit 명령 매핑 |
 
@@ -179,17 +179,19 @@ hooks는 `hooks/hooks.json`에 Claude Code hook 이벤트로 정의된다.
 │   └── spec-generator/
 │       ├── SKILL.md                   # 핸드오프: PACK-* 구성·발행 (수동 실행 전용)
 │       └── spec-pack-schema.md        # spec-generator 전용: PACK-* 팩 포맷
-├── hooks/
-│   ├── hooks.json                     # Claude Code hook 이벤트 연결 정의
-│   ├── on-save-schema-validate.py     # PreToolUse: schema v2 검증 (프로젝트 이벤트 훅)
-│   └── on-save-lint-L1-L4.py          # PostToolUse: L1~L4 lint (프로젝트 이벤트 훅)
-├── rules/                             # 복수 스킬이 공유하는 supporting files
-│   ├── screen-model-schema-v2.md      # 화면 YAML 스키마 (6부 구성) — 전체 스킬 참조
-│   ├── data-contract-schema.md        # ENT-*.yaml·EXT-*.yaml 스키마 (개념 계약/물리 설계 경계)
-│   ├── journey-schema.md              # JRN-*.yaml 스키마 (navigate 집계 → 여정)
-│   ├── state-machine.md               # 상태 전환·lint·Gate 연동
-│   ├── spec-readiness-checklist.md    # 충분성 기준 (error/warn)
-│   └── prompt-log-policy.md           # 원문 append-only + intent 요약 규칙
+├── .claude/
+│   ├── hooks/
+│   │   ├── hooks.json                 # Claude Code hook 이벤트 연결 정의
+│   │   ├── on-save-schema-validate.py # PreToolUse: schema v2 검증
+│   │   └── on-save-lint-L1-L4.py      # PostToolUse: L1~L4 lint
+│   ├── rules/                         # 복수 스킬이 공유하는 supporting files
+│   │   ├── screen-model-schema-v2.md  # 화면 YAML 스키마 (6부 구성) — 전체 스킬 참조
+│   │   ├── data-contract-schema.md    # ENT-*.yaml·EXT-*.yaml 스키마 (개념 계약/물리 설계 경계)
+│   │   ├── journey-schema.md          # JRN-*.yaml 스키마 (navigate 집계 → 여정)
+│   │   ├── state-machine.md           # 상태 전환·lint·Gate 연동
+│   │   ├── spec-readiness-checklist.md # 충분성 기준 (error/warn)
+│   │   └── prompt-log-policy.md       # 원문 append-only + intent 요약 규칙
+│   └── skills/                        # (기존 skills/ → .claude/skills/)
 └── output/
     └── model_repo/
         ├── screens/                   # SCR-*.yaml — screen model 단일 원본
@@ -233,9 +235,9 @@ hooks는 `hooks/hooks.json`에 Claude Code hook 이벤트로 정의된다.
 
 | 항목 | 해소 방식 |
 |---|---|
-| **Entity / Data Model 정의** (구 🔴) | `entity-intake` 스킬 + `rules/data-contract-schema.md` + `model_repo/entities/ENT-*.yaml`. ②는 개념 계약, ③ Phase β가 물리 ERD 파생 |
+| **Entity / Data Model 정의** (구 🔴) | `entity-intake` 스킬 + `.claude/rules/data-contract-schema.md` + `model_repo/entities/ENT-*.yaml`. ②는 개념 계약, ③ Phase β가 물리 ERD 파생 |
 | **External System 계약** (구 🔴) | `external-intake` 스킬 + `model_repo/externals/EXT-*.yaml`. 엔드포인트·인증·장애처리 규약 |
-| **Navigation Flow / E2E 시나리오** (구 🟢) | `journey-map` 스킬 + `rules/journey-schema.md` + `model_repo/journeys/JRN-*.yaml`. navigate 집계 → 여정 + 고립 화면 탐지. ③ Phase γ Playwright 출처 |
+| **Navigation Flow / E2E 시나리오** (구 🟢) | `journey-map` 스킬 + `.claude/rules/journey-schema.md` + `model_repo/journeys/JRN-*.yaml`. navigate 집계 → 여정 + 고립 화면 탐지. ③ Phase γ Playwright 출처 |
 | **Change Order 스킬** (구 🟡 — **폐기**) | 별도 스킬 만들지 않음. ③가 pin/freeze/판정 소유, `regenerate` 시 PO가 **기존 Gate A 흐름**으로 재확정 → spec-generator가 버전 +1 재발행. 비대칭 제거 |
 
 ### 📋 Backlog — 남은 항목

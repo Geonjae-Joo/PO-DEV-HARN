@@ -3,7 +3,7 @@
 <!--
   이 파일은 spec-kit의 모든 명령(/speckit-specify·clarify·plan·tasks·analyze·implement·checklist)이
   비-협상(non-negotiable) 권위로 읽는다. /speckit-analyze는 이 원칙 위반을 자동 CRITICAL로 분류한다.
-  원본 하드 룰: 01-PREREQUISITE/rules/constitution.md (전 레이어 공통). 이 파일은 그 사본을
+  원본 하드 룰: 01-PREREQUISITE/.claude/rules/constitution.md (전 레이어 공통). 이 파일은 그 사본을
   spec-kit 권위 슬롯(.specify/memory/constitution.md)에 동기화한 것이다. 둘은 항상 일치해야 한다.
 -->
 
@@ -24,7 +24,7 @@ DS(`foundation/design-system/design-guide.md`) 허용 집합 밖의 컴포넌트
 
 모든 아티팩트는 스파인 ID를 가지며 끝까지 추적된다:
 `SCR → CMP → REQ → acceptance → PACK → task(T###) → test → commit`.
-접두사: `SCR-`(화면) `CMP-`(컴포넌트) `REQ-`(요구사항) `NOTE-`/`NFR-`(노트) `PACK-`(도메인 팩) `SPEC-`(baseline) `T###`(태스크) `DP-`(design page). spec-kit의 spec/plan/tasks/test/commit은 이 ID를 보존해야 한다(`01-PREREQUISITE/rules/spine-ids.md`).
+접두사: `SCR-`(화면) `CMP-`(컴포넌트) `REQ-`(요구사항) `NOTE-`/`NFR-`(노트) `PACK-`(도메인 팩) `SPEC-`(baseline) `T###`(태스크) `DP-`(design page). spec-kit의 spec/plan/tasks/test/commit은 이 ID를 보존해야 한다(`01-PREREQUISITE/.claude/rules/spine-ids.md`).
 
 ### IV. Test-First TDD (NON-NEGOTIABLE)
 
@@ -32,15 +32,15 @@ DS(`foundation/design-system/design-guide.md`) 허용 집합 밖의 컴포넌트
 1. **red** — 구현 전에 실패하는 테스트를 먼저 작성한다(test-author). 작성 직후 **실패를 기계적으로 증명**(러너 실행·실패 로그)해야 한다. 처음부터 통과하면 무효.
 2. **green** — 테스트를 통과시키는 **최소 구현**만.
 3. **refactor** — green을 유지하며 중복·복잡도 제거.
-요구: **2계층 테스트(API 레벨 + 화면 레벨)**. decision table의 모든 row, state machine의 모든 전이는 최소 1 테스트로 커버한다. `tdd-gate.py` hook이 테스트 없는/실패 commit을 차단한다. 예외: Phase α scaffold(`[SCAFFOLD]` 마커)만 면제(`03-AI-WEB-DEV/rules/tdd-policy.md`).
+요구: **2계층 테스트(API 레벨 + 화면 레벨)**. decision table의 모든 row, state machine의 모든 전이는 최소 1 테스트로 커버한다. `tdd-gate.py` hook이 테스트 없는/실패 commit을 차단한다. 예외: Phase α scaffold(`[SCAFFOLD]` 마커)만 면제(`03-AI-WEB-DEV/.claude/rules/tdd-policy.md`).
 
 ### V. 단계 게이트 — 구현 전 승인 (NON-NEGOTIABLE)
 
-계약은 ② **Gate A**(confirmed)를 통과한 것만 ③로 인계된다. ③에서 `/speckit-tasks` 완료 후 구현 전 **Gate B**(개발자 소유)를 통과해야 한다: Data Model·ERD·API 확정, `complexity:high` BL의 bl-analyst open decision = 0, 모든 구현 태스크에 대응 테스트 태스크 존재, 개발자 approve. Gate B 미통과 시 어떤 구현 commit도 금지(`03-AI-WEB-DEV/rules/gate-b-checklist.md`).
+계약은 ② **Gate A**(confirmed)를 통과한 것만 ③로 인계된다. ③에서 `/speckit-tasks` 완료 후 구현 전 **Gate B**(개발자 소유)를 통과해야 한다: Data Model·ERD·API 확정, `complexity:high` BL의 bl-analyst open decision = 0, 모든 구현 태스크에 대응 테스트 태스크 존재, 개발자 approve. Gate B 미통과 시 어떤 구현 commit도 금지(`03-AI-WEB-DEV/.claude/rules/gate-b-checklist.md`).
 
 ### VI. 커밋 규칙 — 스파인 ID 필수 (NON-NEGOTIABLE)
 
-커밋 메시지 형식: `[<PACK|SPEC|MOD>/<task>] <요약> (REQ-...)`. 예: `[PACK-ORDER/T001] 주문 목록 조회 API (REQ-ORDER-LIST.001)`. `commit-spine-id.py` hook이 스파인 ID 없는 commit을 차단한다. 예외: `[SCAFFOLD]`(tdd-gate skip, spine-id 적용), `[CO/<dismiss|amend|regenerate>]`(Change Order, re-pin 버전 표기). 구조 변경과 행위 변경은 분리 커밋(Tidy First)한다(`03-AI-WEB-DEV/rules/commit-convention.md`).
+커밋 메시지 형식: `[<PACK|SPEC|MOD>/<task>] <요약> (REQ-...)`. 예: `[PACK-ORDER/T001] 주문 목록 조회 API (REQ-ORDER-LIST.001)`. `commit-spine-id.py` hook이 스파인 ID 없는 commit을 차단한다. 예외: `[SCAFFOLD]`(tdd-gate skip, spine-id 적용), `[CO/<dismiss|amend|regenerate>]`(Change Order, re-pin 버전 표기). 구조 변경과 행위 변경은 분리 커밋(Tidy First)한다(`03-AI-WEB-DEV/.claude/rules/commit-convention.md`).
 
 ### VII. Optimistic Locking & Headless Patch
 
@@ -50,7 +50,7 @@ DS(`foundation/design-system/design-guide.md`) 허용 집합 밖의 컴포넌트
 
 - *명세*는 ①, *계약(정의)*은 ②, *구현(코드)*은 ③의 책임이다. ③는 **새 계약·요구사항·규칙을 만들지 않는다**.
 - ③의 입력: `input/spec-pack/PACK-*/spec.yaml`(② 발행) + `input/harness/`의 SPEC-000 명세 + ①의 tech-stack·design 자산. spec-kit의 feature spec(`spec.md`)은 이 spec-pack에서 파생되어야 하며, 새 화면·REQ를 발명하지 않는다.
-- 프레임워크·테스트 스택은 **프로젝트마다 다르다**. 특정 스택을 가정하지 않는다. ① PREREQUISITE에서 `/speckit-constitution`으로 정의해 `01-PREREQUISITE/rules/tech-stack.md`에 핀으로 박는다(§Technology Stack). 모든 스택 의존 값(테스트 러너·`HARNESS_TEST_CMD`·shell 확장자 등)은 그 핀을 참조한다.
+- 프레임워크·테스트 스택은 **프로젝트마다 다르다**. 특정 스택을 가정하지 않는다. ① PREREQUISITE에서 `/speckit-constitution`으로 정의해 `01-PREREQUISITE/.claude/rules/tech-stack.md`에 핀으로 박는다(§Technology Stack). 모든 스택 의존 값(테스트 러너·`HARNESS_TEST_CMD`·shell 확장자 등)은 그 핀을 참조한다.
 
 ## Development Workflow (spec-kit ↔ harness 매핑)
 
@@ -69,7 +69,7 @@ DS(`foundation/design-system/design-guide.md`) 허용 집합 밖의 컴포넌트
 
 ## Technology Stack (per-project — `/speckit-constitution`이 정의)
 
-기술 스택은 하니스에 고정돼 있지 않다. **프로젝트마다 ① PREREQUISITE에서 `/speckit-constitution`으로 결정**하고 `01-PREREQUISITE/rules/tech-stack.md`에 핀으로 기록한다. ②·③의 모든 산출물(scaffold·plan·tasks·test·tdd-gate)은 이 핀만 참조하며 특정 프레임워크를 가정하지 않는다.
+기술 스택은 하니스에 고정돼 있지 않다. **프로젝트마다 ① PREREQUISITE에서 `/speckit-constitution`으로 결정**하고 `01-PREREQUISITE/.claude/rules/tech-stack.md`에 핀으로 기록한다. ②·③의 모든 산출물(scaffold·plan·tasks·test·tdd-gate)은 이 핀만 참조하며 특정 프레임워크를 가정하지 않는다.
 
 | 슬롯 | 무엇 | 예시(고정값 아님) |
 |---|---|---|
@@ -81,10 +81,10 @@ DS(`foundation/design-system/design-guide.md`) 허용 집합 밖의 컴포넌트
 | `HARNESS_TEST_CMD` | tdd-gate가 실행할 2계층 테스트 명령 | 위 러너에서 파생 |
 | shell.ext / structure | scaffold가 만들 shell 확장자·구조 | frontend.framework에서 파생 (예: `.tsx`/`src/pages`) |
 
-상세 슬롯·기입 규칙: `01-PREREQUISITE/rules/tech-stack.md`. 변경은 `/speckit-constitution` 재실행으로만(전 레이어 동기화).
+상세 슬롯·기입 규칙: `01-PREREQUISITE/.claude/rules/tech-stack.md`. 변경은 `/speckit-constitution` 재실행으로만(전 레이어 동기화).
 
 ## Governance
 
-이 constitution은 ③의 모든 다른 관행에 우선한다. 위반은 `/speckit-analyze`에서 CRITICAL로 분류되며, 원칙 희석·재해석·무시가 아니라 spec/plan/tasks를 수정해 해소한다. 원칙 자체의 변경은 ①의 `rules/constitution.md`를 먼저 고치고 이 파일을 동기화하는 별도 절차로만 가능하다(전 레이어 README·CLAUDE.md 동반 갱신).
+이 constitution은 ③의 모든 다른 관행에 우선한다. 위반은 `/speckit-analyze`에서 CRITICAL로 분류되며, 원칙 희석·재해석·무시가 아니라 spec/plan/tasks를 수정해 해소한다. 원칙 자체의 변경은 ①의 `.claude/rules/constitution.md`를 먼저 고치고 이 파일을 동기화하는 별도 절차로만 가능하다(전 레이어 README·CLAUDE.md 동반 갱신).
 
-**Version**: 1.0.0 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-06-15 | **Source**: `01-PREREQUISITE/rules/constitution.md`
+**Version**: 1.0.0 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-06-15 | **Source**: `01-PREREQUISITE/.claude/rules/constitution.md`

@@ -139,7 +139,7 @@ PACK-X 수신 (input/spec-pack/PACK-X/)
   - backend 태스크 → frontend wiring 태스크 순서
   │
   ▼
-Gate B  (개발자 소유 — rules/gate-b-checklist.md)
+Gate B  (개발자 소유 — .claude/rules/gate-b-checklist.md)
   Data Model·ERD·BL·Task 전체 확정
   bl-analyst 미해결 항목 있으면 통과 불가
   PO는 acceptance 비차단 소프트 리뷰만
@@ -280,22 +280,24 @@ NFR 처리 (성능·동시성·보안·감사)
 │   ├── coding-style/SKILL.md
 │   ├── complex-bl/SKILL.md
 │   └── baseline-guides/SKILL.md   # [Phase 0 모드 A] feature별 가이드 스킬 생성 템플릿
-├── hooks/
-│   ├── tdd-gate.py
-│   ├── commit-spine-id.py
-│   ├── manifest-sync.py
-│   ├── hooks.json                 # 훅 생애주기 선언 (pre/post-commit 체인)
-│   ├── install-git-hooks.sh       # git 훅 설치기 (bash)
-│   └── install-git-hooks.ps1      # git 훅 설치기 (PowerShell)
-├── subagents/
-│   ├── bl-analyst.md
-│   ├── test-author.md
-│   └── code-reviewer.md
-├── rules/
-│   ├── gate-b-checklist.md
-│   ├── tdd-policy.md
-│   ├── commit-convention.md
-│   └── change-order-policy.md
+├── .claude/
+│   ├── hooks/
+│   │   ├── tdd-gate.py
+│   │   ├── commit-spine-id.py
+│   │   ├── manifest-sync.py
+│   │   ├── hooks.json             # 훅 생애주기 선언 (pre/post-commit 체인)
+│   │   ├── install-git-hooks.sh   # git 훅 설치기 (bash)
+│   │   └── install-git-hooks.ps1  # git 훅 설치기 (PowerShell)
+│   ├── subagents/
+│   │   ├── bl-analyst.md
+│   │   ├── test-author.md
+│   │   └── code-reviewer.md
+│   ├── rules/
+│   │   ├── gate-b-checklist.md
+│   │   ├── tdd-policy.md
+│   │   ├── commit-convention.md
+│   │   └── change-order-policy.md
+│   └── skills/                    # (기존 skills/ → .claude/skills/)
 └── output/
     └── app_repo/            # ★ 단 하나의 웹앱
         ├── .claude/         # 하네스 자산 (app_repo 안에 실제 위치)

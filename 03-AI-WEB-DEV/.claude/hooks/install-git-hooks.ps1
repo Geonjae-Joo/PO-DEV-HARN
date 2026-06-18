@@ -8,10 +8,10 @@
   commit-msg 훅에, manifest-sync는 post-commit 훅에 설치한다.
 
   사용: app_repo 루트에서
-    powershell -ExecutionPolicy Bypass -File 03-AI-WEB-DEV\hooks\install-git-hooks.ps1
+    powershell -ExecutionPolicy Bypass -File 03-AI-WEB-DEV\.claude\hooks\install-git-hooks.ps1
   옵션:
     -Python "python"            # 파이썬 실행기 (기본 python → 없으면 py)
-    -HarnessTestCmd "..."       # tdd-gate 테스트 명령(①/tech-stack.md 핀). 훅에 기록.
+    -HarnessTestCmd "..."       # tdd-gate 테스트 명령(01-PREREQUISITE/.claude/rules/tech-stack.md 핀). 훅에 기록.
   ───────────────────────────────────────────────────────────────────────
 #>
 param(

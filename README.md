@@ -56,7 +56,7 @@
 
 ## 3. 전 레이어 공통 하드 룰 (constitution)
 
-세 레이어 모두가 따르는 불변 규칙. ①의 `rules/constitution.md`에 정의되고 `.claude/`로 번들되어 ②·③의 hook·lint가 기계적으로 강제한다.
+세 레이어 모두가 따르는 불변 규칙. ①의 `.claude/rules/constitution.md`에 정의되고 `.claude/`로 번들되어 ②·③의 hook·lint가 기계적으로 강제한다.
 
 1. **단일 진실원** — screen model(YAML)이 원본이다. HTML 렌더·React 코드는 파생 뷰이며 model을 거치지 않고 직접 편집하지 않는다.
 2. **스파인 ID** — 모든 아티팩트는 ID를 가진다. 화면→요구사항→팩→task→test→commit이 ID로 끝까지 추적된다.
@@ -69,7 +69,7 @@
 
 ## 4. 스파인 ID 체계
 
-①의 `rules/spine-ids.md`에 채번 규칙이 고정되고 전 레이어가 공유한다.
+①의 `.claude/rules/spine-ids.md`에 채번 규칙이 고정되고 전 레이어가 공유한다.
 
 | 접두 | 의미 | 생성 레이어 |
 |---|---|---|
@@ -176,7 +176,7 @@ spec-generator              confirmed 화면 → 도메인 단위 PACK-* 팩 발
 세 레이어 모두 동일한 배치 원칙을 따른다:
 
 - **단일 스킬 전용 스크립트·파일** → 그 스킬 폴더 아래 공존 (`skills/<skill>/scripts/`, `skills/<skill>/<rule>.md`). 예: ①의 `design-page-lint.py`, ②의 `sufficiency-check.py`·`gate-a-check.py`·`question-bank.md`.
-- **저장 이벤트 훅 / 여러 스킬·레이어 공유 규칙** → 최상위 `hooks/`(+`hooks.json`)·`rules/`. 예: ②의 `on-save-lint`, ①·②의 공유 규칙들.
+- **저장 이벤트 훅 / 여러 스킬·레이어 공유 규칙** → `.claude/hooks/`(+`hooks.json`)·`.claude/rules/`. 예: ②의 `on-save-lint`, ①·②의 공유 규칙들.
 
 판별 기준: **"단일 스킬이 직접 호출/소유하는가?"** → 예면 스킬 아래 중첩, 아니면 최상위.
 
@@ -188,13 +188,13 @@ spec-generator              confirmed 화면 → 도메인 단위 PACK-* 팩 발
 PO-DEV-Harn/
 ├── README.md                  # (이 문서) 3-레이어 통합 진입 문서
 ├── 01-PREREQUISITE/           # ① 준비 — foundation·rules·빈 app_repo 골격
-│   ├── input/ skills/ hooks/ rules/ output/
+│   ├── input/ .claude/{skills/hooks/rules} output/
 │   └── README.md
 ├── 02-PO-DEV-CHAT/            # ② 화면·요구사항 정의 — screen model 계약
-│   ├── skills/ hooks/ rules/ output/model_repo/
+│   ├── .claude/{skills/hooks/rules} output/model_repo/
 │   └── README.md
 └── 03-AI-WEB-DEV/           # ③ 개발 — app_repo 구현
-    ├── input/ commands/ skills/ hooks/ subagents/ rules/ output/app_repo/
+    ├── input/ .claude/{skills/hooks/subagents/rules} output/app_repo/
     └── README.md
 ```
 
@@ -207,7 +207,7 @@ PO-DEV-Harn/
 | 전체 파이프라인·인계·하드 룰 (이 문서) | `README.md` |
 | 디자인 자산·규칙·골격 준비 방법 | `01-PREREQUISITE/README.md` |
 | PO 화면 정의 4-Stage HITL·상태 머신 | `02-PO-DEV-CHAT/README.md` |
-| screen model schema v2 전문 | `02-PO-DEV-CHAT/rules/screen-model-schema-v2.md` |
-| 데이터 계약(ENT-/EXT-)·여정(JRN-) 스키마 | `02-PO-DEV-CHAT/rules/data-contract-schema.md`, `journey-schema.md` |
-| 배포·CI/CD·관측성 명세·스택 결정 | `01-PREREQUISITE/output/foundation/platform-baseline/SPEC-OPS-000.md`, `rules/ops-stack.md` |
+| screen model schema v2 전문 | `02-PO-DEV-CHAT/.claude/rules/screen-model-schema-v2.md` |
+| 데이터 계약(ENT-/EXT-)·여정(JRN-) 스키마 | `02-PO-DEV-CHAT/.claude/rules/data-contract-schema.md`, `journey-schema.md` |
+| 배포·CI/CD·관측성 명세·스택 결정 | `01-PREREQUISITE/output/foundation/platform-baseline/SPEC-OPS-000.md`, `.claude/rules/ops-stack.md` |
 | SDD+TDD 개발 4-Phase·baseline 전달 모드 | `03-AI-WEB-DEV/README.md` |

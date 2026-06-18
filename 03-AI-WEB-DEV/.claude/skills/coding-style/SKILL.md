@@ -55,4 +55,4 @@ references:
 
 - 식별자는 영어, 주석/문서는 한국어 허용.
 - 한 파일 한 책임. layout 구조(Phase α shell)는 wiring 단계에서 바꾸지 않는다.
-- 커밋은 스파인 ID 포함(`rules/commit-convention.md`).
+- 커밋은 스파인 ID 포함(`.claude/rules/commit-convention.md`).

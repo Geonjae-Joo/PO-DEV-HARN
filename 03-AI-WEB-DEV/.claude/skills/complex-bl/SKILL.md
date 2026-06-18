@@ -43,7 +43,7 @@ spine-ids: [REQ-, NOTE-, SPEC-, T###]
 
 ## 규칙 (Rules)
 
-- 모든 decision row·전이는 테스트로 커버한다(`rules/tdd-policy.md`).
+- 모든 decision row·전이는 테스트로 커버한다(`.claude/rules/tdd-policy.md`).
 - 정의되지 않은 입력/전이는 조용히 통과시키지 않고 명시적 에러로 처리한다.
 - 규칙 원문(verbatim)을 임의 해석·요약하지 않는다 — 모호하면 ②에 Change Order/질의로 되돌린다.
 - 커밋 메시지에 스파인 ID 포함: `[PACK-ORDER/T001] 요약 (REQ-...)`.

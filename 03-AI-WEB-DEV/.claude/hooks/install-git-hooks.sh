@@ -7,10 +7,10 @@
 # 단계는 commit-msg 이므로 둘을 commit-msg 훅으로 설치한다. manifest-sync는 post-commit.
 #
 # 사용: app_repo 루트(또는 강제할 git 저장소)에서
-#   bash 03-AI-WEB-DEV/hooks/install-git-hooks.sh
+#   bash 03-AI-WEB-DEV/.claude/hooks/install-git-hooks.sh
 # 환경변수:
 #   PYTHON=python3            # 파이썬 실행기 지정 (기본: python → 없으면 python3)
-#   HARNESS_TEST_CMD="..."    # tdd-gate가 실행할 테스트 명령(①/tech-stack.md 핀). 훅에 기록됨.
+#   HARNESS_TEST_CMD="..."    # tdd-gate가 실행할 테스트 명령(01-PREREQUISITE/.claude/rules/tech-stack.md 핀). 훅에 기록됨.
 # ────────────────────────────────────────────────────────────────────────
 set -euo pipefail
 
@@ -74,4 +74,4 @@ echo "  → ${HOOK_DST}/commit-msg   (tdd-gate + commit-spine-id, blocking)"
 echo "  → ${HOOK_DST}/post-commit  (manifest-sync, non-blocking)"
 echo "  python: ${PY}"
 [ -n "${TEST_CMD_LINE}" ] && echo "  HARNESS_TEST_CMD 고정됨" || \
-  echo "  HARNESS_TEST_CMD 미지정 — tdd-gate 자동 탐지 사용(①/tech-stack.md 권장)"
+  echo "  HARNESS_TEST_CMD 미지정 — tdd-gate 자동 탐지 사용(01-PREREQUISITE/.claude/rules/tech-stack.md 권장)"

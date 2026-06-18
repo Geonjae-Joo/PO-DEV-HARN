@@ -23,7 +23,7 @@ disable-model-invocation: false
   2. **RED → GREEN → REFACTOR** — red: 테스트 실패 확인 → green: 통과 최소 구현 → refactor: 중복 제거
   3. **hook**: `tdd-gate.py`(테스트 없음/실패 시 commit 차단) + `commit-spine-id.py`(메시지 스파인 ID 자동 포함)
   4. 팩의 모든 T### 완료 → **code-reviewer** subagent로 DS 준수·보안·스타일·TDD·스파인 ID 검토 → PR
-  - 상세 TDD 정책: `rules/tdd-policy.md`
+  - 상세 TDD 정책: `.claude/rules/tdd-policy.md`
 
 ## User Input
 

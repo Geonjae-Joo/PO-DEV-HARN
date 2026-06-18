@@ -4,7 +4,7 @@
 # SPEC-OPS-000 — 운영 Baseline 명세
 
 > SPEC-000(인증·RBAC 등 공통 *기능* baseline)과 형제 명세. 이 문서는 **배포·CI/CD·형상관리·관측성 = 공통 *운영* 요건**을 정의한다.
-> **명세까지만** 한다 — *무엇이* 운영 요건인지(scope·요구사항)는 여기서, *어떤 도구로*는 `rules/ops-stack.md`, *실제 코드/파이프라인*은 ③ Phase 0가 만든다. ①은 운영 코드를 구현하지 않는다.
+> **명세까지만** 한다 — *무엇이* 운영 요건인지(scope·요구사항)는 여기서, *어떤 도구로*는 `.claude/rules/ops-stack.md`, *실제 코드/파이프라인*은 ③ Phase 0가 만든다. ①은 운영 코드를 구현하지 않는다.
 > 스파인: `SPEC-OPS-000`. 커밋 머리말 `[SPEC-OPS-000/T###]` (SPEC- 계열 — REQ- 면제, commit-convention.md).
 
 ---

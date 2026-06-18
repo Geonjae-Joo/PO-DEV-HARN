@@ -16,7 +16,7 @@ disable-model-invocation: false
 이 명령은 프로젝트 규범을 1회 수립/갱신할 때 실행한다. 두 가지를 산출한다:
 
 1. **하드룰 constitution** — `.specify/memory/constitution.md`에 기록한다. 7원칙(SSOT·DS폐쇄·스파인ID·Test-First·게이트·커밋·locking)은 불변 골격이며 프로젝트별 보충만 추가.
-2. **프로젝트별 기술 스택** — 프론트·백엔드 프레임워크와 2계층 테스트 러너를 **`rules/tech-stack.md`** 에 정의한다. **하니스는 특정 스택을 가정하지 않는다 — 프론트엔드도 여기서 결정**한다(React/Vue/Svelte…, Spring/Nest/FastAPI… 모두 가능). 이어서 `.specify/memory/constitution.md`의 §Technology Stack 표와 `HARNESS_TEST_CMD`(tdd-gate용)를 그 값으로 갱신한다.
+2. **프로젝트별 기술 스택** — 프론트·백엔드 프레임워크와 2계층 테스트 러너를 **`.claude/rules/tech-stack.md`** 에 정의한다. **하니스는 특정 스택을 가정하지 않는다 — 프론트엔드도 여기서 결정**한다(React/Vue/Svelte…, Spring/Nest/FastAPI… 모두 가능). 이어서 `.specify/memory/constitution.md`의 §Technology Stack 표와 `HARNESS_TEST_CMD`(tdd-gate용)를 그 값으로 갱신한다.
 
 경계: 스택을 바꾸면 scaffold shell·plan·tasks·테스트가 모두 영향받으므로, 변경은 이 명령 재실행 + 전 레이어(README·CLAUDE.md·`.specify/templates/*`) 동기화로만. 의존 템플릿 4종(spec/plan/tasks/checklist)이 새 원칙과 어긋나지 않는지 확인한다.
 

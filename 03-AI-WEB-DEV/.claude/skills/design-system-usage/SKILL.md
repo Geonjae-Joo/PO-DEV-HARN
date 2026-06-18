@@ -56,6 +56,6 @@ spine-ids: [SCR-, CMP-, DP-]
 ## 규칙 (Rules)
 
 - 모든 산출 코드·주석은 한국어 주석을 허용하되 식별자는 tech-stack 컨벤션을 따른다.
-- DS 집합 밖 컴포넌트 발명 금지(`rules/ds-closure.md`).
+- DS 집합 밖 컴포넌트 발명 금지(`.claude/rules/ds-closure.md`).
 - design token 외 스타일 하드코딩 금지.
 - shell 파일 상단 주석: `// SCAFFOLD — source: SCR-*.yaml v{version}`.

@@ -248,7 +248,7 @@ shadcn 공식 문서의 [Data Table](https://ui.shadcn.com/docs/components/data-
 저장하면 하니스의 훅이 자동으로 검증기를 돌립니다. 수동으로도 돌려볼 수 있습니다(프로젝트 루트에서):
 
 ```bash
-python 01-PREREQUISITE/hooks/ds-guide-validate.py
+python 01-PREREQUISITE/.claude/hooks/ds-guide-validate.py
 ```
 
 `✓ 컴포넌트 N개 발견` 과 `✓ design-guide.md 검증 통과` 가 나오면 성공입니다. `ERROR:` 가 나오면 그 줄의 안내대로 형식을 고치세요(보통 필수 필드 누락).
@@ -365,13 +365,13 @@ python 01-PREREQUISITE/skills/design-page-builder/scripts/design-page-lint.py
 
 ## 11. 나중에: DS에 새 컴포넌트를 추가하고 싶을 때
 
-화면을 만들다 "이 부품이 DS에 없네?" 싶을 때가 옵니다. 그럴 때 **그냥 새로 만들어 쓰면 안 됩니다.** 아래 절차를 밟습니다(`rules/ds-closure.md`).
+화면을 만들다 "이 부품이 DS에 없네?" 싶을 때가 옵니다. 그럴 때 **그냥 새로 만들어 쓰면 안 됩니다.** 아래 절차를 밟습니다(`01-PREREQUISITE/.claude/rules/ds-closure.md`).
 
 1. 먼저 **가장 비슷한 기존 DS 컴포넌트로 대체할 수 있는지** 검토합니다. (예: 커스텀 달력 → `DatePicker` + `FilterBar` 조합)
 2. 정말 없으면, 정식으로 추가합니다:
    - shadcn에서 `npx shadcn@latest add <컴포넌트>` 로 소스를 `ds-source` 에 가져오거나, 합성 컴포넌트를 만들어 `components/ui/` 에 둡니다.
    - `design-guide.md` 에 `## NewComponent` 섹션을 추가합니다(필수 필드 포함).
-   - `python 01-PREREQUISITE/hooks/ds-guide-validate.py` 로 형식 통과 확인.
+   - `python 01-PREREQUISITE/.claude/hooks/ds-guide-validate.py` 로 형식 통과 확인.
    - `python 01-PREREQUISITE/skills/design-page-builder/scripts/design-page-lint.py` 로 기존 페이지에 영향 없는지 확인.
 3. **"목록에 없는 컴포넌트를 그냥 쓰는 것"은 어떤 경우에도 허용되지 않습니다.**
 
@@ -416,4 +416,4 @@ python 01-PREREQUISITE/skills/design-page-builder/scripts/design-page-lint.py
 - components.json 설명: https://ui.shadcn.com/docs/components-json
 - Data Table 패턴: https://ui.shadcn.com/docs/components/data-table
 
-프로젝트 내부 규칙 파일도 함께 참고하세요: `01-PREREQUISITE/rules/ds-closure.md`, `01-PREREQUISITE/skills/design-page-builder/SKILL.md`, `02-PO-DEV-CHAT/rules/screen-model-schema-v2.md`.
+프로젝트 내부 규칙 파일도 함께 참고하세요: `01-PREREQUISITE/.claude/rules/ds-closure.md`, `01-PREREQUISITE/.claude/skills/design-page-builder/SKILL.md`, `02-PO-DEV-CHAT/.claude/rules/screen-model-schema-v2.md`.

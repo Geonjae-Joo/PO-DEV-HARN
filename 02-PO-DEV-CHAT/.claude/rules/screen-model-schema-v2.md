@@ -199,4 +199,4 @@ checkpoints:
 
 ## screen.status 전환
 `draft → layout_confirmed → actions_in_progress → review → confirmed`
-상세: `rules/state-machine.md`
+상세: `.claude/rules/state-machine.md`

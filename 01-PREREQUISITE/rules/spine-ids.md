@@ -2,6 +2,8 @@
 
 전 레이어 공통 적용. 모든 아티팩트는 스파인 ID를 가진다.
 추적 그래프: `SCR → CMP → REQ → acceptance → PACK → task → test → commit`
+- 데이터 분기: `REQ/action → ENT-/EXT- (② 계약) → data-model·ERD (③ 파생) → migration`
+- 여정 분기: `JRN- (② navigate 집계) → SCR/action → Playwright e2e-test (③ Phase γ)`
 
 ---
 
@@ -13,12 +15,15 @@
 | `SCR-` | 화면(screen model) | `SCR-ORDER-LIST` | ② |
 | `CMP-` | 컴포넌트 인스턴스 | `CMP-ORDER-LIST.exportBtn` | ② |
 | `REQ-` | 요구사항(action) | `REQ-ORDER-LIST.001` | ② |
+| `ENT-` | 개념 데이터 엔티티 계약 | `ENT-ORDER` | ② |
+| `EXT-` | 외부 연동 시스템 계약 | `EXT-PAYMENT` | ② |
 | `NOTE-` | 노트 | `NOTE-ORDER-LIST.001` | ② |
 | `NFR-` | 비기능 요구사항 | `NFR-ORDER-LIST.001` | ② |
+| `JRN-` | 화면 간 사용자 여정(=E2E 시나리오) | `JRN-ORDER-REFUND` | ② |
 | `Q-` | HITL 질문 | `Q-001` | ② |
 | `PRM-` | prompt log 항목 | `PRM-0001` | ② |
 | `PACK-` | 도메인 spec 팩(도메인 모듈) | `PACK-ORDER`, `PACK-AUTH` | ② |
-| `SPEC-` | 플랫폼/baseline spec | `SPEC-000` | ① |
+| `SPEC-` | 플랫폼/baseline spec | `SPEC-000`, `SPEC-OPS-000` | ① |
 | `T` | 태스크(3자리) | `T001`, `T012` | ③ |
 
 > **PACK- vs SPEC- 구분:** 도메인 화면·기능을 묶은 ②의 계약 팩은 `PACK-`(예: `PACK-ORDER`). 로그인·SSO·RBAC 등 공통 baseline은 ①이 명세하는 `SPEC-`(현재 `SPEC-000` 1개). 커밋 머리말은 `[PACK-…/T###]` 또는 `[SPEC-000/T###]`을 쓴다 (③ commit-convention.md).
@@ -57,10 +62,25 @@ Actor가 달라 API 권한 구조가 다를 때만 접미사 추가.
 
 ### SPEC-
 ```
-SPEC-{3자리}
-예: SPEC-000 (공통 baseline — 로그인/SSO/RBAC/admin)
+SPEC-{3자리} 또는 SPEC-{영역}-{3자리}
+예: SPEC-000 (공통 기능 baseline — 로그인/SSO/RBAC/admin)
+    SPEC-OPS-000 (운영 baseline — 배포/CI·CD/형상관리/관측성)
 ```
-SPEC-000은 ①이 명세하고 ③ Phase 0가 구현하는 플랫폼 baseline 전용. 도메인 계약은 PACK-을 쓴다.
+SPEC-은 ①이 명세하고 ③ Phase 0가 구현하는 플랫폼 baseline 전용. 도메인 계약은 PACK-을 쓴다.
+
+### ENT- / EXT-
+```
+ENT-{도메인명}            예: ENT-ORDER / ENT-MEMBER / ENT-PRODUCT
+EXT-{시스템명}            예: EXT-PAYMENT / EXT-SSO / EXT-FABRIX
+```
+ENT-은 개념 데이터 엔티티(의미 + 핵심 속성 + 관계)의 단일 진실원 계약, EXT-은 외부 연동(엔드포인트·인증·실패정책) 계약.
+②가 *계약*까지만(타입·테이블 등 물리 설계 없음), ③ Phase β가 ERD·data-model로 *파생*한다. action의 `outcome.target`이 이 ID를 참조한다(sufficiency-check가 ENT-/EXT- 형식 검증).
+
+### JRN-
+```
+JRN-{도메인}-{시나리오}    예: JRN-ORDER-REFUND / JRN-MEMBER-SIGNUP
+```
+화면 간 사용자 여정(=E2E 시나리오). ②가 navigate action을 집계해 정의, ③ Phase γ가 Playwright(+BDD) E2E로 구현. step은 각 화면 action의 acceptance(Gherkin) 재사용.
 
 ### T (Task)
 ```

@@ -12,10 +12,10 @@
 
 | 무엇을 | 어떻게 |
 |---|---|
-| 공통 기능(인증·권한·레이아웃) 확립 | **Phase 0** — SPEC-000을 받아 각 공통 기능의 *전달 방식*(가이드 코드블럭 vs 직접 코드 주입)을 명세화하고 그에 맞춰 산출 |
+| 공통 기능·운영 확립 | **Phase 0** — SPEC-000(기능)·SPEC-OPS-000(배포·CI/CD·관측성)을 받아 각 요건의 *전달 방식*(가이드 코드블럭 vs 직접 코드 주입)을 명세화하고 그에 맞춰 산출 |
 | 전체 화면 골격 일괄 생성 | **Phase α** — confirmed screen model → 프론트엔드 shell 일괄 scaffold (①의 tech-stack.md 프레임워크, layout만, wiring 없음) |
-| 도메인 기능 구현 | **Phase β** — spec 팩 단위 backend + frontend wiring, T### TDD 루프 |
-| 통합·비기능 요건 | **Phase γ** — E2E·성능·동시성·보안 |
+| 도메인 기능 구현 | **Phase β** — spec 팩 단위 backend + frontend wiring, T### TDD 루프. ②의 ENT-/EXT- 계약 → data-model·ERD·어댑터 *파생* |
+| 통합·비기능 요건 | **Phase γ** — ②의 JRN-* 여정 → Playwright(+BDD) E2E + 성능·동시성·보안·관측성 |
 | 계약 변경 흡수 | Change Order — 자동 재생성 금지, pin·freeze 위에서 개발자 판정 |
 
 **경계 원칙:** 이 레이어는 **코드만** 만든다. 화면·요구사항의 *정의*는 ②, 불변 규칙·기술스택·DS·SPEC-000 *명세*는 ①의 책임이다. ③는 그 명세를 **구현(how)**할 뿐 새 계약을 만들지 않는다.
@@ -26,17 +26,19 @@
 
 | 단계 | 이름 | 범위 | 주기 |
 |---|---|---|---|
-| Phase 0 | SPEC-000 Baseline | 앱 골격·인증·공통 인프라 | 프로젝트 1회 |
+| Phase 0 | SPEC-000·SPEC-OPS-000 Baseline | 앱 골격·인증·공통 인프라 + 배포·CI/CD·관측성 | 프로젝트 1회 |
 | Phase α | Layout Scaffold | 전체 화면 프론트엔드 shell 일괄 생성 (①의 프레임워크에서 파생) | 전체 screen 확정 후 1회 |
-| Phase β | Spec Pack Iteration | 도메인 팩별 backend + frontend wiring | 팩마다 반복 |
-| Phase γ | Integration & NFR | E2E·성능·동시성·보안 | 배포 전 |
+| Phase β | Spec Pack Iteration | 도메인 팩별 backend + frontend wiring (ENT-/EXT- → data-model·ERD 파생) | 팩마다 반복 |
+| Phase γ | Integration & NFR | JRN-* → Playwright E2E + 성능·동시성·보안·관측성 | 배포 전 |
 
 ---
 
-## Phase 0 — SPEC-000 Baseline
+## Phase 0 — SPEC-000·SPEC-OPS-000 Baseline
 
 프로젝트 1회. spec 팩 iteration 시작 전에 완료한다.
-①이 작성한 SPEC-000(=공통 기능 *명세*)을 받아, **각 공통 기능을 어떤 방식으로 전달할지 먼저 명세화**하고 그 결정에 따라 산출한다. Phase 0의 핵심 산출은 "코드"가 아니라 **전달 방식 결정(delivery manifest) + 그에 맞는 자산**이다.
+①이 작성한 **SPEC-000(공통 기능 명세)과 SPEC-OPS-000(운영 명세: 배포·CI/CD·형상관리·관측성)**, 그리고 `ops-stack.md`(도구 결정)를 받아, **각 요건을 어떤 방식으로 전달할지 먼저 명세화**하고 그 결정에 따라 산출한다. Phase 0의 핵심 산출은 "코드"가 아니라 **전달 방식 결정(delivery manifest) + 그에 맞는 자산**이다.
+
+> **운영 요건(SPEC-OPS-000):** CI 파이프라인·Dockerfile/Helm·관측성 SDK(Phoenix/Langfuse) 주입은 대개 표준이라 **모드 B**(완성 코드 주입), 배포 타깃별 차이(k8s vs 온프렘 등)는 **모드 A** 가이드로 보강한다. 도구 선택은 `ops-stack.md`를 따른다.
 
 ### 공통 기능 전달 방식 — 2가지 모드
 
@@ -52,11 +54,11 @@
 ### 흐름
 
 ```
-input/harness/ 에서 SPEC-000.md(①이 작성한 명세) 수신
+input/harness/ 에서 SPEC-000.md + SPEC-OPS-000.md(①이 작성한 명세) + ops-stack.md(도구 결정) 수신
   │
   ▼
-/speckit.specify  SPEC-000 scope 확인 + ★ 기능별 전달 모드(A/B) 결정
-                  → baseline-delivery-manifest.yaml 작성 (기능 → mode:A|B + 사유)
+/speckit.specify  SPEC-000·SPEC-OPS-000 scope 확인 + ★ 요건별 전달 모드(A/B) 결정
+                  → baseline-delivery-manifest.yaml 작성 (기능·운영요건 → mode:A|B + 사유)
   │
   ├─[mode B 기능]──────────────────────────────────────────┐
   │  /speckit.plan → /speckit.tasks(test-first) →            │
@@ -123,8 +125,9 @@ PACK-X 수신 (input/spec-pack/PACK-X/)
   │
   ▼
 /speckit.plan
-  - Data Model + ERD (도메인 전체, 한 번에)
-  - API 설계 (endpoint, request/response)
+  - Data Model + ERD — ②의 ENT-*.yaml/EXT-*.yaml 계약에서 *파생* (물리 타입·테이블·인덱스·FK 결정)
+    ※ 새 엔티티를 발명하지 않는다. 계약에 없는 데이터가 필요하면 Change Order로 ②에 요청
+  - API 설계 (endpoint, request/response) — EXT- 계약은 어댑터로 구현
   - BL 복잡 노트(complexity:high) → bl-analyst subagent 호출
   - frontend wiring 계획 (shell_ref 기준, 어느 컴포넌트에 무엇을 연결할지)
   │
@@ -169,11 +172,22 @@ integration 브랜치 머지 → PR
 ## Phase γ — Integration & NFR
 
 ```
-E2E 시나리오 (여러 팩에 걸친 플로우)
-  → subagent: code-reviewer 전체 검토
-  → NFR 처리 (성능·동시성·보안·감사)
-  → 배포 준비
+② model_repo/journeys/JRN-*.yaml (여러 팩/화면에 걸친 여정) 수신
+  │
+  ▼
+E2E 구현 — JRN-* 1개 → Playwright(+BDD) E2E 스펙 1개
+  - 각 step → 거치는 화면 action의 acceptance(Gherkin) 재사용 (새 시나리오 발명 금지)
+  - 커밋: [E2E/JRN-…] (commit-convention.md)
+  - 추적: JRN- → SCR/action → e2e-test → commit
+  │
+  ▼
+subagent: code-reviewer 전체 검토
+NFR 처리 (성능·동시성·보안·감사)
+관측성 검증 (SPEC-OPS-000 OPS-OBS — Phoenix/Langfuse 트레이싱 동작 확인)
+배포 준비 (SPEC-OPS-000 OPS-CD — ops-stack.md 배포 타깃별)
 ```
+
+**E2E 원칙**: 시나리오의 출처는 ②의 `JRN-*` 계약이다. ③는 여정을 새로 정의하지 않고 Playwright로 *구현*만 한다. 도구(Playwright)·CI 연동은 `ops-stack.md`/SPEC-OPS-000을 따른다.
 
 ---
 
@@ -200,7 +214,7 @@ E2E 시나리오 (여러 팩에 걸친 플로우)
 |---|---|
 | `speckit.specify.md` | 팩 scope 확인·확정. 너무 크면 sub-pack 분할. open_items 처리 방향 결정. |
 | `speckit.scaffold.md` | **[Phase α 전용]** 전체 확정 screen model → 프론트엔드 shell 컴포넌트 일괄 생성 (①의 `frontend.framework`에서 확장자·구조 파생). |
-| `speckit.plan.md` | 도메인 Data Model, ERD, API 설계. complexity:high 노트 → bl-analyst 호출. |
+| `speckit.plan.md` | 도메인 Data Model·ERD·API 설계. **②의 ENT-/EXT- 계약에서 물리 설계 파생**(발명 금지). complexity:high 노트 → bl-analyst 호출. |
 | `speckit.tasks.md` | T### 태스크 목록 생성. test-first 정렬. [P] 병렬 마커. |
 | `speckit.implement.md` | T### 단위 TDD 구현 루프. test-author → red → green → refactor → commit. |
 
@@ -231,7 +245,8 @@ E2E 시나리오 (여러 팩에 걸친 플로우)
 | `bl-analyst.md` | complexity:high 노트를 분석해 decision table·state machine·worked examples 생성. speckit.plan 중 호출. |
 | `test-author.md` | actions의 acceptance(Gherkin) + worked examples에서 실패 테스트 먼저 생성. API·화면 2계층. speckit.implement 시작 시 호출. |
 | `code-reviewer.md` | DS 준수·보안·코딩 스타일·TDD 충족·스파인 ID·Change Order blast radius 검증. |
-| `spec-generator.md` | [②에서 호출] 확정 screen model → 수직 슬라이스 팩 분해. 이 레이어에서는 Change Order 재생성 시에만 사용. |
+
+> **팩 (재)생성은 ③에 없다.** confirmed 화면 → PACK-* 분해는 ②의 `spec-generator` 스킬 책임이다. Change Order가 `regenerate`로 판정되면 PO 재확정 → ②의 spec-generator가 해당 팩만 재발행 → ③가 소비한다. ③는 *판정(dismiss/amend/regenerate) + blast radius*까지만 수행한다(경계 원칙: ③는 새 계약을 만들지 않는다).
 
 ### Rules — 변경 없는 규칙 (hook·CI가 강제)
 
@@ -253,7 +268,7 @@ E2E 시나리오 (여러 팩에 걸친 플로우)
 ├── SPECKIT-HARNESS-INTEGRATION.md  # speckit ↔ 하네스 통합 가이드
 ├── input/
 │   ├── spec-pack/          # ②의 spec 팩 (PACK-X/ 단위)
-│   └── harness/            # ①의 .claude/(commands·skills·hooks·subagents·rules) + foundation(design-system·design-guide·design-pages) + SPEC-000 명세
+│   └── harness/            # ①의 .claude/(commands·skills·hooks·subagents·rules(ops-stack 포함)) + foundation(design-system·design-guide·design-pages) + SPEC-000·SPEC-OPS-000 명세
 ├── commands/
 │   ├── speckit.specify.md
 │   ├── speckit.scaffold.md  # Phase α 전용
@@ -275,8 +290,7 @@ E2E 시나리오 (여러 팩에 걸친 플로우)
 ├── subagents/
 │   ├── bl-analyst.md
 │   ├── test-author.md
-│   ├── code-reviewer.md
-│   └── spec-generator.md
+│   └── code-reviewer.md
 ├── rules/
 │   ├── gate-b-checklist.md
 │   ├── tdd-policy.md
@@ -291,7 +305,8 @@ E2E 시나리오 (여러 팩에 걸친 플로우)
         ├── backend/         # 백엔드(①의 tech-stack.md, 예: Spring Boot) — 테스트 green 코드 ([모드 B] baseline 구현 포함)
         ├── frontend/
         │   └── src/pages/   # Phase α shell → Phase β wiring 완료
-        └── specs/           # 동기화된 spec 팩
+        ├── e2e/             # [Phase γ] Playwright(+BDD) — JRN-* 여정 E2E
+        └── specs/           # 동기화된 spec 팩 (ENT-/EXT-/JRN- ref 포함)
 ```
 
 ---
@@ -300,10 +315,10 @@ E2E 시나리오 (여러 팩에 걸친 플로우)
 
 | 구분 | 무엇 | 출처/목적지 |
 |---|---|---|
-| **Input ← ①** | `.claude/` 하네스(commands/skills/hooks/subagents **+ rules**) + foundation(design-system·design-guide·design-pages, design token 포함) + **SPEC-000 명세(구현 아님)** + 빈 app_repo 골격 | `input/harness/` |
-| **Input ← ②** | spec 팩 (screens yaml_ref·render_ref·pinned_contract / scope / actions+acceptance / notes verbatim / open_items) | `input/spec-pack/` |
-| **Output (Phase 0)** | `baseline-delivery-manifest.yaml`(기능별 A/B 결정) + [B] baseline 구현 코드·테스트 + [A] `baseline-guides/` 가이드 스킬 | `output/app_repo/` |
+| **Input ← ①** | `.claude/` 하네스(commands/skills/hooks/subagents **+ rules(ops-stack 포함)**) + foundation(design-system·design-guide·design-pages, design token 포함) + **SPEC-000·SPEC-OPS-000 명세(구현 아님)** + 빈 app_repo 골격 | `input/harness/` |
+| **Input ← ②** | spec 팩 (screens yaml_ref·render_ref·pinned_contract / scope / **데이터 계약 ENT-/EXT- ref** / actions+acceptance / notes verbatim / **여정 JRN- ref** / open_items) | `input/spec-pack/` |
+| **Output (Phase 0)** | `baseline-delivery-manifest.yaml`(기능·운영요건별 A/B 결정) + [B] baseline·ops 구현 코드·테스트(CI·트레이싱 등) + [A] `baseline-guides/` 가이드 스킬 | `output/app_repo/` |
 | **Output** | `app_repo/` — 테스트 green 코드 + 스파인 ID 커밋 히스토리 | `output/app_repo/` |
-| **Output → ②** | Change Order 판정 결과 (dismiss/amend/regenerate + re-pin 버전) | model_repo spec 보드 반영 |
+| **Output → ②** | Change Order 판정 결과 (dismiss/amend/regenerate). 별도 ② 스킬 없이 PO가 기존 Gate A로 재확정 → spec-generator 재발행 | model_repo spec 보드 반영 |
 
 **추적 그래프**: `SCR → CMP → REQ → acceptance → PACK → task → test → commit`

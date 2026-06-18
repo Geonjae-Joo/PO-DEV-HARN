@@ -3,10 +3,11 @@
 Hook: commit-spine-id.py
 트리거: commit 직전 (pre-commit / commit-msg)
 목적:  커밋 메시지에 스파인 ID가 포함됐는지 검증한다.
-       형식: [<PACK|SPEC|MOD>/<task>] 요약 (REQ-...)  |  [SCAFFOLD] ...  |  [CO/<판정>] ...
+       형식: [<PACK|SPEC|MOD>/<task>] 요약 (REQ-...)  |  [SCAFFOLD] ...  |  [CO/<판정>] ...  |  [E2E/JRN-...] ...
        PACK-  도메인 spec 팩 (②가 발행, ③ 도메인 구현 단위)
-       SPEC-  플랫폼/baseline spec (예: SPEC-000)
+       SPEC-  플랫폼/baseline spec (예: SPEC-000, SPEC-OPS-000)
        MOD    모듈 단위 변경
+       E2E    화면 간 여정(JRN-) Playwright E2E (③ Phase γ)
 종료코드: 0 = 통과, 1 = 차단
 정책: rules/commit-convention.md
 """
@@ -19,6 +20,8 @@ import re
 SPEC_RE = re.compile(r"^\[(PACK|SPEC|MOD)-?[A-Z0-9-]*\/T\d+\]")
 SCAFFOLD_RE = re.compile(r"^\[SCAFFOLD\]")
 CO_RE = re.compile(r"^\[CO\/(dismiss|amend|regenerate)\]")
+# [E2E/JRN-ORDER-REFUND] ... — 화면 간 여정 Playwright E2E (③ Phase γ). JRN-가 스파인 ID 역할.
+E2E_RE = re.compile(r"^\[E2E\/JRN-[A-Z0-9-]+\]")
 # spec-kit SDD 산출물(spec/plan/tasks 등) 자동 커밋 예외.
 # 이 커밋들은 코드가 아니라 명세 문서이며 아직 T###/REQ-가 없으므로 면제한다.
 # git-config.yml의 auto_commit 메시지가 이 형식을 사용한다: [spec-kit/<stage>] ...
@@ -49,6 +52,10 @@ def main() -> int:
 
     if CO_RE.match(first):
         print("[commit-spine-id] PASS (change-order)")
+        return 0
+
+    if E2E_RE.match(first):
+        print("[commit-spine-id] PASS (e2e journey)")
         return 0
 
     if SPECKIT_RE.match(first):

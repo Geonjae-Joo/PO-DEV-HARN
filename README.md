@@ -30,10 +30,10 @@
         │  │   design-system · specs                           │   │
         │  └────────────────────────────────────────────────┘   │
         └──────────────────────────────┬───────────────────────┘
-                                       │ Change Order
-                                       │ (dismiss/amend/regenerate)
+                                       │ Change Order (③ 판정)
+                                       │ dismiss/amend/regenerate
                                        ▼
-                                 ② model_repo 반영
+                          ② 기존 Gate A로 재확정 → 재발행(re-pin)
 ```
 
 세 레이어가 만드는 산출물은 모두 **스파인 ID로 연결**되어 화면→요구사항→팩→task→test→commit까지 끝까지 추적된다. 화면 model(②)이 단일 진실원이고, 코드(③)와 렌더 HTML은 그로부터 파생된다.
@@ -47,9 +47,9 @@
 | **한 줄 정의** | 디자인·규칙·골격 준비 | 화면·요구사항을 계약으로 정의 | 계약을 코드로 구현 |
 | **주체** | 개발 리드/운영자 | PO (도메인 전문가) | 개발자 (VSCode + Claude Code) |
 | **주기** | 프로젝트당 1회 | 화면마다 반복 | spec 팩마다 반복 |
-| **만드는 것** | foundation 자산 + 규칙 + 빈 골격 | screen model 계약(PACK-*) | 테스트 green 코드(app_repo) |
-| **절대 안 하는 것** | baseline 코드 구현 | 코드 작성 | 새 계약/규칙 정의 |
-| **핵심 산출** | design-guide·design-pages·SPEC-000 명세 | confirmed screen model + PACK-* 팩 | `app_repo` + 스파인 ID 커밋 |
+| **만드는 것** | foundation 자산 + 규칙 + 빈 골격 | screen model + 데이터·여정 계약(PACK-*/ENT-/EXT-/JRN-) | 테스트 green 코드(app_repo) |
+| **절대 안 하는 것** | baseline·ops 코드 구현 | 코드 작성 | 새 계약/규칙 정의 |
+| **핵심 산출** | design-guide·design-pages·SPEC-000·SPEC-OPS-000 명세 | confirmed screen model + PACK-* 팩(+ENT-/EXT-/JRN-) | `app_repo` + 스파인 ID 커밋 |
 | **상세 문서** | [01-PREREQUISITE/README.md](01-PREREQUISITE/README.md) | [02-PO-DEV-CHAT/README.md](02-PO-DEV-CHAT/README.md) | [03-AI-WEB-DEV/README.md](03-AI-WEB-DEV/README.md) |
 
 ---
@@ -77,15 +77,20 @@
 | `SCR-` | screen (화면) | ② |
 | `CMP-` | component (화면 내 컴포넌트) | ② |
 | `REQ-` | requirement (요구사항) | ② |
+| `ENT-` | entity (개념 데이터 엔티티 계약) | ② |
+| `EXT-` | external system (외부 연동 계약) | ② |
 | `NOTE-` | PO 자유 노트 (verbatim) | ② |
 | `NFR-` | 비기능 요구사항 | ② |
+| `JRN-` | journey (화면 간 사용자 여정 = E2E 시나리오) | ② |
 | `Q-` | HITL 질문 | ② |
 | `PRM-` | prompt log 항목 | ② |
 | `PACK-` | 도메인 spec 팩 (구현 단위) | ② |
-| `SPEC-` | 플랫폼/baseline spec (SPEC-000) | ① |
+| `SPEC-` | 플랫폼/baseline spec (SPEC-000, SPEC-OPS-000) | ① |
 | `T###` | task (구현 단위) | ③ |
 
 **추적 그래프:** `SCR → CMP → REQ → acceptance → PACK → task → test → commit`
+- 데이터: `REQ/action → ENT-/EXT- (② 계약) → data-model·ERD (③ 파생) → migration`
+- 여정(E2E): `JRN- (② navigate 집계) → SCR/action → Playwright e2e-test (③ Phase γ)`
 
 ---
 
@@ -95,12 +100,12 @@
 
 PO 작업과 개발이 시작되기 전에 **디자인 자산·규칙·앱 골격을 1회 준비**한다. "빈 흰 캔버스" 문제를 없애는 것이 목적 — PO에게 백지를 주는 대신, 허용집합(design-guide)·페이지 템플릿(design-page)·불변 규칙(constitution)·ID 체계를 상류에서 못 박아 이후 단계가 그 틀 **안에서만** 움직이게 한다.
 
-**워크플로우**: 사용자가 기존 DS를 `input/`에 투입 → `design-guide.md` 작성(허용집합 원본) → `design-page-builder` 스킬로 빈 페이지 템플릿(DP-*) 생성 → rules·SPEC-000 명세 확정 → 빈 `app_repo` 스캐폴드.
+**워크플로우**: 사용자가 기존 DS를 `input/`에 투입 → `design-guide.md` 작성(허용집합 원본) → `design-page-builder` 스킬로 빈 페이지 템플릿(DP-*) 생성 → rules(ops-stack 포함)·SPEC-000·SPEC-OPS-000 명세 확정 → 빈 `app_repo` 스캐폴드.
 
-**핵심 자산**: `design-page-builder` 스킬(+전용 `design-page-lint.py`), 저장 이벤트 훅 `ds-guide-validate.py`, 공유 규칙 4종(constitution/spine-ids/tech-stack/ds-closure).
+**핵심 자산**: `design-page-builder` 스킬(+전용 `design-page-lint.py`), 저장 이벤트 훅 `ds-guide-validate.py`, 공유 규칙 5종(constitution/spine-ids/tech-stack/ds-closure/ops-stack).
 
-**산출물**: `foundation/`(design-system·design-guide·design-pages) + SPEC-000 명세 + `.claude` 하네스 골격(rules 포함) + 빈 `app_repo`.
-**baseline 코드는 만들지 않는다** — 무엇이 공통 기능인지 *명세*까지만, 구현은 ③ Phase 0.
+**산출물**: `foundation/`(design-system·design-guide·design-pages) + SPEC-000 명세 + **SPEC-OPS-000 명세(배포·CI/CD·관측성)** + `.claude` 하네스 골격(rules 포함) + 빈 `app_repo`.
+**baseline·ops 코드는 만들지 않는다** — 무엇이 공통 기능/운영 요건인지 *명세*까지만, 구현은 ③ Phase 0.
 
 ### ② PO-DEV-CHAT — 화면·요구사항 정의
 
@@ -122,9 +127,9 @@ spec-generator              confirmed 화면 → 도메인 단위 PACK-* 팩 발
 
 **상태 머신**: `draft → layout_confirmed → actions_in_progress → review → confirmed`
 
-**핵심 자산**: 6개 스킬(layout-recommend·action-interview·note-intake·sufficiency-check·gate-a-check·spec-generator), 저장 이벤트 훅 2종(schema-validate·lint-L1-L4), 공유 규칙(screen-model-schema-v2 외).
+**핵심 자산**: 9개 스킬(layout-recommend·action-interview·note-intake·**entity-intake**·**external-intake**·**journey-map**·sufficiency-check·gate-a-check·spec-generator), 저장 이벤트 훅 2종(schema-validate·lint-L1-L4), 공유 규칙(screen-model-schema-v2·data-contract-schema·journey-schema 외).
 
-**산출물**: `model_repo/`(screens SCR-*.yaml 단일 원본 + renders 파생 HTML + specs PACK-* 팩 + link-manifest).
+**산출물**: `model_repo/`(screens SCR-*.yaml 단일 원본 + **entities ENT-*.yaml + externals EXT-*.yaml + journeys JRN-*.yaml** + renders 파생 HTML + specs PACK-* 팩 + link-manifest).
 
 ### ③ AI-WEB-DEV — 개발
 
@@ -134,10 +139,10 @@ spec-generator              confirmed 화면 → 도메인 단위 PACK-* 팩 발
 
 | Phase | 이름 | 하는 일 | 주기 |
 |---|---|---|---|
-| **0** | SPEC-000 Baseline | SPEC-000 명세 수신 → 공통 기능별 **전달 모드(A/B) 명세화** → 그에 맞춰 산출 | 1회 |
+| **0** | SPEC-000·SPEC-OPS-000 Baseline | SPEC-000·SPEC-OPS-000 명세 수신 → 공통 기능·운영(배포/CI·CD/관측성) 전달 모드(A/B) 명세화 → 그에 맞춰 산출 | 1회 |
 | **α** | Layout Scaffold | confirmed screen model 전체 → React shell 일괄 생성 (layout만, wiring 없음) | 1회 |
-| **β** | Spec Pack Iteration | 팩 단위 backend + frontend wiring, T### TDD 루프 | 팩마다 |
-| **γ** | Integration & NFR | E2E·성능·동시성·보안 | 배포 전 |
+| **β** | Spec Pack Iteration | 팩 단위 backend + frontend wiring, T### TDD 루프. ②의 ENT-/EXT- 계약 → data-model·ERD 파생 | 팩마다 |
+| **γ** | Integration & NFR | ②의 JRN-* 여정 → Playwright(+BDD) E2E + 성능·동시성·보안·관측성 검증 | 배포 전 |
 
 **Phase 0의 핵심 — 공통 기능 전달 2모드**: 로그인·SSO·RBAC 등 각 공통 기능에 대해 둘 중 하나를 지정한다.
 
@@ -145,7 +150,7 @@ spec-generator              confirmed 화면 → 도메인 단위 PACK-* 팩 발
 - **모드 B (직접 코드 주입)**: *완성 코드*를 통째로 app_repo에 구현(테스트 green). 변형 불필요한 기능(로그인/SSO 모듈, JWT 필터, RBAC 엔티티) → Phase β는 호출만.
 - 판정 한 줄: **"프로젝트마다 변형되나?"** → 예면 A, 아니면 B. 결과는 `baseline-delivery-manifest.yaml`에 기록.
 
-**핵심 자산**: 5개 speckit 명령(specify·scaffold·plan·tasks·implement), 스킬(design-system-usage·coding-style·complex-bl·baseline-guides), 생애주기 훅(tdd-gate·commit-spine-id·manifest-sync — `hooks.json` 선언 + `install-git-hooks.sh/.ps1`로 `.git/hooks/`에 설치), 서브에이전트(bl-analyst·test-author·code-reviewer·spec-generator), 규칙(gate-b-checklist·tdd-policy·commit-convention·change-order-policy).
+**핵심 자산**: 5개 speckit 명령(specify·scaffold·plan·tasks·implement), 스킬(design-system-usage·coding-style·complex-bl·baseline-guides), 생애주기 훅(tdd-gate·commit-spine-id·manifest-sync — `hooks.json` 선언 + `install-git-hooks.sh/.ps1`로 `.git/hooks/`에 설치), 서브에이전트(bl-analyst·test-author·code-reviewer), 규칙(gate-b-checklist·tdd-policy·commit-convention·change-order-policy).
 
 **산출물**: `app_repo/` — 테스트 green 코드 + 스파인 ID 커밋 히스토리.
 
@@ -158,9 +163,9 @@ spec-generator              confirmed 화면 → 도메인 단위 PACK-* 팩 발
 | 인계 | 무엇이 넘어가나 | 출발 → 도착 |
 |---|---|---|
 | **① → ②** | foundation 전체: design-system(token) + design-guide.md + design-pages(DP-*) | `①/output/foundation/` → `②/input/` |
-| **① → ③** | `.claude` 하네스(command·skill·hook·subagent **+ rules**) + foundation 전체 + **SPEC-000 명세**(구현 아님) + 빈 app_repo 골격 | `①/output/` → `③/input/harness/` |
-| **② → ③** | **PACK-\* spec 팩**: screens(yaml_ref·render_ref·pinned_contract) + scope(REQ-/CMP-) + actions+acceptance 원문 + notes(verbatim·complexity) + open_items | `②/model_repo/specs/` → `③/input/spec-pack/` |
-| **③ → ②** | **Change Order** 판정 결과: dismiss / amend / regenerate + re-pin 버전 | `③` → `②/model_repo` 반영 |
+| **① → ③** | `.claude` 하네스(command·skill·hook·subagent **+ rules**) + foundation 전체 + **SPEC-000·SPEC-OPS-000 명세**(구현 아님) + 빈 app_repo 골격 | `①/output/` → `③/input/harness/` |
+| **② → ③** | **PACK-\* spec 팩**: screens(yaml_ref·render_ref·pinned_contract) + scope(REQ-/CMP-) + **데이터 계약(ENT-/EXT- ref)** + actions+acceptance 원문 + notes(verbatim·complexity) + **여정(JRN- ref)** + open_items | `②/model_repo/specs/` → `③/input/spec-pack/` |
+| **③ → ②** | **Change Order** 판정 결과: dismiss / amend / regenerate. 별도 ② 스킬 없이 PO가 기존 Gate A 흐름으로 재확정 → spec-generator가 버전 +1로 재발행 | `③` 변경요청 → `②/model_repo` 재확정·re-pin |
 
 **경계 원칙 요약**: *명세*는 ①, *계약(정의)*은 ②, *구현(코드)*은 ③. 어느 레이어도 하류의 책임을 침범하지 않는다. 특히 SPEC-000은 ①이 명세하고 ③ Phase 0가 구현하며, rules는 ①이 작성해 `.claude`로 번들되어 ②·③의 hook이 강제한다.
 
@@ -203,4 +208,6 @@ PO-DEV-Harn/
 | 디자인 자산·규칙·골격 준비 방법 | `01-PREREQUISITE/README.md` |
 | PO 화면 정의 4-Stage HITL·상태 머신 | `02-PO-DEV-CHAT/README.md` |
 | screen model schema v2 전문 | `02-PO-DEV-CHAT/rules/screen-model-schema-v2.md` |
+| 데이터 계약(ENT-/EXT-)·여정(JRN-) 스키마 | `02-PO-DEV-CHAT/rules/data-contract-schema.md`, `journey-schema.md` |
+| 배포·CI/CD·관측성 명세·스택 결정 | `01-PREREQUISITE/output/foundation/platform-baseline/SPEC-OPS-000.md`, `rules/ops-stack.md` |
 | SDD+TDD 개발 4-Phase·baseline 전달 모드 | `03-AI-WEB-DEV/README.md` |

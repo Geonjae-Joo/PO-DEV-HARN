@@ -13,7 +13,7 @@ pin·freeze 위에서 개발자가 판정한다.
 4. **개발자 판정** — 셋 중 하나:
    - **dismiss** — 외관/무관 변경 → 코드 변경 없이 **re-pin**만.
    - **amend** — 경미한 수정 → 제자리 수정 후 re-pin.
-   - **regenerate** — 중대한 변경 → **해당 팩만** 재생성 + 새 Gate B.
+   - **regenerate** — 중대한 변경 → **해당 팩만** 재생성 + 새 Gate B. 재생성 자체는 ②의 `spec-generator` 스킬이 수행한다(PO 재확정 → 팩 재발행). ③는 *판정*까지만 — 새 계약을 만들지 않는다.
 5. **TDD 백스톱** — acceptance 변경이면 기존 테스트가 깨진다(breaking). REQ 추가만이면 새 task(additive).
 
 ## 원칙

@@ -17,7 +17,13 @@ disable-model-invocation: false
 - 생성하는 `spec.md`는 하니스판 `spec-template.md`를 따른다: Pack Scope(SCR-/CMP-/REQ-, pinned_contract) · SCR-별 acceptance(②의 Gherkin **원문 그대로**) · notes(verbatim·complexity) · open_items.
 - 권위: `.specify/memory/constitution.md`(NON-NEGOTIABLE). scope를 벗어난 요구는 Change Order로 ②에 반환.
 - 크기 가드레일: 예상 T### 15개 초과/무관 Entity 3개↑ → sub-pack 분할. 다음 단계: `/speckit-clarify`.
-- 상세: `03-AI-WEB-DEV/commands/speckit.specify.md`.
+- **하니스 절차 요약**:
+  1. 팩 scope(`input/spec-pack/PACK-X/spec.yaml`) 확인 — 묶인 화면(SCR-*), REQ-/CMP- 범위, actor·entity 경계
+  2. 크기 판정 — 예상 T### 15개 초과/무관 Entity 3개↑ → sub-pack 재분할
+  3. `open_items` deferred 항목 처리 방향 결정 (이번 팩 처리 / 보류 / ②에 질의)
+  4. `pinned_contract` 확인 — 각 화면이 고정된 계약 버전(version·hash·git_ref) 위에서 작업하는지 Pin
+  5. 확정된 scope를 `/speckit-plan`으로 넘긴다
+  - Phase 0 전용: SPEC-000 공통 기능에 전달 모드(A/B) 지정 → `app_repo/baseline-delivery-manifest.yaml` 기록
 
 ## User Input
 

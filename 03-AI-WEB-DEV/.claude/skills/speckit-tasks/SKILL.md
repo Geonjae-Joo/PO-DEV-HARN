@@ -18,7 +18,13 @@ disable-model-invocation: false
 - **순서**: backend(Entity→Service→Controller) → frontend wiring. 독립 태스크에 `[P]`.
 - **스파인 ID**: 각 태스크에 `SPEC-/PACK-/REQ-/CMP-` 연결(추적성). 하니스판 `tasks-template.md` 사용.
 - 예외: Phase α scaffold만 `[SCAFFOLD]`로 테스트 면제. 다음: `/speckit-analyze`(Gate B) → Gate B approve → `/speckit-implement`.
-- 상세: `03-AI-WEB-DEV/commands/speckit.tasks.md`.
+- **하니스 절차 요약**:
+  1. **태스크 채번** — 구현 단위마다 `T###` ID 부여 (스파인 ID, `rules/spine-ids.md` 채번 규칙 준수)
+  2. **test-first 정렬** — 각 구현 태스크 **앞에** 대응 테스트 태스크 배치 (red 먼저)
+  3. **순서** — backend(Entity→Service→Controller) → frontend wiring
+  4. **[P] 병렬 마커** — 서로 의존 없는 독립 태스크에 `[P]` 표시
+  5. **추적 연결** — 각 태스크에 `SPEC-/PACK-/REQ-/CMP-` 연결 (acceptance까지 추적 가능)
+  - 예시: `T001 [P] OrderEntity 테스트 작성 (REQ-ORDER-LIST.001)` / `T002 OrderEntity 구현`
 
 ## User Input
 

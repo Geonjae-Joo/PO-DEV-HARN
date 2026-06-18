@@ -18,7 +18,12 @@ disable-model-invocation: false
 - **2계층 테스트**(API + 화면), DS·코딩 컨벤션 준수. complexity:high는 bl-analyst 산출(decision table/state machine)을 테스트로 변환해 구현.
 - **강제(git pre-commit/commit-msg hook)**: `tdd-gate.py`(테스트 없음/실패 차단, `[SCAFFOLD]`만 면제) + `commit-spine-id.py`(메시지 스파인 ID 필수). 커밋 `[<PACK|SPEC|MOD>/T###] 요약 (REQ-…)`. 구조/행위 **분리 커밋**(Tidy First).
 - **불변**: layout 구조 변경 금지(shell_ref 위 wiring만). acceptance가 바뀌면 기존 테스트가 깨지는 게 정상 → **Change Order**(amend/regenerate, `change-order-policy.md`). 팩 완료 후 **code-reviewer** subagent 검토.
-- 상세 절차: `03-AI-WEB-DEV/commands/speckit.implement.md` · `rules/tdd-policy.md`.
+- **하니스 절차 요약 (T### 1개 기준)**:
+  1. **테스트 먼저 (subagent: test-author)** — acceptance(Gherkin) + worked examples에서 실패 테스트 먼저 생성. 2계층: API 레벨 + 화면 레벨
+  2. **RED → GREEN → REFACTOR** — red: 테스트 실패 확인 → green: 통과 최소 구현 → refactor: 중복 제거
+  3. **hook**: `tdd-gate.py`(테스트 없음/실패 시 commit 차단) + `commit-spine-id.py`(메시지 스파인 ID 자동 포함)
+  4. 팩의 모든 T### 완료 → **code-reviewer** subagent로 DS 준수·보안·스타일·TDD·스파인 ID 검토 → PR
+  - 상세 TDD 정책: `rules/tdd-policy.md`
 
 ## User Input
 

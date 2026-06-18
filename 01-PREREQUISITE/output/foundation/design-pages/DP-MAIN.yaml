@@ -1,0 +1,25 @@
+id: DP-MAIN
+archetype: main
+description: 목록/상세/폼 화면이 공통으로 쓰는 기본 페이지 골격
+slots:
+  - header
+  - header-actions
+  - filter
+  - content
+  - footer
+components:
+  - ref: FilterBar
+    slot: filter
+    order: 1
+  - ref: DataTable
+    slot: content
+    order: 1
+  - ref: Button
+    slot: header-actions
+    order: 1
+  - ref: Badge
+    slot: content
+    order: 2
+  - ref: Tabs
+    slot: content
+    order: 3

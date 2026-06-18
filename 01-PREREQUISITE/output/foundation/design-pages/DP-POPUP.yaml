@@ -1,0 +1,26 @@
+id: DP-POPUP
+archetype: popup
+description: 확인/입력용 모달 팝업 골격
+slots:
+  - dialog-header
+  - dialog-body
+  - dialog-footer
+components:
+  - ref: Dialog
+    slot: dialog-body
+    order: 1
+  - ref: Input
+    slot: dialog-body
+    order: 2
+  - ref: Select
+    slot: dialog-body
+    order: 3
+  - ref: DatePicker
+    slot: dialog-body
+    order: 4
+  - ref: Button
+    slot: dialog-footer
+    order: 1
+  - ref: Label
+    slot: dialog-body
+    order: 5

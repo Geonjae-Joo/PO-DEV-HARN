@@ -18,8 +18,10 @@ inputs:
   - foundation/design-pages/          # DP-* 템플릿
   - model_repo/screens/SCR-*.yaml     # layout·position·props 원본
 references:
-  - ../../rules/tech-stack.md
-  - ../../rules/ds-closure.md
+  # 아래 둘은 ①에서 작성되어 핸드오프 시 ③로 번들된다(③ 자체 산출물 아님).
+  # ds-closure(불변 규칙)는 .claude/rules/로, tech-stack(프로젝트 결정)은 foundation으로 번들된다.
+  - ../../../input/harness/foundation/decisions/tech-stack.md  # 원본: 01-PREREQUISITE/output/foundation/decisions/tech-stack.md
+  - ../../rules/ds-closure.md   # 원본: 01-PREREQUISITE/.claude/rules/ds-closure.md (①에서 번들)
 spine-ids: [SCR-, CMP-, DP-]
 ---
 

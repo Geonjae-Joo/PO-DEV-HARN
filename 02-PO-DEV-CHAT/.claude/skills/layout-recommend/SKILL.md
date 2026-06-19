@@ -27,12 +27,12 @@ spine-ids: [SCR-, CMP-, DP-]
 
 ## 1. Layout 추천
 
-**입력:** PO의 자연어 컴포넌트 나열 + `foundation/design-system/design-guide.md` + `foundation/design-pages/`
+**입력:** PO의 자연어 컴포넌트 나열 + `foundation/design-system/ds-allowlist.md` + `foundation/design-pages/`
 
 **프로세스:**
 
 1. PO 발화에서 컴포넌트 의도 추출
-2. `design-guide.md` 허용 목록에서 가장 적합한 DS 컴포넌트 매핑
+2. `ds-allowlist.md` 허용 목록에서 가장 적합한 DS 컴포넌트 매핑
    - 1:1 대응이 명확하면 바로 매핑
    - 애매하면 후보 2~3개 제시, PO 선택
    - DS 밖 컴포넌트는 절대 발명하지 않음 — 가장 근접한 DS 컴포넌트를 대안 제안

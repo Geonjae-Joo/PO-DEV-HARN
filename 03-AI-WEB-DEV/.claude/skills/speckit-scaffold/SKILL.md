@@ -14,7 +14,7 @@ disable-model-invocation: false
 
 - **Phase α 전용**: Phase 0(SPEC-000 baseline) 완료 후, `model_repo/screens/`에 `status: confirmed` screen model이 1개 이상 존재할 때만 실행.
 - **목적**: 모든 화면이 layout만 있는 상태(데이터 없음, 이벤트 없음)로 먼저 존재하게 만든다. 이후 각 spec pack의 `/speckit-implement`가 이 shell에 wiring만 추가.
-- **프레임워크 불가정**: shell 생성 대상 프레임워크·파일 구조는 `.claude/rules/tech-stack.md`를 따른다. 아래 절차의 예시는 React + Vite + TS 기준이며, 다른 프레임워크 선택 시 동일 원칙을 해당 확장자·구조로 적용.
+- **프레임워크 불가정**: shell 생성 대상 프레임워크·파일 구조는 `foundation/decisions/tech-stack.md`를 따른다. 아래 절차의 예시는 React + Vite + TS 기준이며, 다른 프레임워크 선택 시 동일 원칙을 해당 확장자·구조로 적용.
 - **불변**: scaffold commit에서 `tdd-gate.py` hook skip(`[SCAFFOLD]` prefix). `commit-spine-id.py` hook은 실행.
 
 ## User Input
@@ -48,11 +48,11 @@ foundation/design-pages/         (DP-MAIN, DP-POPUP 등 템플릿)
 2. 각 screen model에 대해:
    a. `screen.template.page`로 design page 템플릿 선택.
    b. `layout[]`의 컴포넌트를 `position.slot + position.order` 순서대로 배치.
-   c. DS 컴포넌트를 `.claude/rules/tech-stack.md`의 `frontend.framework` 컴포넌트로 매핑 (`skills/design-system-usage` 참조).
+   c. DS 컴포넌트를 `foundation/decisions/tech-stack.md`의 `frontend.framework` 컴포넌트로 매핑 (`skills/design-system-usage` 참조).
    d. `props`를 그대로 컴포넌트 props로 전달 (placeholder 데이터).
    e. `meta.interactive: true` 컴포넌트에 빈 이벤트 핸들러 stub 추가 (예: React `onClick={() => {}}`).
    f. 데이터 fetch 없음, API 호출 없음, 상태 관리 없음.
-3. 라우팅 연결: `.claude/rules/tech-stack.md`의 프레임워크 라우터에 모든 화면의 Route 등록.
+3. 라우팅 연결: `foundation/decisions/tech-stack.md`의 프레임워크 라우터에 모든 화면의 Route 등록.
 4. `app_repo/specs/PACK-*/spec.yaml`의 `screens[].shell_ref` 업데이트.
 
 ### 산출물 (React + Vite 예시)

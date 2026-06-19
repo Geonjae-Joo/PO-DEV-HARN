@@ -18,7 +18,7 @@ screen model(YAML)이 단일 원본(single source of truth)이다. HTML 렌더·
 
 ### II. Design System 폐쇄 (Closure)
 
-DS(`foundation/design-system/design-guide.md`) 허용 집합 밖의 컴포넌트는 model·코드에 들어올 수 없다. 새 컴포넌트 발명 금지. lint L1과 code-reviewer가 강제한다. 스타일은 design token 그대로 사용, 하드코딩 금지.
+DS(`foundation/design-system/ds-allowlist.md`) 허용 집합 밖의 컴포넌트는 model·코드에 들어올 수 없다. 새 컴포넌트 발명 금지. lint L1과 code-reviewer가 강제한다. 스타일은 design token 그대로 사용, 하드코딩 금지.
 
 ### III. 스파인 ID 추적 (NON-NEGOTIABLE)
 
@@ -50,7 +50,7 @@ DS(`foundation/design-system/design-guide.md`) 허용 집합 밖의 컴포넌트
 
 - *명세*는 ①, *계약(정의)*은 ②, *구현(코드)*은 ③의 책임이다. ③는 **새 계약·요구사항·규칙을 만들지 않는다**.
 - ③의 입력: `input/spec-pack/PACK-*/spec.yaml`(② 발행) + `input/harness/`의 SPEC-000 명세 + ①의 tech-stack·design 자산. spec-kit의 feature spec(`spec.md`)은 이 spec-pack에서 파생되어야 하며, 새 화면·REQ를 발명하지 않는다.
-- 프레임워크·테스트 스택은 **프로젝트마다 다르다**. 특정 스택을 가정하지 않는다. ① PREREQUISITE에서 `/speckit-constitution`으로 정의해 `01-PREREQUISITE/.claude/rules/tech-stack.md`에 핀으로 박는다(§Technology Stack). 모든 스택 의존 값(테스트 러너·`HARNESS_TEST_CMD`·shell 확장자 등)은 그 핀을 참조한다.
+- 프레임워크·테스트 스택은 **프로젝트마다 다르다**. 특정 스택을 가정하지 않는다. ① PREREQUISITE에서 `/speckit-constitution`으로 정의해 `01-PREREQUISITE/output/foundation/decisions/tech-stack.md`에 핀으로 박는다(§Technology Stack). 모든 스택 의존 값(테스트 러너·`HARNESS_TEST_CMD`·shell 확장자 등)은 그 핀을 참조한다.
 
 ## Development Workflow (spec-kit ↔ harness 매핑)
 
@@ -69,7 +69,7 @@ DS(`foundation/design-system/design-guide.md`) 허용 집합 밖의 컴포넌트
 
 ## Technology Stack (per-project — `/speckit-constitution`이 정의)
 
-기술 스택은 하니스에 고정돼 있지 않다. **프로젝트마다 ① PREREQUISITE에서 `/speckit-constitution`으로 결정**하고 `01-PREREQUISITE/.claude/rules/tech-stack.md`에 핀으로 기록한다. ②·③의 모든 산출물(scaffold·plan·tasks·test·tdd-gate)은 이 핀만 참조하며 특정 프레임워크를 가정하지 않는다.
+기술 스택은 하니스에 고정돼 있지 않다. **프로젝트마다 ① PREREQUISITE에서 `/speckit-constitution`으로 결정**하고 `01-PREREQUISITE/output/foundation/decisions/tech-stack.md`에 핀으로 기록한다. ②·③의 모든 산출물(scaffold·plan·tasks·test·tdd-gate)은 이 핀만 참조하며 특정 프레임워크를 가정하지 않는다.
 
 | 슬롯 | 무엇 | 예시(고정값 아님) |
 |---|---|---|
@@ -81,7 +81,7 @@ DS(`foundation/design-system/design-guide.md`) 허용 집합 밖의 컴포넌트
 | `HARNESS_TEST_CMD` | tdd-gate가 실행할 2계층 테스트 명령 | 위 러너에서 파생 |
 | shell.ext / structure | scaffold가 만들 shell 확장자·구조 | frontend.framework에서 파생 (예: `.tsx`/`src/pages`) |
 
-상세 슬롯·기입 규칙: `01-PREREQUISITE/.claude/rules/tech-stack.md`. 변경은 `/speckit-constitution` 재실행으로만(전 레이어 동기화).
+상세 슬롯·기입 규칙: `01-PREREQUISITE/output/foundation/decisions/tech-stack.md`. 변경은 `/speckit-constitution` 재실행으로만(전 레이어 동기화).
 
 ## Governance
 

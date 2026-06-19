@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 ds-guide-validate.py
-Trigger: design-guide.md 저장 시
+Trigger: ds-allowlist.md 저장 시
 역할: DS 컴포넌트 목록의 형식·필수 필드 검증
 """
 
@@ -9,7 +9,7 @@ import sys
 import re
 from pathlib import Path
 
-DESIGN_GUIDE_PATH = Path("output/foundation/design-system/design-guide.md")
+DESIGN_GUIDE_PATH = Path("output/foundation/design-system/ds-allowlist.md")
 
 REQUIRED_FIELDS = ["name", "props", "description"]
 OPTIONAL_FIELDS = ["usage", "variants", "slots"]
@@ -20,7 +20,7 @@ WARNINGS = []
 
 def parse_components(text: str) -> list[dict]:
     """
-    design-guide.md에서 컴포넌트 블록을 파싱한다.
+    ds-allowlist.md에서 컴포넌트 블록을 파싱한다.
     예상 형식:
     ## ComponentName
     - **description**: ...
@@ -62,18 +62,18 @@ def validate_component(cmp: dict) -> None:
 
 def main() -> int:
     if not DESIGN_GUIDE_PATH.exists():
-        ERRORS.append(f"design-guide.md 파일이 없습니다: {DESIGN_GUIDE_PATH}")
+        ERRORS.append(f"ds-allowlist.md 파일이 없습니다: {DESIGN_GUIDE_PATH}")
         report()
         return 1
 
     text = DESIGN_GUIDE_PATH.read_text(encoding="utf-8")
 
-    if "# Design Guide" not in text and "# design guide" not in text.lower():
-        WARNINGS.append("design-guide.md에 '# Design Guide' 헤더가 없습니다.")
+    if "# DS Allowlist" not in text and "# ds allowlist" not in text.lower():
+        WARNINGS.append("ds-allowlist.md에 '# DS Allowlist' 헤더가 없습니다.")
 
     components = parse_components(text)
     if not components:
-        ERRORS.append("design-guide.md에서 컴포넌트 정의(## ComponentName)를 찾을 수 없습니다.")
+        ERRORS.append("ds-allowlist.md에서 컴포넌트 정의(## ComponentName)를 찾을 수 없습니다.")
     else:
         print(f"✓ 컴포넌트 {len(components)}개 발견: {[c['name'] for c in components]}")
         for cmp in components:
@@ -89,7 +89,7 @@ def report() -> None:
     for w in WARNINGS:
         print(f"WARN:  {w}", file=sys.stderr)
     if not ERRORS and not WARNINGS:
-        print("✓ design-guide.md 검증 통과")
+        print("✓ ds-allowlist.md 검증 통과")
     elif not ERRORS:
         print(f"✓ 검증 통과 (경고 {len(WARNINGS)}개)")
     else:

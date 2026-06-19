@@ -6,17 +6,17 @@
         "hooks": [
           {
             "type": "command",
-            "if": "Write(output/foundation/design-system/design-guide.md)",
+            "if": "Write(output/foundation/design-system/ds-allowlist.md)",
             "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/ds-guide-validate.py",
             "args": ["${tool_input.file_path}"],
-            "statusMessage": "design-guide.md 형식 검증 중..."
+            "statusMessage": "ds-allowlist.md 형식 검증 중..."
           },
           {
             "type": "command",
-            "if": "Edit(output/foundation/design-system/design-guide.md)",
+            "if": "Edit(output/foundation/design-system/ds-allowlist.md)",
             "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/ds-guide-validate.py",
             "args": ["${tool_input.file_path}"],
-            "statusMessage": "design-guide.md 형식 검증 중..."
+            "statusMessage": "ds-allowlist.md 형식 검증 중..."
           }
         ]
       }

@@ -14,7 +14,9 @@ version: 1.0.0
 owner: 개발자 (VSCode + Claude Code)
 tags: [coding-style, spring-boot, react, typescript, convention]
 references:
-  - ../../rules/tech-stack.md
+  # tech-stack.md는 ①의 프로젝트 결정(규칙 아님)으로, 핸드오프 시 foundation으로 번들된다.
+  # 원본: 01-PREREQUISITE/output/foundation/decisions/tech-stack.md
+  - ../../../input/harness/foundation/decisions/tech-stack.md
   - ../../rules/commit-convention.md
 ---
 

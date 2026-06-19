@@ -41,15 +41,15 @@ def item_kind(item: dict) -> str:
     return (item.get("source") or {}).get("kind", "ds") or "ds"
 
 
-# ── design-guide.md 파서 ──────────────────────────────────────────────────────
+# ── ds-allowlist.md 파서 ──────────────────────────────────────────────────────
 
 def load_allowed_components(guide_path: Path) -> dict:
     """
-    design-guide.md 파싱 → {ComponentName: {props: [...], slots: [...]}}
+    ds-allowlist.md 파싱 → {ComponentName: {props: [...], slots: [...]}}
     ## ComponentName 블록 구조를 파싱.
     """
     if not guide_path.exists():
-        l1_err(f"design-guide.md 없음: {guide_path} — lint 불가")
+        l1_err(f"ds-allowlist.md 없음: {guide_path} — lint 불가")
         return {}
     text = guide_path.read_text(encoding="utf-8")
     allowed = {}
@@ -68,7 +68,13 @@ def load_allowed_components(guide_path: Path) -> dict:
         if current:
             pm = re.match(r"-\s+\*?\*?props?\*?\*?:\s*(.+)", line, re.IGNORECASE)
             if pm:
-                current_props.extend([p.strip() for p in pm.group(1).split(",")])
+                # ds-allowlist.md props는 "label: string, variant: a|b" 형식 →
+                # 검증은 prop "이름"(키)만 비교하므로 ':' 앞 토큰만 추출한다.
+                # (key:type 전체 문자열을 저장하면 화면모델 props 키와 절대 매칭되지 않아 오탐 발생)
+                for p in pm.group(1).split(","):
+                    name = p.split(":")[0].strip()
+                    if name:
+                        current_props.append(name)
             sm = re.match(r"-\s+\*?\*?slots?\*?\*?:\s*(.+)", line, re.IGNORECASE)
             if sm:
                 current_slots.extend([s.strip() for s in sm.group(1).split(",")])
@@ -103,12 +109,12 @@ def load_design_page_slots(start: Path) -> set:
 
 def lint_L1_ds_closure(layout: list, allowed: dict, dp_slots: set, screen_id: str):
     """
-    L1-1: source.kind=='ds' 인 모든 component(ref)가 design-guide.md 허용 목록 안에 있어야 함
+    L1-1: source.kind=='ds' 인 모든 component(ref)가 ds-allowlist.md 허용 목록 안에 있어야 함
     L1-2: props가 허용 목록의 props 안에 있어야 함 (허용 props가 정의된 경우)
     L1-3: source.kind=='page-region' 인 경우 ref가 design-page 슬롯 안에 있어야 함
     """
     if not allowed:
-        l1_err(f"{screen_id}: design-guide.md 로드 실패 — DS 준수 검증 불가")
+        l1_err(f"{screen_id}: ds-allowlist.md 로드 실패 — DS 준수 검증 불가")
         return
     for item in layout:
         cid  = item.get("id")
@@ -124,7 +130,7 @@ def lint_L1_ds_closure(layout: list, allowed: dict, dp_slots: set, screen_id: st
             continue
         # kind == 'ds'
         if ref not in allowed:
-            l1_err(f"{screen_id}.{cid}: DS 밖 컴포넌트 '{ref}' — design-guide.md에 없음")
+            l1_err(f"{screen_id}.{cid}: DS 밖 컴포넌트 '{ref}' — ds-allowlist.md에 없음")
             continue
         # props 검증 (허용 props가 정의된 경우만)
         item_props = set((item.get("props") or {}).keys())
@@ -230,15 +236,15 @@ def lint_L4_coverage(layout: list, actions: list, screen_id: str):
 # ── main ──────────────────────────────────────────────────────────────────────
 
 def find_guide(start: Path) -> Path:
-    """상위 디렉터리를 탐색해서 design-guide.md 위치 찾기"""
+    """상위 디렉터리를 탐색해서 ds-allowlist.md 위치 찾기"""
     for parent in [start] + list(start.parents)[:5]:
-        g = parent / "foundation" / "design-system" / "design-guide.md"
+        g = parent / "foundation" / "design-system" / "ds-allowlist.md"
         if g.exists():
             return g
-        g2 = parent / "input" / "design-system" / "design-guide.md"
+        g2 = parent / "input" / "design-system" / "ds-allowlist.md"
         if g2.exists():
             return g2
-    return Path("design-guide.md")   # fallback (current dir)
+    return Path("ds-allowlist.md")   # fallback (current dir)
 
 
 def load_all_screen_ids(screens_dir: Path) -> set:
@@ -270,7 +276,7 @@ def main():
         print("[lint-L1-L4] 검증할 파일 없음", file=sys.stderr)
         sys.exit(0)
 
-    # design-guide.md + design page 슬롯 로드 (첫 번째 파일 경로 기준)
+    # ds-allowlist.md + design page 슬롯 로드 (첫 번째 파일 경로 기준)
     guide_path = find_guide(targets[0].parent)
     allowed    = load_allowed_components(guide_path)
     dp_slots   = load_design_page_slots(targets[0].parent)

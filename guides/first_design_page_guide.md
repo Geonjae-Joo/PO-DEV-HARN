@@ -1,6 +1,6 @@
 # 첫 Design Page 만들기 가이드 (DP-MAIN)
 
-> design-guide.md(허용 컴포넌트 18개)가 검증 통과한 상태에서, **첫 번째 디자인 페이지**를 만드는 방법을 단계별로 설명합니다.
+> ds-allowlist.md(허용 컴포넌트 29개)가 검증 통과한 상태에서, **첫 번째 디자인 페이지**를 만드는 방법을 단계별로 설명합니다.
 > 디자인 페이지를 처음 만들어 보는 분 기준으로, "무엇을·왜·어떻게"를 모두 적었습니다.
 
 ---
@@ -9,8 +9,8 @@
 
 이 가이드는 아래가 끝난 다음 단계입니다.
 
-- ✅ `input/design-system/ds-source/` 에 shadcn 컴포넌트 소스 18개
-- ✅ `output/foundation/design-system/design-guide.md` 에 컴포넌트 18개 매니페스트 (검증 통과)
+- ✅ `input/design-system/ds-source/` 에 shadcn 컴포넌트 소스 29개
+- ✅ `output/foundation/design-system/ds-allowlist.md` 에 컴포넌트 29개 매니페스트 (검증 통과)
 
 지금부터 만들 것:
 
@@ -20,12 +20,12 @@
 
 ## 1. 개념: 디자인 페이지(Design Page)가 뭔가요?
 
-앞서 만든 **design-guide.md**가 "쓸 수 있는 부품 목록"이라면,
+앞서 만든 **ds-allowlist.md**가 "쓸 수 있는 부품 목록"이라면,
 **디자인 페이지(DP)**는 그 부품들을 **"화면 어디에 배치할지 미리 정해둔 빈 틀(레이아웃 골격)"** 입니다.
 
 비유하자면:
 
-- **design-guide.md** = 레고 부품 상자 (어떤 블록이 있는지)
+- **ds-allowlist.md** = 레고 부품 상자 (어떤 블록이 있는지)
 - **DP-\*.yaml** = 조립 설명서의 "기본 뼈대" (머리·몸통·다리 자리를 잡아둔 것)
 - **화면(SCR-\*, ②단계)** = 그 뼈대에 실제 데이터·동작을 채운 완성품
 
@@ -87,11 +87,11 @@ DP를 만들려면 두 단어만 이해하면 됩니다.
 
 1. **`id` 필수** — `DP-` 로 시작하는 대문자 ID (예: `DP-MAIN`). 형식: `DP-` + 영대문자/숫자, 하이픈으로 단어 연결.
 2. **`slots` 명시** — 슬롯 목록이 있어야 함 (없으면 경고).
-3. **`ref` 는 닫힌 집합 안에서만** — 모든 컴포넌트의 `ref` 가 design-guide.md의 18개 이름 중 하나여야 함. 밖이면 **DS 폐쇄 위반 ERROR**.
+3. **`ref` 는 닫힌 집합 안에서만** — 모든 컴포넌트의 `ref` 가 ds-allowlist.md의 29개 이름 중 하나여야 함. 밖이면 **DS 폐쇄 위반 ERROR**.
 4. **raw HTML 금지** — `<div>`, `<span>` 같은 태그를 직접 쓰면 ERROR. 부품은 오직 DS 컴포넌트 `ref` 로만.
 5. **데이터·이벤트 없음** — 빈 골격 유지.
 
-> 사용 가능한 ref 목록(우리 design-guide.md 기준): `Button`, `Input`, `Select`, `Table`, `Dialog`, `Card`, `Badge`, `Tabs`, `Checkbox`, `DropdownMenu`, `Form`, `Label`, `Sonner`, `Calendar`, `Popover`, `DataTable`, `FilterBar`, `DatePicker`
+> 사용 가능한 ref 목록(우리 ds-allowlist.md 기준, 29개): `Button`, `Input`, `Select`, `Table`, `Dialog`, `Card`, `Badge`, `Tabs`, `Checkbox`, `DropdownMenu`, `Form`, `Label`, `Sonner`, `Calendar`, `Popover`, `DataTable`, `FilterBar`, `DatePicker`, `Header`, `NavMenu`, `Avatar`, `Separator`, `Tooltip`, `Skeleton`, `Switch`, `Textarea`, `Alert`, `Breadcrumb`, `Sheet`
 
 ---
 
@@ -156,7 +156,7 @@ components:
 저장 후 프로젝트 루트에서 린터를 돌립니다.
 
 ```bash
-python 01-PREREQUISITE/skills/design-page-builder/scripts/design-page-lint.py
+python 01-PREREQUISITE/.claude/skills/design-page-builder/scripts/design-page-lint.py
 ```
 
 성공 시 출력:
@@ -172,7 +172,7 @@ python 01-PREREQUISITE/skills/design-page-builder/scripts/design-page-lint.py
 
 | 메시지 | 원인 | 해결 |
 |---|---|---|
-| `DS 폐쇄 위반: 'XXX'` | `ref` 이름이 허용 목록 밖 | 오타 확인, 또는 design-guide.md에 없는 부품 → 11장(이전 가이드) 절차로 정식 추가 |
+| `DS 폐쇄 위반: 'XXX'` | `ref` 이름이 허용 목록 밖 | 오타 확인, 또는 ds-allowlist.md에 없는 부품 → 11장(이전 가이드) 절차로 정식 추가 |
 | `id='...' DP-* 형식이 아닙니다` | id 형식 오류 | `DP-MAIN` 처럼 대문자+하이픈 |
 | `raw HTML 직접 작성 금지` | yaml에 `<태그>` 가 들어감 | DS 컴포넌트 ref 로만 구성 |
 | `'slots' 정의 없음` (경고) | slots 누락 | slots 목록 추가 |
@@ -183,7 +183,7 @@ python 01-PREREQUISITE/skills/design-page-builder/scripts/design-page-lint.py
 
 위 형식을 직접 손으로 써도 되지만, 이 작업은 원래 **`design-page-builder` 스킬**이 담당합니다. 형식을 이해했으니 이제 스킬에게 맡기면 더 안전하고 빠릅니다. 예를 들어 이렇게 요청하면 됩니다.
 
-> "design-guide.md의 허용 집합만 써서 DP-MAIN(main 아키타입, 슬롯 header/header-actions/content/footer) 템플릿을 만들어줘. 만든 뒤 design-page-lint.py로 검증까지 해줘."
+> "ds-allowlist.md의 허용 집합만 써서 DP-MAIN(main 아키타입, 슬롯 header/header-actions/content/footer) 템플릿을 만들어줘. 만든 뒤 design-page-lint.py로 검증까지 해줘."
 
 스킬은 ① 허용 집합을 로드하고 → ② 슬롯을 구성하고 → ③ `DP-` ID를 부여하고 → ④ 저장 후 린터를 자동 호출합니다. 직접 작성한 결과와 스킬 결과를 비교해 보면 형식 감을 빠르게 익힐 수 있습니다.
 
@@ -221,7 +221,7 @@ components:
 저장 후 다시 린터를 돌리면 두 페이지를 함께 검사합니다.
 
 ```bash
-python 01-PREREQUISITE/skills/design-page-builder/scripts/design-page-lint.py
+python 01-PREREQUISITE/.claude/skills/design-page-builder/scripts/design-page-lint.py
 # ✓ design page 2개 검사: ['DP-MAIN.yaml', 'DP-POPUP.yaml']
 ```
 
@@ -244,11 +244,11 @@ screen:
     slots_used: [content, header-actions]   # ← DP-MAIN의 슬롯 중 사용할 것
 layout:
   - id: CMP-ORDER-LIST.filterbar
-    source: { kind: ds, ref: FilterBar }    # ← design-guide.md 허용 목록의 부품
+    source: { kind: ds, ref: FilterBar }    # ← ds-allowlist.md 허용 목록의 부품
     position: { slot: content, order: 1 }    # ← DP-MAIN의 슬롯에 배치
 ```
 
-즉, ②의 화면은 (1) **우리 DP의 슬롯**에 (2) **우리 design-guide.md의 부품**을 배치합니다. 두 가지 모두 ①에서 우리가 정한 범위 안에서만 가능하고, 벗어나면 ②의 저장 단계 lint에서 막힙니다. **그래서 ①을 잘 만들면 그 뒤가 자동으로 규칙을 지키게 됩니다.**
+즉, ②의 화면은 (1) **우리 DP의 슬롯**에 (2) **우리 ds-allowlist.md의 부품**을 배치합니다. 두 가지 모두 ①에서 우리가 정한 범위 안에서만 가능하고, 벗어나면 ②의 저장 단계 lint에서 막힙니다. **그래서 ①을 잘 만들면 그 뒤가 자동으로 규칙을 지키게 됩니다.**
 
 ---
 
@@ -257,7 +257,7 @@ layout:
 - [ ] `output/foundation/design-pages/DP-MAIN.yaml` 생성
 - [ ] `id` 가 `DP-MAIN`, `archetype: main`
 - [ ] `slots` 목록 명시
-- [ ] 모든 `ref` 가 design-guide.md 18개 안에 있음
+- [ ] 모든 `ref` 가 ds-allowlist.md 29개 안에 있음
 - [ ] raw HTML 태그 없음, 데이터·이벤트 없음
 - [ ] `design-page-lint.py` **통과**
 - [ ] (DoD) `DP-POPUP.yaml` 도 동일하게 작성·통과
@@ -272,4 +272,4 @@ layout:
 - 검증기: `01-PREREQUISITE/.claude/skills/design-page-builder/scripts/design-page-lint.py`
 - DS 폐쇄 규칙: `01-PREREQUISITE/.claude/rules/ds-closure.md`
 - 화면 모델 스키마(②에서 DP를 어떻게 쓰는지): `02-PO-DEV-CHAT/.claude/rules/screen-model-schema-v2.md`
-- 허용 컴포넌트 목록: `output/foundation/design-system/design-guide.md`
+- 허용 컴포넌트 목록: `output/foundation/design-system/ds-allowlist.md`

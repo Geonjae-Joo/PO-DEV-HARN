@@ -268,7 +268,7 @@ NFR 처리 (성능·동시성·보안·감사)
 ├── SPECKIT-HARNESS-INTEGRATION.md  # speckit ↔ 하네스 통합 가이드
 ├── input/
 │   ├── spec-pack/          # ②의 spec 팩 (PACK-X/ 단위)
-│   └── harness/            # ①의 .claude/(commands·skills·hooks·agents·rules(ops-stack 포함)) + foundation(design-system·design-guide·design-pages) + SPEC-000·SPEC-OPS-000 명세
+│   └── harness/            # ①의 .claude/(commands·skills·hooks·agents·불변 rules: constitution·spine-ids·ds-closure) + foundation(design-system·design-pages·decisions: tech-stack·ops-stack·link-manifest) + SPEC-000·SPEC-OPS-000 명세
 ├── commands/
 │   ├── speckit.specify.md
 │   ├── speckit.scaffold.md  # Phase α 전용
@@ -317,7 +317,7 @@ NFR 처리 (성능·동시성·보안·감사)
 
 | 구분 | 무엇 | 출처/목적지 |
 |---|---|---|
-| **Input ← ①** | `.claude/` 하네스(commands/skills/hooks/agents **+ rules(ops-stack 포함)**) + foundation(design-system·design-guide·design-pages, design token 포함) + **SPEC-000·SPEC-OPS-000 명세(구현 아님)** + 빈 app_repo 골격 | `input/harness/` |
+| **Input ← ①** | `.claude/` 하네스(commands/skills/hooks/agents **+ 불변 rules: constitution·spine-ids·ds-closure**) + foundation(design-system·design-pages·**decisions: tech-stack·ops-stack**·link-manifest, design token 포함) + **SPEC-000·SPEC-OPS-000 명세(구현 아님)** + 빈 app_repo 골격 | `input/harness/` |
 | **Input ← ②** | spec 팩 (screens yaml_ref·render_ref·pinned_contract / scope / **데이터 계약 ENT-/EXT- ref** / actions+acceptance / notes verbatim / **여정 JRN- ref** / open_items) | `input/spec-pack/` |
 | **Output (Phase 0)** | `baseline-delivery-manifest.yaml`(기능·운영요건별 A/B 결정) + [B] baseline·ops 구현 코드·테스트(CI·트레이싱 등) + [A] `baseline-guides/` 가이드 스킬 | `output/app_repo/` |
 | **Output** | `app_repo/` — 테스트 green 코드 + 스파인 ID 커밋 히스토리 | `output/app_repo/` |

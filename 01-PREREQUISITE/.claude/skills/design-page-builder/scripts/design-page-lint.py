@@ -10,7 +10,7 @@ import re
 import yaml
 from pathlib import Path
 
-DESIGN_GUIDE_PATH = Path("output/foundation/design-system/design-guide.md")
+DESIGN_GUIDE_PATH = Path("output/foundation/design-system/ds-allowlist.md")
 DESIGN_PAGES_DIR = Path("output/foundation/design-pages")
 DP_ID_PATTERN = re.compile(r"^DP-[A-Z0-9]+(-[A-Z0-9]+)*$")
 
@@ -19,9 +19,9 @@ WARNINGS = []
 
 
 def load_allowed_components(guide_path: Path) -> set[str]:
-    """design-guide.md에서 허용된 컴포넌트 이름 목록을 추출한다."""
+    """ds-allowlist.md에서 허용된 컴포넌트 이름 목록을 추출한다."""
     if not guide_path.exists():
-        ERRORS.append(f"design-guide.md 없음: {guide_path}. ds-guide-validate.py 먼저 실행하세요.")
+        ERRORS.append(f"ds-allowlist.md 없음: {guide_path}. ds-guide-validate.py 먼저 실행하세요.")
         return set()
     text = guide_path.read_text(encoding="utf-8")
     return {m.group(1).strip() for m in re.finditer(r"^## (.+)$", text, re.MULTILINE)}
@@ -54,7 +54,7 @@ def lint_page(page_path: Path, allowed: set[str]) -> None:
             continue
         if allowed and ref not in allowed:
             ERRORS.append(
-                f"[{page_path.name}] DS 폐쇄 위반: '{ref}'는 design-guide.md 허용 목록에 없습니다. "
+                f"[{page_path.name}] DS 폐쇄 위반: '{ref}'는 ds-allowlist.md 허용 목록에 없습니다. "
                 f"허용: {sorted(allowed)}"
             )
 

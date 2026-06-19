@@ -33,7 +33,7 @@ PO: "주문 테이블, 기간 필터, 엑셀 버튼..."
   │
   ▼
 Stage 1  layout-recommend
-  ① DS 매핑 — design-guide.md 허용 목록에서 컴포넌트 매핑 (DS 밖 발명 금지)
+  ① DS 매핑 — ds-allowlist.md 허용 목록에서 컴포넌트 매핑 (DS 밖 발명 금지)
   ② design page 선택 — archetype에 맞는 템플릿 (DP-MAIN, DP-POPUP …)
   ③ screen model YAML 초안 생성 → PO patch 수정 루프 (초안 이후에도 이 스킬 담당)
   ④ 저장 시마다 자동:
@@ -143,7 +143,7 @@ hooks는 `.claude/settings.json`의 `hooks` 키에 Claude Code hook 이벤트로
 
 | 구분 | 무엇 | 비고 |
 |---|---|---|
-| **Input ← ①** | design-system (design token 포함) + design-guide.md + design-pages 템플릿 | layout 추천의 허용 집합 + lint 기준 |
+| **Input ← ①** | design-system (design token 포함) + ds-allowlist.md + design-pages 템플릿 + link-manifest.yaml(등록 인덱스) | layout 추천의 허용 집합 + lint 기준 |
 | **Output → ③** | **PACK-* spec 팩** — screens(yaml_ref·render_ref·pinned_contract) + scope(REQ-/CMP-) + **데이터 계약(ENT-/EXT- ref)** + actions+acceptance 원문 + notes 원문(verbatim·complexity) + **여정(JRN- ref)** + open_items | spec-pack-schema.md 참조 |
 | **Input ← ③** | Change Order 판정 결과 (dismiss/amend/regenerate). **별도 change-order 스킬 없이** PO가 기존 Gate A 흐름으로 재확정 → spec-generator가 버전 +1 재발행(re-pin) | model_repo에 반영 |
 

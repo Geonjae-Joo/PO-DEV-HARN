@@ -13,15 +13,16 @@
    (새로 만들지 않음 — 기존 DS 그대로 투입, design token 포함)
      └ hook: ds-guide-validate.py 자동 실행 (목록·필수 필드 검증)
 
-2. design-guide.md 작성 — DS 컴포넌트 목록(이름·props·용도) + 사용 가이드
+2. ds-allowlist.md 작성 — DS 컴포넌트 목록(이름·props·용도) + 사용 가이드
    (②의 layout-recommend skill과 lint가 이 목록을 허용 집합 원본으로 참조)
 
 3. skill: design-page-builder 실행
    DS를 조합해 빈 페이지 템플릿 생성 (DP-MAIN, DP-POPUP 등)
      └ 스킬이 생성 직후 scripts/design-page-lint.py 직접 호출 (DS 폐쇄 검증 — DS 밖 컴포넌트 사용 시 error)
 
-4. rules 확정
-   constitution.md / spine-ids.md / tech-stack.md / ops-stack.md / ds-closure.md
+4. rules(불변 규칙) 확정 + 프로젝트 결정 핀
+   rules: constitution.md / spine-ids.md / ds-closure.md   (.claude/rules/ — 불변)
+   decisions: tech-stack.md / ops-stack.md                  (output/foundation/decisions/ — 프로젝트별 결정)
    + platform-baseline 명세: SPEC-000.md(공통 기능) / SPEC-OPS-000.md(배포·CI/CD·관측성)
 
 5. 빈 app_repo 스캐폴드
@@ -29,7 +30,7 @@
    (★ baseline·ops 코드를 여기서 구현하지 않는다 — ③ Phase 0가 전달 모드 A/B를 정해 구현/가이드 산출)
 ```
 
-**DoD**: design-guide.md 존재(lint 참조 가능) / design page 최소 1세트(DP-MAIN + DP-POPUP) / constitution에 하드 룰 명시 / SPEC-000·SPEC-OPS-000 **명세**가 스파인 편입 / ops-stack 결정 확정 / rules가 .claude 골격에 번들 / 스파인 ID 규칙 고정.
+**DoD**: ds-allowlist.md 존재(lint 참조 가능) / design page 최소 1세트(DP-MAIN + DP-POPUP) / constitution에 하드 룰 명시 / SPEC-000·SPEC-OPS-000 **명세**가 스파인 편입 / tech-stack·ops-stack 결정 확정(output/foundation/decisions/) / 불변 rules(constitution·spine-ids·ds-closure)가 .claude 골격에 번들 / 스파인 ID 규칙 고정.
 
 ---
 
@@ -41,7 +42,7 @@
 
 | 파일 | 설명 |
 |---|---|
-| `skills/design-page-builder/SKILL.md` | DS 컴포넌트를 조합해 빈 페이지 템플릿(DP-MAIN, DP-POPUP 등)을 생성하는 방법. 허용 집합(design-guide.md) 참조, DS 밖 컴포넌트 발명 금지. 각 템플릿에 스파인 ID(DP-*) 부여. |
+| `skills/design-page-builder/SKILL.md` | DS 컴포넌트를 조합해 빈 페이지 템플릿(DP-MAIN, DP-POPUP 등)을 생성하는 방법. 허용 집합(ds-allowlist.md) 참조, DS 밖 컴포넌트 발명 금지. 각 템플릿에 스파인 ID(DP-*) 부여. |
 | `skills/design-page-builder/scripts/design-page-lint.py` | **design-page-builder 전용.** 스킬이 템플릿 생성 직후 Bash로 직접 호출하는 출력 검증기. 템플릿이 DS 허용 집합 안의 컴포넌트만 쓰는지 + 스파인 ID(DP-*) 존재 검증. (②의 `sufficiency-check.py`·`gate-a-check.py`가 스킬 폴더에 중첩된 것과 동일 패턴.) |
 
 ### Hooks — 저장 이벤트 자동 실행 (AI 없는 결정론)
@@ -50,19 +51,26 @@ hooks는 `.claude/settings.json`의 `hooks` 키에 Claude Code hook 이벤트로
 
 | 스크립트 | 이벤트 | 트리거 | 설명 |
 |---|---|---|---|
-| `.claude/hooks/ds-guide-validate.py` | `PreToolUse(Write\|Edit)` | design-guide.md 저장 시 | 컴포넌트 목록 형식, 필수 필드(이름·props·용도) 존재 여부 검증. design-guide.md는 사람이 직접 작성·편집하는 공유 foundation 아티팩트(②의 허용 집합 원본)이므로 저장 이벤트 훅으로 최상위에 둔다. (②의 `on-save-schema-validate.py`와 동일 위상.) |
+| `.claude/hooks/ds-guide-validate.py` | `PreToolUse(Write\|Edit)` | ds-allowlist.md 저장 시 | 컴포넌트 목록 형식, 필수 필드(이름·props·용도) 존재 여부 검증. ds-allowlist.md는 사람이 직접 작성·편집하는 공유 foundation 아티팩트(②의 허용 집합 원본)이므로 저장 이벤트 훅으로 최상위에 둔다. (②의 `on-save-schema-validate.py`와 동일 위상.) |
 
-### Rules — 변경 없는 규칙 문서 (전 레이어 공유)
+### Rules — 변경 없는 불변 규칙 (전 레이어 공유)
 
-다섯 규칙 모두 **여러 레이어·스킬이 공유**하는 foundation 규칙이므로 `.claude/rules/`에 둔다 (단일 스킬 전용 규칙이 없음).
+세 규칙 모두 **여러 레이어·스킬이 공유**하는 불변 규칙이므로 `.claude/rules/`에 둔다 (단일 스킬 전용 규칙이 없음). **스택 결정(tech-stack·ops-stack)은 규칙이 아니라 프로젝트별 *결정*이므로 rules/가 아닌 `output/foundation/decisions/`에 둔다** (ds-allowlist.md가 foundation에 있는 것과 동일한 원칙 — project-scope 산출물).
 
 | 파일 | 설명 |
 |---|---|
 | `.claude/rules/constitution.md` | **전 레이어 공통 하드 룰.** screen model 단일 원본 / HTML 파생 뷰 저장 허용·직접 편집 금지 / DS 폐쇄 / 스파인 ID / optimistic locking / TDD / 커밋 규칙. |
 | `.claude/rules/spine-ids.md` | SCR-/CMP-/REQ-/ENT-/EXT-/NOTE-/NFR-/JRN-/SPEC-/T###/DP- 채번 규칙. 전 레이어 공통 적용. |
-| `.claude/rules/tech-stack.md` | **앱 스택의 단일 출처.** 백엔드·프론트엔드 스택을 ①에서 프로젝트별로 확정한다(고정값 아님). 현재 선택 예시: 백엔드 Spring Boot / 프론트엔드 React+Vite+TS+Tailwind+shadcn/ui. ②·③·스킬·훅이 이 파일을 따른다. 변경 시 DECISIONS.md 갱신. |
-| `.claude/rules/ops-stack.md` | **운영 스택의 단일 출처.** 형상관리(GitHub\|GitLab)·CI/CD·배포 타깃(k8s\|Docker\|온프렘)·관측성(Phoenix\|Langfuse) 결정을 프로젝트별로 확정(고정값 아님). SPEC-OPS-000 명세의 *도구 선택*에 해당. ③ Phase 0·γ가 따른다. |
 | `.claude/rules/ds-closure.md` | DS 집합 밖 컴포넌트를 screen model·design page에 추가하는 것을 금지하는 규칙 상세. ①의 design-page-lint + ②의 lint L1이 함께 강제 기준으로 참조. |
+
+### Decisions — 프로젝트별 스택 결정 (foundation 산출물)
+
+규칙이 아니라 **프로젝트마다 확정하는 결정**이므로 `output/foundation/decisions/`에 둔다. foundation의 일부로 ②·③에 핸드오프된다.
+
+| 파일 | 설명 |
+|---|---|
+| `output/foundation/decisions/tech-stack.md` | **앱 스택의 단일 출처.** 백엔드·프론트엔드 스택을 ①에서 프로젝트별로 확정한다(고정값 아님). 현재 선택 예시: 백엔드 Spring Boot / 프론트엔드 React+Vite+TS+Tailwind+shadcn/ui. ②·③·스킬·훅이 이 파일을 따른다. 변경 시 DECISIONS.md 갱신. |
+| `output/foundation/decisions/ops-stack.md` | **운영 스택의 단일 출처.** 형상관리(GitHub\|GitLab)·CI/CD·배포 타깃(k8s\|Docker\|온프렘)·관측성(Phoenix\|Langfuse) 결정을 프로젝트별로 확정(고정값 아님). SPEC-OPS-000 명세의 *도구 선택*에 해당. ③ Phase 0·γ가 따른다. |
 
 ---
 
@@ -82,24 +90,27 @@ hooks는 `.claude/settings.json`의 `hooks` 키에 Claude Code hook 이벤트로
 │   │       └── scripts/
 │   │           └── design-page-lint.py  # [스킬 전용] 템플릿 DS 폐쇄·스파인 ID 검증
 │   ├── hooks/
-│   │   └── ds-guide-validate.py    # [저장 이벤트 훅] design-guide.md 형식·목록 검증
-│   └── rules/
+│   │   └── ds-guide-validate.py    # [저장 이벤트 훅] ds-allowlist.md 형식·목록 검증
+│   └── rules/                      # 불변 규칙만 (스택 결정은 output/foundation/decisions/)
 │       ├── constitution.md         # 전 레이어 하드 룰 (단일 진실원 원칙 포함)
 │       ├── spine-ids.md            # 스파인 ID 채번 규칙
-│       ├── tech-stack.md           # 앱 기술스택 결정
-│       ├── ops-stack.md            # 운영 스택 결정 (SCM·CI/CD·배포·관측성)
 │       └── ds-closure.md           # DS 폐쇄 규칙 상세
 └── output/                         # [OUTPUT] ②·③로 흘러가는 산출물
     ├── foundation/
     │   ├── design-system/
-    │   │   └── design-guide.md     # DS 컴포넌트 목록 + 사용 가이드
+    │   │   └── ds-allowlist.md     # DS 컴포넌트 목록 + 사용 가이드
     │   │                           # (②의 허용 집합 원본, ③의 구현 참조)
     │   ├── design-pages/
     │   │   ├── DP-MAIN.yaml        # main page 템플릿 (헤더·사이드바·콘텐츠 슬롯)
     │   │   └── DP-POPUP.yaml       # 팝업/모달 페이지 템플릿
-    │   └── platform-baseline/
-    │       ├── SPEC-000.md         # 공통 기능 baseline (로그인/SSO/RBAC/admin)
-    │       └── SPEC-OPS-000.md     # 운영 baseline (배포·CI/CD·형상관리·관측성)
+    │   ├── platform-baseline/
+    │   │   ├── SPEC-000.md         # 공통 기능 baseline (로그인/SSO/RBAC/admin)
+    │   │   └── SPEC-OPS-000.md     # 운영 baseline (배포·CI/CD·형상관리·관측성)
+    │   ├── decisions/              # 프로젝트별 스택 결정 (규칙 아님)
+    │   │   ├── tech-stack.md       # 앱 기술스택 결정
+    │   │   └── ops-stack.md        # 운영 스택 결정 (SCM·CI/CD·배포·관측성)
+    │   └── link-manifest.yaml      # DS 허용 컴포넌트 + design page(DP-*) 등록 인덱스
+    │                               # (단일 출처는 ds-allowlist.md·design-pages/, 이 파일은 인덱스)
     └── app-repo-scaffold/
         └── .claude/                # ③ app_repo에 투입될 하네스 자산 골격
                                     # (skills/.claude/hooks/.claude/agents/.claude/rules)
@@ -112,7 +123,7 @@ hooks는 `.claude/settings.json`의 `hooks` 키에 Claude Code hook 이벤트로
 | 구분 | 무엇 | 목적지 |
 |---|---|---|
 | **Input** | 기존 design component + design token (사용자가 직접 저장) | `input/design-system/` |
-| **Output → ②** | foundation 전체: design-system(token 포함) + design-guide.md + design-pages 템플릿 | `output/foundation/` → ②의 `input/` |
-| **Output → ③** | `.claude/` 하네스 골격(commands/skills/hooks/subagents **+ rules(ops-stack 포함)**) + foundation 전체(design-system·design-guide·design-pages) + **SPEC-000·SPEC-OPS-000 명세**(구현은 ③ Phase 0) + 빈 app_repo 골격 | `output/app-repo-scaffold/`, `output/foundation/` |
+| **Output → ②** | foundation 전체: design-system(token 포함) + ds-allowlist.md + design-pages 템플릿 + link-manifest.yaml(등록 인덱스) | `output/foundation/` → ②의 `input/` |
+| **Output → ③** | `.claude/` 하네스 골격(commands/skills/hooks/subagents **+ 불변 rules: constitution·spine-ids·ds-closure**) + foundation 전체(design-system·design-pages·**decisions: tech-stack·ops-stack**·link-manifest) + **SPEC-000·SPEC-OPS-000 명세**(구현은 ③ Phase 0) + 빈 app_repo 골격 | `output/app-repo-scaffold/`, `output/foundation/` |
 
 design page 템플릿도 screen model과 동일 규칙 적용: **DS 컴포넌트만 사용 / 스파인 ID(DP-*) 부여 / raw HTML 직접 작성 금지.**

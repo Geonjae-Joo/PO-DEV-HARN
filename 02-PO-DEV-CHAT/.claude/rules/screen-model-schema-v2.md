@@ -43,7 +43,7 @@ layout:
   - id: CMP-ORDER-LIST.filterbar
     source:
       kind: ds              # ds | page-region
-      ref: FilterBar        # design-guide.md 허용 목록의 키 (밖이면 lint L1 error)
+      ref: FilterBar        # ds-allowlist.md 허용 목록의 키 (밖이면 lint L1 error)
       version: "1.2"
     position:
       slot: content         # design page 슬롯명

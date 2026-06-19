@@ -100,11 +100,11 @@
 
 PO 작업과 개발이 시작되기 전에 **디자인 자산·규칙·앱 골격을 1회 준비**한다. "빈 흰 캔버스" 문제를 없애는 것이 목적 — PO에게 백지를 주는 대신, 허용집합(design-guide)·페이지 템플릿(design-page)·불변 규칙(constitution)·ID 체계를 상류에서 못 박아 이후 단계가 그 틀 **안에서만** 움직이게 한다.
 
-**워크플로우**: 사용자가 기존 DS를 `input/`에 투입 → `design-guide.md` 작성(허용집합 원본) → `design-page-builder` 스킬로 빈 페이지 템플릿(DP-*) 생성 → rules(ops-stack 포함)·SPEC-000·SPEC-OPS-000 명세 확정 → 빈 `app_repo` 스캐폴드.
+**워크플로우**: 사용자가 기존 DS를 `input/`에 투입 → `ds-allowlist.md` 작성(허용집합 원본) → `design-page-builder` 스킬로 빈 페이지 템플릿(DP-*) 생성 → 불변 rules + 프로젝트 결정(tech-stack·ops-stack)·SPEC-000·SPEC-OPS-000 명세 확정 → 빈 `app_repo` 스캐폴드.
 
-**핵심 자산**: `design-page-builder` 스킬(+전용 `design-page-lint.py`), 저장 이벤트 훅 `ds-guide-validate.py`, 공유 규칙 5종(constitution/spine-ids/tech-stack/ds-closure/ops-stack).
+**핵심 자산**: `design-page-builder` 스킬(+전용 `design-page-lint.py`), 저장 이벤트 훅 `ds-guide-validate.py`, 불변 규칙 3종(constitution/spine-ids/ds-closure, `.claude/rules/`), 프로젝트 결정 2종(tech-stack/ops-stack, `output/foundation/decisions/`).
 
-**산출물**: `foundation/`(design-system·design-guide·design-pages) + SPEC-000 명세 + **SPEC-OPS-000 명세(배포·CI/CD·관측성)** + `.claude` 하네스 골격(rules 포함) + 빈 `app_repo`.
+**산출물**: `foundation/`(design-system·design-pages·**decisions: tech-stack·ops-stack**·link-manifest) + SPEC-000 명세 + **SPEC-OPS-000 명세(배포·CI/CD·관측성)** + `.claude` 하네스 골격(불변 rules 포함) + 빈 `app_repo`.
 **baseline·ops 코드는 만들지 않는다** — 무엇이 공통 기능/운영 요건인지 *명세*까지만, 구현은 ③ Phase 0.
 
 ### ② PO-DEV-CHAT — 화면·요구사항 정의
@@ -162,8 +162,8 @@ spec-generator              confirmed 화면 → 도메인 단위 PACK-* 팩 발
 
 | 인계 | 무엇이 넘어가나 | 출발 → 도착 |
 |---|---|---|
-| **① → ②** | foundation 전체: design-system(token) + design-guide.md + design-pages(DP-*) | `①/output/foundation/` → `②/input/` |
-| **① → ③** | `.claude` 하네스(command·skill·hook·subagent **+ rules**) + foundation 전체 + **SPEC-000·SPEC-OPS-000 명세**(구현 아님) + 빈 app_repo 골격 | `①/output/` → `③/input/harness/` |
+| **① → ②** | foundation 전체: design-system(token) + ds-allowlist.md + design-pages(DP-*) + link-manifest.yaml(등록 인덱스) | `①/output/foundation/` → `②/input/` |
+| **① → ③** | `.claude` 하네스(command·skill·hook·subagent **+ 불변 rules: constitution·spine-ids·ds-closure**) + foundation 전체(design-system·design-pages·**decisions: tech-stack·ops-stack**·link-manifest) + **SPEC-000·SPEC-OPS-000 명세**(구현 아님) + 빈 app_repo 골격 | `①/output/` → `③/input/harness/` |
 | **② → ③** | **PACK-\* spec 팩**: screens(yaml_ref·render_ref·pinned_contract) + scope(REQ-/CMP-) + **데이터 계약(ENT-/EXT- ref)** + actions+acceptance 원문 + notes(verbatim·complexity) + **여정(JRN- ref)** + open_items | `②/model_repo/specs/` → `③/input/spec-pack/` |
 | **③ → ②** | **Change Order** 판정 결과: dismiss / amend / regenerate. 별도 ② 스킬 없이 PO가 기존 Gate A 흐름으로 재확정 → spec-generator가 버전 +1로 재발행 | `③` 변경요청 → `②/model_repo` 재확정·re-pin |
 
@@ -209,5 +209,5 @@ PO-DEV-Harn/
 | PO 화면 정의 4-Stage HITL·상태 머신 | `02-PO-DEV-CHAT/README.md` |
 | screen model schema v2 전문 | `02-PO-DEV-CHAT/.claude/rules/screen-model-schema-v2.md` |
 | 데이터 계약(ENT-/EXT-)·여정(JRN-) 스키마 | `02-PO-DEV-CHAT/.claude/rules/data-contract-schema.md`, `journey-schema.md` |
-| 배포·CI/CD·관측성 명세·스택 결정 | `01-PREREQUISITE/output/foundation/platform-baseline/SPEC-OPS-000.md`, `.claude/rules/ops-stack.md` |
+| 배포·CI/CD·관측성 명세·스택 결정 | `01-PREREQUISITE/output/foundation/platform-baseline/SPEC-OPS-000.md`, `01-PREREQUISITE/output/foundation/decisions/ops-stack.md` |
 | SDD+TDD 개발 4-Phase·baseline 전달 모드 | `03-AI-WEB-DEV/README.md` |

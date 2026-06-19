@@ -11,7 +11,7 @@
 
 ## Technical Context (tech-stack 핀 고정)
 
-**Framework (pinned ← ①/tech-stack.md, 프로젝트별)**: [frontend … / backend … — ①의 `/speckit-constitution` 산출 그대로. 특정 스택 가정 금지]  
+**Framework (pinned ← ①/output/foundation/decisions/tech-stack.md, 프로젝트별)**: [frontend … / backend … — ①의 `/speckit-constitution` 산출 그대로. 특정 스택 가정 금지]  
 **Testing (2계층)**: API 레벨 [예: 백엔드 통합·계약 테스트] / 화면 레벨 [예: 컴포넌트 테스트 + 핵심 플로우 E2E]  
 **Storage**: [DB/스키마] **Target/Scale/Perf**: [NFR 반영 — concurrent_users·response_target]  
 **Project Type**: web (frontend + backend, 단일 `app_repo`)

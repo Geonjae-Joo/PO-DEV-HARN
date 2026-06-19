@@ -23,7 +23,6 @@
 | Excel 생성 | Apache POI or EasyExcel | 건수에 따라 선택 |
 | 테스트 | JUnit 5 + Mockito + Spring Boot Test | |
 | API 문서 | SpringDoc OpenAPI (Swagger UI) | |
-| 관측성 | Micrometer + Prometheus + Grafana | |
 
 ## Frontend
 
@@ -48,6 +47,8 @@
 | 코드 품질 | ESLint + Prettier (FE) / Checkstyle + SpotBugs (BE) |
 | 시크릿 | .env (로컬) / Vault or K8s Secret (운영) |
 
+> **관측성(Observability)은 이 파일이 아니라 `ops-stack.md`가 단일 출처다.** 대상 앱이 LLM 기반이므로 관측 1차 범위는 **LLM 트레이싱(Arize Phoenix \| Langfuse)** 이다. 앱 메트릭/인프라 관측은 현재 범위 밖(필요 시 `SPEC-OPS-000.md`에서 확장).
+
 ## Design System 연동
 
 - DS design token → CSS custom properties (`--color-primary`, `--spacing-md` 등)
@@ -59,3 +60,4 @@
 | 날짜 | 변경 | 이유 |
 |---|---|---|
 | 2026-06-12 | 초안 확정 | 프로젝트 시작 |
+| 2026-06-19 | 관측성(Micrometer+Prometheus+Grafana) 행 제거 | 관측성은 ops-stack.md로 일원화(LLM 트레이싱 Phoenix\|Langfuse) |

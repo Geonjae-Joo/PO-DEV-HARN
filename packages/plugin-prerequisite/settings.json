@@ -1,0 +1,21 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Write(foundation/design-system/ds-allowlist.md)",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/ds-guide-validate.py",
+            "args": ["${tool_input.file_path}"],
+            "statusMessage": "ds-allowlist.md 형식 검증 중..."
+          },
+          {
+            "type": "command",
+            "if": "Edit(foundation/design-system/ds-allowlist.md)",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/ds-guide-validate.py",
+            "args": ["${tool_input.file_path}"],
+            "statusMessage": "ds-allowlist.md 형식 검증 중..."
+          }
+        ]

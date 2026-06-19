@@ -1,4 +1,4 @@
-﻿<!-- supporting-file: skills/sufficiency-check -->
+<!-- supporting-file: skills/sufficiency-check -->
 <!-- loaded-by: sufficiency-check 스킬(AI gap 분석) + skills/sufficiency-check/scripts/sufficiency-check.py(기계 체크) 공통 기준 -->
 
 # Spec-Readiness Checklist — 충분성 기준

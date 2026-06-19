@@ -5,6 +5,5 @@ __pycache__/
 node_modules/
 dist/
 .vite/
-
 01-PREREQUISITE/input/
 01-PREREQUISITE/output/

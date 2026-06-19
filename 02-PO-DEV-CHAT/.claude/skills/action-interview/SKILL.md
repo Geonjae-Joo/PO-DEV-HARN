@@ -1,4 +1,4 @@
-﻿---
+---
 name: action-interview
 description: >
   Stage 2 스킬. layout_confirmed 이후 interactive 컴포넌트를 하나씩 순회하며

@@ -1,4 +1,4 @@
-﻿# Constitution — 하드 룰 (불변)
+# Constitution — 하드 룰 (불변)
 
 이 파일은 전 레이어 공통으로 항상 적용된다. 변경 시 모든 레이어 README와 CLAUDE.md를 함께 갱신해야 한다.
 

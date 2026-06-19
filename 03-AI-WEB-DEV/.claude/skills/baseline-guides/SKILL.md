@@ -1,4 +1,4 @@
-﻿---
+---
 name: baseline-guides
 description: >
   ③ AI-WEB-DEV 레이어 스킬 (Phase 0 모드 A 산출물의 템플릿/메타 정의).

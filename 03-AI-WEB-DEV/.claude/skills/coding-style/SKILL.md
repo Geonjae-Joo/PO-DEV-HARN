@@ -1,4 +1,4 @@
-﻿---
+---
 name: coding-style
 description: >
   ③ AI-WEB-DEV 레이어 스킬. ①의 tech-stack.md가 정한 백엔드·프론트엔드 스택의 코딩 컨벤션

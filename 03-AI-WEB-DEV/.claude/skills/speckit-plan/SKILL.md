@@ -20,7 +20,7 @@ disable-model-invocation: false
 - **하니스 절차 요약**:
   1. **Data Model + ERD** — 팩의 primary entity와 관계를 도메인 전체에 대해 한 번에 설계(엔티티·필드·관계·제약)
   2. **API 설계** — endpoint, request/response 스키마, 권한(actor·role)별 접근 정의
-  3. **복잡 BL 위임** — `complexity:high` 노트는 `.claude/subagents/bl-analyst.md` 호출 → decision table·state machine·worked examples 수령. open decision 1개라도 남으면 Gate B 통과 불가
+  3. **복잡 BL 위임** — `complexity:high` 노트는 `.claude/agents/bl-analyst.md` 호출 → decision table·state machine·worked examples 수령. open decision 1개라도 남으면 Gate B 통과 불가
   4. **frontend wiring 계획** — Phase α shell(`shell_ref`) 기준으로 컴포넌트↔API hook↔상태↔권한 조건부 렌더↔에러 처리 명시. layout은 건드리지 않음
   5. 산출물을 `/speckit-tasks` 입력으로 넘김
   - 입력: `input/spec-pack/PACK-X/spec.yaml`, `model_repo/renders/*.render.html`, `app_repo/specs/PACK-X/spec.yaml`(shell_ref)

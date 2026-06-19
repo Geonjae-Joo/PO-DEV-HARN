@@ -1,4 +1,4 @@
-﻿<!-- rule: 03-AI-WEB-DEV — 커밋 컨벤션 (commit-spine-id hook이 강제) -->
+<!-- rule: 03-AI-WEB-DEV — 커밋 컨벤션 (commit-spine-id hook이 강제) -->
 
 # Commit Convention
 

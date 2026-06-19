@@ -1,4 +1,4 @@
-﻿---
+---
 name: sufficiency-check
 description: >
   Stage 4 스킬. sufficiency-check.py(기계 체크)를 실행한 뒤 AI gap 분석으로

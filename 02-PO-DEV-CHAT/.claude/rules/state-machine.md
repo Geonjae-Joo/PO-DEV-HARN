@@ -1,4 +1,4 @@
-﻿<!-- supporting-file: skills/gate-a-check, skills/layout-recommend -->
+<!-- supporting-file: skills/gate-a-check, skills/layout-recommend -->
 <!-- loaded-by: gate-a-check 스킬이 Gate A 판정 시, layout-recommend가 상태 전환 조건 확인 시 참조 -->
 
 # State Machine — Screen Model 상태 전환

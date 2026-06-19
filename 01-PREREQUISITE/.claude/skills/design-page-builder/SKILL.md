@@ -1,4 +1,4 @@
-﻿---
+---
 name: design-page-builder
 description: >
   ① PREREQUISITE 레이어 스킬. design-guide.md의 허용 집합(DS 컴포넌트)만 조합해

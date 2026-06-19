@@ -1,4 +1,4 @@
-﻿<!-- rule: 03-AI-WEB-DEV — Change Order 정책 (③ → ② 인계) -->
+<!-- rule: 03-AI-WEB-DEV — Change Order 정책 (③ → ② 인계) -->
 
 # Change Order Policy
 

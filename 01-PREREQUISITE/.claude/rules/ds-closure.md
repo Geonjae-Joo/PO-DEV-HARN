@@ -1,4 +1,4 @@
-﻿# DS Closure Rule — DS 집합 밖 컴포넌트 금지
+# DS Closure Rule — DS 집합 밖 컴포넌트 금지
 
 ## 원칙
 

@@ -2,7 +2,8 @@
 # ────────────────────────────────────────────────────────────────────────
 # PO-DEV-HARN — git hook 설치기 (bash / Git Bash on Windows · Linux · macOS)
 #
-# hooks.json은 의미상 pre-commit/post-commit으로 선언돼 있으나, tdd-gate·commit-spine-id는
+# git-hooks.manifest.json은 의미상 pre-commit/post-commit으로 선언돼 있으나(문서용 선언, 이 스크립트가
+# 파싱하지는 않음), tdd-gate·commit-spine-id는
 # 커밋 메시지 파일($1)이 필요하다([SCAFFOLD] 판정·스파인 ID 검사). git에서 메시지를 받는
 # 단계는 commit-msg 이므로 둘을 commit-msg 훅으로 설치한다. manifest-sync는 post-commit.
 #

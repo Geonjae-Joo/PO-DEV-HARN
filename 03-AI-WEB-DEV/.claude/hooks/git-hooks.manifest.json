@@ -1,4 +1,4 @@
-﻿{
+{
   "description": "AI-WEB-DEV layer hooks — commit 생애주기 자동 검증/동기화 체인. tdd-gate·commit-spine-id는 pre-commit에서 차단(exit 1), manifest-sync는 post-commit에서 동기화(비차단). git hook으로 .git/hooks/ 에 설치되어 동작한다.",
   "lifecycle": {
     "pre-commit": [

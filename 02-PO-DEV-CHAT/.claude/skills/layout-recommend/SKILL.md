@@ -1,4 +1,4 @@
-﻿---
+---
 name: layout-recommend
 description: >
   Stage 1 스킬. PO가 나열한 컴포넌트를 DS에 매핑해 screen model YAML 초안을 생성하고,

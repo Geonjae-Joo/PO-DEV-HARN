@@ -1,4 +1,4 @@
-﻿---
+---
 name: test-author
 description: >
   acceptance(Gherkin) + worked examples 에서 실패 테스트를 먼저 생성한다(TDD red).

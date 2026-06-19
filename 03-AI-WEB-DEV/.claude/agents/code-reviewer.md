@@ -1,4 +1,4 @@
-﻿---
+---
 name: code-reviewer
 description: >
   팩 구현 완료 후, 또는 Phase γ에서 코드 전체를 검토한다. DS 준수·보안·코딩 스타일·

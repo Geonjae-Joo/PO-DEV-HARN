@@ -1,4 +1,4 @@
-﻿---
+---
 name: design-system-usage
 description: >
   ③ AI-WEB-DEV 레이어 스킬. ①의 design-system(DS 컴포넌트 + design token)과

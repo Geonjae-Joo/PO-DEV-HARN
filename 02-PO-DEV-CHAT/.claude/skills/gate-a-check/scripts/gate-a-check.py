@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 Hook: gate-a-check.py
 트리거: PO가 "확정(confirm)" 요청 시

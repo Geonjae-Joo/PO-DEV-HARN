@@ -1,4 +1,4 @@
-﻿---
+---
 name: gate-a-check
 description: >
   Gate A 종합 판정 스킬. lint error 0 + sufficiency pass + 전 action user_confirmed + PO 승인을

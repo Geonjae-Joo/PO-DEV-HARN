@@ -150,7 +150,7 @@ spec-generator              confirmed 화면 → 도메인 단위 PACK-* 팩 발
 - **모드 B (직접 코드 주입)**: *완성 코드*를 통째로 app_repo에 구현(테스트 green). 변형 불필요한 기능(로그인/SSO 모듈, JWT 필터, RBAC 엔티티) → Phase β는 호출만.
 - 판정 한 줄: **"프로젝트마다 변형되나?"** → 예면 A, 아니면 B. 결과는 `baseline-delivery-manifest.yaml`에 기록.
 
-**핵심 자산**: 5개 speckit 명령(specify·scaffold·plan·tasks·implement), 스킬(design-system-usage·coding-style·complex-bl·baseline-guides), 생애주기 훅(tdd-gate·commit-spine-id·manifest-sync — `hooks.json` 선언 + `install-git-hooks.sh/.ps1`로 `.git/hooks/`에 설치), 서브에이전트(bl-analyst·test-author·code-reviewer), 규칙(gate-b-checklist·tdd-policy·commit-convention·change-order-policy).
+**핵심 자산**: 5개 speckit 명령(specify·scaffold·plan·tasks·implement), 스킬(design-system-usage·coding-style·complex-bl·baseline-guides), 생애주기 훅(tdd-gate·commit-spine-id·manifest-sync — `git-hooks.manifest.json` 선언 + `install-git-hooks.sh/.ps1`로 `.git/hooks/`에 설치), 서브에이전트(bl-analyst·test-author·code-reviewer), 규칙(gate-b-checklist·tdd-policy·commit-convention·change-order-policy).
 
 **산출물**: `app_repo/` — 테스트 green 코드 + 스파인 ID 커밋 히스토리.
 
@@ -176,7 +176,7 @@ spec-generator              confirmed 화면 → 도메인 단위 PACK-* 팩 발
 세 레이어 모두 동일한 배치 원칙을 따른다:
 
 - **단일 스킬 전용 스크립트·파일** → 그 스킬 폴더 아래 공존 (`skills/<skill>/scripts/`, `skills/<skill>/<rule>.md`). 예: ①의 `design-page-lint.py`, ②의 `sufficiency-check.py`·`gate-a-check.py`·`question-bank.md`.
-- **저장 이벤트 훅 / 여러 스킬·레이어 공유 규칙** → `.claude/hooks/`(+`hooks.json`)·`.claude/rules/`. 예: ②의 `on-save-lint`, ①·②의 공유 규칙들.
+- **저장 이벤트 훅 / 여러 스킬·레이어 공유 규칙** → 훅 스크립트는 `.claude/hooks/`, 훅 선언은 `.claude/settings.json`(`hooks` 키)에서 로드, 규칙은 `.claude/rules/`. 예: ②의 `on-save-lint`, ①·②의 공유 규칙들. (③의 git 생애주기 훅은 `.claude/hooks/git-hooks.manifest.json`로 선언 후 `install-git-hooks` 스크립트가 `.git/hooks/`에 설치.)
 
 판별 기준: **"단일 스킬이 직접 호출/소유하는가?"** → 예면 스킬 아래 중첩, 아니면 최상위.
 
@@ -188,13 +188,13 @@ spec-generator              confirmed 화면 → 도메인 단위 PACK-* 팩 발
 PO-DEV-Harn/
 ├── README.md                  # (이 문서) 3-레이어 통합 진입 문서
 ├── 01-PREREQUISITE/           # ① 준비 — foundation·rules·빈 app_repo 골격
-│   ├── input/ .claude/{skills/hooks/rules} output/
+│   ├── input/ .claude/{skills/hooks/rules/settings.json} output/
 │   └── README.md
 ├── 02-PO-DEV-CHAT/            # ② 화면·요구사항 정의 — screen model 계약
-│   ├── .claude/{skills/hooks/rules} output/model_repo/
+│   ├── .claude/{skills/hooks/rules/settings.json} output/model_repo/
 │   └── README.md
 └── 03-AI-WEB-DEV/           # ③ 개발 — app_repo 구현
-    ├── input/ .claude/{skills/hooks/subagents/rules} output/app_repo/
+    ├── input/ .claude/{skills/hooks/agents/rules} output/app_repo/
     └── README.md
 ```
 

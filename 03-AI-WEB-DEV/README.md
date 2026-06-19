@@ -234,8 +234,8 @@ NFR 처리 (성능·동시성·보안·감사)
 | `tdd-gate.py` | commit-msg | 테스트 없음 또는 실패 시 commit 차단(blocking). `[SCAFFOLD]` 커밋은 skip 마커로 예외 처리. |
 | `commit-spine-id.py` | commit-msg | 커밋 메시지에 스파인 ID 포함 여부 검증(blocking). 형식: `[<PACK\|SPEC\|MOD>/<task>] 요약 (REQ-...)`. PACK/MOD은 REQ- 필수, SPEC-(baseline)은 면제. `[SCAFFOLD]`·`[CO/...]` prefix는 예외. |
 | `manifest-sync.py` | post-commit | `input/spec-pack/PACK-*` → `app_repo/specs/` 동기화 + shell_ref 갱신. 비차단(non-blocking) — 실패해도 commit 유지. |
-| `hooks.json` | — | 위 3개 훅의 생애주기 선언(pre-commit 차단 체인 + post-commit 동기화)과 인자·blocking 여부를 한곳에 정의. |
-| `install-git-hooks.sh` | — | hooks.json 선언을 실제 git 훅으로 설치(bash/Git Bash·Linux·macOS). 메시지 파일이 필요한 tdd-gate·commit-spine-id는 `commit-msg`, manifest-sync는 `post-commit` 훅으로 `.git/hooks/`에 설치. `PYTHON`·`HARNESS_TEST_CMD` 환경변수 지원. |
+| `git-hooks.manifest.json` | — | 위 3개 git 훅의 생애주기 선언(pre-commit 차단 체인 + post-commit 동기화)과 인자·blocking 여부를 한곳에 정의한 **문서용 매니페스트**(설치기가 파싱하지 않음). 파일명은 Claude Code 플러그인 훅 규약(`hooks/hooks.json`)과 구분하기 위해 `git-hooks.manifest.json` 사용. |
+| `install-git-hooks.sh` | — | 이 매니페스트가 선언한 git 훅을 실제로 설치(bash/Git Bash·Linux·macOS). 메시지 파일이 필요한 tdd-gate·commit-spine-id는 `commit-msg`, manifest-sync는 `post-commit` 훅으로 `.git/hooks/`에 설치. `PYTHON`·`HARNESS_TEST_CMD` 환경변수 지원. |
 | `install-git-hooks.ps1` | — | 동일 설치기의 Windows/PowerShell 버전(설치되는 훅 본문은 셸 스크립트). |
 
 ### Subagents — 격리 컨텍스트 전문 에이전트
@@ -268,7 +268,7 @@ NFR 처리 (성능·동시성·보안·감사)
 ├── SPECKIT-HARNESS-INTEGRATION.md  # speckit ↔ 하네스 통합 가이드
 ├── input/
 │   ├── spec-pack/          # ②의 spec 팩 (PACK-X/ 단위)
-│   └── harness/            # ①의 .claude/(commands·skills·hooks·subagents·rules(ops-stack 포함)) + foundation(design-system·design-guide·design-pages) + SPEC-000·SPEC-OPS-000 명세
+│   └── harness/            # ①의 .claude/(commands·skills·hooks·agents·rules(ops-stack 포함)) + foundation(design-system·design-guide·design-pages) + SPEC-000·SPEC-OPS-000 명세
 ├── commands/
 │   ├── speckit.specify.md
 │   ├── speckit.scaffold.md  # Phase α 전용
@@ -285,10 +285,10 @@ NFR 처리 (성능·동시성·보안·감사)
 │   │   ├── tdd-gate.py
 │   │   ├── commit-spine-id.py
 │   │   ├── manifest-sync.py
-│   │   ├── hooks.json             # 훅 생애주기 선언 (pre/post-commit 체인)
+│   │   ├── git-hooks.manifest.json # git 훅 생애주기 선언 (문서용, pre/post-commit 체인)
 │   │   ├── install-git-hooks.sh   # git 훅 설치기 (bash)
 │   │   └── install-git-hooks.ps1  # git 훅 설치기 (PowerShell)
-│   ├── subagents/
+│   ├── agents/
 │   │   ├── bl-analyst.md
 │   │   ├── test-author.md
 │   │   └── code-reviewer.md
@@ -317,7 +317,7 @@ NFR 처리 (성능·동시성·보안·감사)
 
 | 구분 | 무엇 | 출처/목적지 |
 |---|---|---|
-| **Input ← ①** | `.claude/` 하네스(commands/skills/hooks/subagents **+ rules(ops-stack 포함)**) + foundation(design-system·design-guide·design-pages, design token 포함) + **SPEC-000·SPEC-OPS-000 명세(구현 아님)** + 빈 app_repo 골격 | `input/harness/` |
+| **Input ← ①** | `.claude/` 하네스(commands/skills/hooks/agents **+ rules(ops-stack 포함)**) + foundation(design-system·design-guide·design-pages, design token 포함) + **SPEC-000·SPEC-OPS-000 명세(구현 아님)** + 빈 app_repo 골격 | `input/harness/` |
 | **Input ← ②** | spec 팩 (screens yaml_ref·render_ref·pinned_contract / scope / **데이터 계약 ENT-/EXT- ref** / actions+acceptance / notes verbatim / **여정 JRN- ref** / open_items) | `input/spec-pack/` |
 | **Output (Phase 0)** | `baseline-delivery-manifest.yaml`(기능·운영요건별 A/B 결정) + [B] baseline·ops 구현 코드·테스트(CI·트레이싱 등) + [A] `baseline-guides/` 가이드 스킬 | `output/app_repo/` |
 | **Output** | `app_repo/` — 테스트 green 코드 + 스파인 ID 커밋 히스토리 | `output/app_repo/` |

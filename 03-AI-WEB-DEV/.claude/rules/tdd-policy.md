@@ -1,4 +1,4 @@
-﻿<!-- rule: 03-AI-WEB-DEV — TDD 정책 (tdd-gate hook이 강제) -->
+<!-- rule: 03-AI-WEB-DEV — TDD 정책 (tdd-gate hook이 강제) -->
 
 # TDD Policy
 

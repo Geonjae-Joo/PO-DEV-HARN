@@ -1,4 +1,4 @@
-﻿---
+---
 name: spec-generator
 description: >
   Gate A 통과(status: confirmed) 후 screen model을 도메인 모듈 단위 PACK-* spec 팩으로 분해·발행한다.

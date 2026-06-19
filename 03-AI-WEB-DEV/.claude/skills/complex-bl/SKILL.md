@@ -1,4 +1,4 @@
-﻿---
+---
 name: complex-bl
 description: >
   ③ AI-WEB-DEV 레이어 스킬. complexity:high 노트에 대해 bl-analyst가 생성한
@@ -13,7 +13,7 @@ version: 1.0.0
 owner: 개발자 (VSCode + Claude Code)
 tags: [business-logic, decision-table, state-machine, bl-analyst, tdd]
 references:
-  - ../../subagents/bl-analyst.md
+  - ../../agents/bl-analyst.md
   - ../../rules/tdd-policy.md
 spine-ids: [REQ-, NOTE-, SPEC-, T###]
 ---

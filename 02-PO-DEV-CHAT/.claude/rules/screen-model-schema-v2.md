@@ -1,4 +1,4 @@
-﻿<!-- supporting-file: skills/layout-recommend, skills/action-interview, skills/note-intake, skills/sufficiency-check, skills/spec-generator -->
+<!-- supporting-file: skills/layout-recommend, skills/action-interview, skills/note-intake, skills/sufficiency-check, skills/spec-generator -->
 <!-- loaded-by: layout-recommend 스킬이 screen model 초안 생성 시, on-save-schema-validate.py가 검증 시 참조 -->
 
 # Screen Model Schema v2

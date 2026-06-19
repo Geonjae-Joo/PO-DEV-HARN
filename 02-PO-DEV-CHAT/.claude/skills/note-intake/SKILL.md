@@ -1,4 +1,4 @@
-﻿---
+---
 name: note-intake
 description: >
   Stage 3 스킬. PO의 자유 발화 비즈니스 규칙·도메인 지식·제약사항을 verbatim으로 수집한다.

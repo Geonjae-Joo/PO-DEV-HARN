@@ -1,4 +1,4 @@
-﻿<!-- rule: 03-AI-WEB-DEV — Gate B (개발자 소유) -->
+<!-- rule: 03-AI-WEB-DEV — Gate B (개발자 소유) -->
 
 # Gate B Checklist
 

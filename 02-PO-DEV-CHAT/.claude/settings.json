@@ -1,5 +1,4 @@
-﻿{
-  "description": "PO-DEV-CHAT layer hooks — screen model YAML 저장 시 자동 검증 체인",
+{
   "hooks": {
     "PreToolUse": [
       {

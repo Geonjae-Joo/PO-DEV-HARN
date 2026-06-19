@@ -1,4 +1,4 @@
-﻿---
+---
 name: bl-analyst
 description: >
   complexity:high 로 태깅된 비즈니스 규칙 노트를 분석해 decision table·state machine·

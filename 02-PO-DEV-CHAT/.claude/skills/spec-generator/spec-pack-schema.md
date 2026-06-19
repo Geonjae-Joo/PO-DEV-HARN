@@ -1,4 +1,4 @@
-﻿<!-- supporting-file: spec-generator (스킬 전용) -->
+<!-- supporting-file: spec-generator (스킬 전용) -->
 <!-- loaded-by: spec-generator 스킬이 PACK-* 팩 구성 시 참조 -->
 
 # Spec Pack Schema

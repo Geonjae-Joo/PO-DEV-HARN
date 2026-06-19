@@ -1,5 +1,4 @@
 {
-  "description": "PREREQUISITE layer hooks — design-guide.md 저장 시 자동 검증 (저장 이벤트 훅). design page lint는 design-page-builder 스킬이 직접 호출하므로 skills/design-page-builder/scripts/ 에 위치.",
   "hooks": {
     "PreToolUse": [
       {

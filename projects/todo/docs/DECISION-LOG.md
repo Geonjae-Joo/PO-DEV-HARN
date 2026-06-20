@@ -26,8 +26,12 @@
 - **근거**: SPEC-000은 "무엇이 공통기능인지"까지만 명세하고 모드 A/B 결정은 ③ Phase 0 권한. 본 도메인은 인증 경계가 없으므로 도입은 과설계(R3 over-spec).
 - **영향**: 화면/액션 permission은 모두 `all`. sufficiency-check의 permission 일관성 오류 회피.
 
-### D-005 — 게이트/훅은 main 레포 .git/hooks 설치 대신 "수동 실행"으로 강제 재현
-- **결정**: `install-git-hooks`로 main 모노레포 `.git/hooks`를 덮어쓰지 않고, 각 게이트·커밋 시점에 해당 스크립트(tdd-gate.py·commit-spine-id.py·gate-a-check.py·spec-pack-guard.py·spine_ledger.py)를 `projects/todo/`를 cwd로 **직접 실행**해 결과를 로그.
-- **근거**: ① 훅 설치 대상이 `app_repo/.git/hooks`인데 tdd-gate는 cwd 기준 `app_repo/frontend`를 탐지 → app_repo가 독립 git repo라는 가정과 모노레포 현실의 충돌. ② main 레포 전역 훅 설치는 무관한 커밋까지 영향. 수동 실행은 훅 본문 코드를 그대로 호출하므로 강제 로직 검증에 충실.
-- **영향**: 실제 git 커밋은 `harn-todo-test` 브랜치에 스파인 ID 메시지로 수행하되, 커밋 전 게이트를 수동 통과 검증. (관련 결함 → HARNESS-DEFECTS)
+### D-005 (개정) — ② 게이트는 수동 실행 검증, ③ 게이트는 app_repo 독립 레포 + 실제 훅 설치로 발화
+- **맥락 발견**: root `.gitignore`가 `projects/*/app_repo/**`·`model_repo/*`를 의도적으로 무시 → app_repo는 모노레포 일부가 아니라 **자체 git 레포**로 설계됨(훅 설치 대상 `app_repo/.git/hooks`와 정합). Tier-3 산출물은 재생성 가능 출력으로 비추적.
+- **결정**:
+  - **② 검증**(schema-validate·lint·sufficiency·gate-a·spec-pack-guard·spine_ledger): `projects/todo/`를 cwd로 스크립트 직접 실행해 통과 확인(완료, 모두 green). 이 산출물은 모노레포에서 비추적이므로 별도 커밋 없음.
+  - **③ 게이트**(tdd-gate·commit-spine-id·manifest-sync): `projects/todo/app_repo`를 **독립 git 레포로 init**하고 `install-git-hooks.sh`로 실제 설치 → SCAFFOLD/TDD 커밋에서 훅이 **진짜로 발화**. 의도된 설계 그대로.
+  - **모노레포 커밋**: 추적 대상(foundation 결정·docs·매니페스트)만 `harn-todo-test`에 커밋.
+- **근거**: 실제 설계 구조를 따르는 것이 하네스 테스트로 가장 충실하고, 훅 강제 로직을 코드 그대로 발화시켜 검증한다. 부수적으로 cwd-가정 결함(DEF-001)을 구체적으로 드러낸다.
+- **영향**: ③ 훅의 cwd=app_repo 기준에 맞춰 `HARNESS_TEST_CMD`를 app_repo 상대경로(`cd backend && ... && cd ../frontend && ...`)로 설치. tech-stack.md의 `app_repo/` 접두 예시는 프로젝트-루트 cwd 가정이라 부적합(DEF-001).
 </content>

@@ -74,4 +74,5 @@ todo/
 ## 5. 현재 상태
 
 - 백엔드 테스트 **18** + 프론트 테스트 **6** green, E2E 여정(JRN-TODO-MANAGE) 실브라우저 완주.
-- 상세 경과·게이트 검증·발견 결함은 [`docs/REHEARSAL-REPORT.md`](docs/REHEARSAL-REPORT.md).
+- **어떻게 만들었나(단계별 상세)**: [`docs/BUILD-PROCESS.md`](docs/BUILD-PROCESS.md)
+- 요약 보고서·게이트 검증·발견 결함: [`docs/REHEARSAL-REPORT.md`](docs/REHEARSAL-REPORT.md) · [`docs/DECISION-LOG.md`](docs/DECISION-LOG.md) · [`docs/HARNESS-DEFECTS.md`](docs/HARNESS-DEFECTS.md)

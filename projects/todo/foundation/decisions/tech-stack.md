@@ -36,12 +36,11 @@
 
 ## 테스트 명령 핀 (tdd-gate가 참조)
 
-> tdd-gate.py 자동탐지는 Node **frontend**만 인식하고 Node **backend**는 인식하지 못한다(JVM/Maven/pytest/go 한정).
-> 따라서 백+프론트를 함께 도는 명령을 `HARNESS_TEST_CMD`로 명시 핀한다.
-
-```
-HARNESS_TEST_CMD="cd app_repo/backend && npm test --silent && cd ../frontend && npm test --silent"
-```
+> **업데이트(하네스 수정 후, 2026-06-20)**: `tdd-gate.py`가 이제 **Node 백엔드(`backend/package.json`)를 자동탐지**하고 cwd를 견고하게 해석하므로, 본 Node 풀스택은 **`HARNESS_TEST_CMD` 핀이 필요 없다**(훅을 app_repo에 설치하면 backend+frontend가 자동 실행). 자동탐지를 벗어나는 특수 명령이 필요할 때만 아래처럼 명시(cwd=app_repo 기준 상대경로):
+>
+> ```
+> # (선택) HARNESS_TEST_CMD="cd backend && npm test --silent && cd ../frontend && npm test --silent"
+> ```
 
 ## Design System 연동
 

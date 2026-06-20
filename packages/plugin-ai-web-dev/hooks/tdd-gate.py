@@ -65,23 +65,41 @@ def staged_files() -> list[str]:
         return []
 
 
+def _app_base() -> str:
+    """app_repo 루트를 cwd 기준으로 해석한다(cwd 가정에 의존하지 않음).
+    - 설치된 git 훅: git 은 commit-msg 훅을 app_repo 저장소 루트에서 실행 → cwd=app_repo →
+      base='.' (frontend/backend 가 cwd 의 직속 자식).
+    - 프로젝트 루트에서 수동 실행: cwd=projects/<id> → base='app_repo'.
+    어느 경우든 backend/frontend 를 정확히 찾는다(이전에는 'app_repo/' 접두를 고정해 훅 실행 시 탐지 실패).
+    """
+    for base in (".", "app_repo"):
+        if os.path.isdir(os.path.join(base, "backend")) or os.path.isdir(os.path.join(base, "frontend")):
+            return base
+    return "."
+
+
 def detect_test_commands() -> list:
-    """일반 생태계 자동 탐지(JVM/Node/Python/Go). 러너를 못 찾으면 빈 리스트."""
+    """일반 생태계 자동 탐지(JVM/Node/Python/Go). 러너를 못 찾으면 빈 리스트.
+    스택·디렉터리 구조는 ①의 tech-stack.md 핀을 따른다(고정값 아님). 단일 백엔드 + 단일 프론트 가정."""
+    base = _app_base()
+    # bash(-lc)에서 cd 하므로 항상 forward slash 경로를 쓴다(Windows os.path.join 의 역슬래시 금지).
+    be = f"{base}/backend"
+    fe = f"{base}/frontend"
     commands = []
-    # JVM (Gradle/Maven)
-    if os.path.exists("app_repo/backend/build.gradle") or os.path.exists("app_repo/backend/build.gradle.kts"):
-        commands.append(["bash", "-lc", "cd app_repo/backend && ./gradlew test"])
-    elif os.path.exists("app_repo/backend/pom.xml"):
-        commands.append(["bash", "-lc", "cd app_repo/backend && mvn -q test"])
-    # Node (package.json에 test 스크립트가 있을 때)
-    if os.path.exists("app_repo/frontend/package.json"):
-        commands.append(["bash", "-lc", "cd app_repo/frontend && npm test --silent"])
-    # Python
-    if any(os.path.exists(f"app_repo/backend/{f}") for f in ("pyproject.toml", "pytest.ini", "setup.cfg", "tox.ini")):
-        commands.append(["bash", "-lc", "cd app_repo/backend && python -m pytest -q"])
-    # Go
-    if os.path.exists("app_repo/backend/go.mod"):
-        commands.append(["bash", "-lc", "cd app_repo/backend && go test ./..."])
+    # Backend — 하나의 스택만 가정(JVM → Node → Python → Go 우선순위)
+    if os.path.exists(os.path.join(be, "build.gradle")) or os.path.exists(os.path.join(be, "build.gradle.kts")):
+        commands.append(["bash", "-lc", f"cd '{be}' && ./gradlew test"])
+    elif os.path.exists(os.path.join(be, "pom.xml")):
+        commands.append(["bash", "-lc", f"cd '{be}' && mvn -q test"])
+    elif os.path.exists(os.path.join(be, "package.json")):   # Node 백엔드 (이전 누락분)
+        commands.append(["bash", "-lc", f"cd '{be}' && npm test --silent"])
+    elif any(os.path.exists(os.path.join(be, f)) for f in ("pyproject.toml", "pytest.ini", "setup.cfg", "tox.ini")):
+        commands.append(["bash", "-lc", f"cd '{be}' && python -m pytest -q"])
+    elif os.path.exists(os.path.join(be, "go.mod")):
+        commands.append(["bash", "-lc", f"cd '{be}' && go test ./..."])
+    # Frontend (Node) — package.json 에 test 스크립트가 있을 때
+    if os.path.exists(os.path.join(fe, "package.json")):
+        commands.append(["bash", "-lc", f"cd '{fe}' && npm test --silent"])
     return commands
 
 

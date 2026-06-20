@@ -6,13 +6,22 @@
 
 | ID | 분류 | 한 줄 요약 | 상태 |
 |---|---|---|---|
-| DEF-001 | batch | tdd-gate/manifest-sync의 cwd 가정(`app_repo/` 접두)이 실제 훅 설치 위치(cwd=app_repo)와 모순 | 우회 적용·패치 제안 |
-| DEF-002 | batch | tdd-gate 테스트 러너 자동탐지가 Node **백엔드**를 인식 못함(frontend 한정) | 우회 적용·패치 제안 |
-| OBS-003 | wontfix(설계) | root .gitignore가 model_repo/app_repo를 비추적 → app_repo는 자체 레포가 정석 | 기록 |
-| OBS-004 | fix-now후보 | manifest-sync 콘솔 출력 mojibake(`����`) — git 훅 파이프 인코딩 | 기록 |
+| DEF-001 | batch | tdd-gate/manifest-sync의 cwd 가정(`app_repo/` 접두)이 실제 훅 설치 위치(cwd=app_repo)와 모순 | ✅ **수정 완료** |
+| DEF-002 | batch | tdd-gate 테스트 러너 자동탐지가 Node **백엔드**를 인식 못함(frontend 한정) | ✅ **수정 완료** |
+| OBS-003 | wontfix(설계) | root .gitignore가 model_repo/app_repo를 비추적 → app_repo는 자체 레포가 정석 | 기록(설계 의도) |
+| OBS-004 | fix-now | manifest-sync 콘솔 출력 mojibake(`����`) — git 훅 파이프 인코딩 | ✅ **수정 완료** |
 | OBS-005 | 환경 | 무관 파일 `docs/SUPERPOWERS-CHATBOT-BUILD-GUIDE.md`가 모노레포 커밋에 포함됨 | 기록 |
 
-> **DEF-001·002는 서로 얽혀 있어 분리 수정이 무의미**(DEF-002만 고쳐도 cwd 접두가 app_repo 기준이 아니라 실효 없음). 아래 **결합 패치 1건**으로 함께 해소 권장. 공용 `packages/` 코드(타 프로젝트 공유)를 리허설 중 직접 수정하는 것은 보수적으로 보류하고 패치를 제안 상태로 둔다.
+> ## ✅ 수정 완료 요약 (2026-06-20, 프로젝트 비의존적·일반화)
+> 공용 `packages/plugin-ai-web-dev/hooks/`를 다음 어떤 스택/위치의 프로젝트에도 동작하도록 일반화 수정하고, **HARNESS_TEST_CMD 없이 자동탐지만으로** TODO(Node 풀스택)가 통과함을 검증했다.
+>
+> - **`tdd-gate.py`** — `_app_base()` 추가: cwd가 **app_repo(설치된 훅)** 든 **프로젝트 루트(수동)** 든 backend/frontend를 정확히 찾는다(`.` → `app_repo` 후보 순회). `detect_test_commands()`에 **Node 백엔드(`backend/package.json`)** 탐지 추가(JVM→Node→Python→Go 단일 백엔드). bash용 경로는 forward slash 고정(Windows `os.path.join` 역슬래시 회피).
+> - **`manifest-sync.py`** — `_project_root()` 추가: cwd=app_repo면 `..`, 프로젝트 루트면 `.`로 해석해 `model_repo/specs`를 정확히 찾는다(이전엔 SKIP). `shell_ref`는 프로젝트 루트 상대(canonical) 경로로 정규화 저장.
+> - **`install-git-hooks.sh`/`.ps1`** — 생성 훅에 `export PYTHONIOENCODING=utf-8 PYTHONUTF8=1` 추가(Windows 한글 출력 mojibake 해소, OBS-004).
+>
+> **검증(회귀 포함)**: 자동탐지가 ①프로젝트루트→`app_repo/backend|frontend` ②app_repo→`./backend|frontend` ③빈 예제→탐지 없음 으로 정확. HARNESS_TEST_CMD 미설치 훅으로 커밋 시 백엔드(18)+프론트(6) 모두 실행·green, manifest-sync 정상 동기화·한글 출력 정상.
+>
+> 아래는 발견 당시 원본 기록(보존). OBS-005는 사용자 파일이라 미수정(브랜치라 main 무영향).
 
 ---
 

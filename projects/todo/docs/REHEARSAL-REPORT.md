@@ -77,13 +77,14 @@
 
 | ID | 분류 | 요약 | 조치 |
 |---|---|---|---|
-| **DEF-001** | batch | tdd-gate/manifest-sync의 cwd 가정(`app_repo/` 접두)이 실제 훅 실행 cwd(=app_repo)와 모순. manifest-sync가 실제로 `model_repo/specs` 못 찾고 SKIP(라이브 실증) | 우회(HARNESS_TEST_CMD app_repo 상대경로) + **결합 패치 제안** |
-| **DEF-002** | batch | tdd-gate 러너 자동탐지가 Node **백엔드** 미인식(frontend 한정) → Node 풀스택 백엔드 테스트 게이트 누락 위험 | 우회 + 패치 제안(상동) |
-| OBS-003 | 설계 | root .gitignore가 model_repo/app_repo 비추적 → app_repo는 **자체 레포가 정석**(훅 설치 대상과 정합). 결함 아님, 문서화 가치 | 기록 |
-| OBS-004 | 사소 | manifest-sync 콘솔 출력 한글 mojibake | DEF-001 수정 시 대부분 해소 |
+| **DEF-001** | batch | tdd-gate/manifest-sync의 cwd 가정(`app_repo/` 접두)이 실제 훅 실행 cwd(=app_repo)와 모순. manifest-sync가 `model_repo/specs` 못 찾고 SKIP(라이브 실증) | ✅ **수정 완료** (cwd 견고 해석) |
+| **DEF-002** | batch | tdd-gate 러너 자동탐지가 Node **백엔드** 미인식 → Node 풀스택 백엔드 테스트 게이트 누락 위험 | ✅ **수정 완료** (Node 백엔드 탐지 추가) |
+| OBS-003 | 설계 | root .gitignore가 model_repo/app_repo 비추적 → app_repo는 **자체 레포가 정석**(훅 설치 대상과 정합). 결함 아님 | 기록(설계 의도) |
+| OBS-004 | 사소 | manifest-sync 콘솔 출력 한글 mojibake | ✅ **수정 완료** (훅에 PYTHONIOENCODING) |
 | OBS-005 | 환경 | 무관 파일이 첫 모노레포 커밋에 포함(`git add -A`) | 기록(브랜치라 main 무영향) |
 
-> **즉시 수정 vs 일괄**: DEF-001·002는 서로 얽혀 단독 수정이 무의미하고, 수정 대상이 **타 프로젝트 공유 코드(`packages/`)** 라 리허설 중 직접 변경은 보수적으로 보류 → **결합 패치 1건을 제안 상태**로 모음(HARNESS-DEFECTS.md에 적용 가능한 코드 포함). 검증 기준: 패치 후 `HARNESS_TEST_CMD` 없이도 backend+frontend 자동 탐지·실행.
+> **하네스 개선 적용 완료(프로젝트 비의존적).** `packages/plugin-ai-web-dev/hooks/`의 `tdd-gate.py`·`manifest-sync.py`·`install-git-hooks.{sh,ps1}`를 **다음 어떤 스택/실행 위치의 프로젝트에도** 동작하도록 일반화 수정.
+> **검증**: `HARNESS_TEST_CMD` 없이 자동탐지만으로 TODO(Node 풀스택)가 백엔드 18 + 프론트 6 모두 실행·green, manifest-sync 정상 동기화·한글 출력 정상, 회귀(프로젝트루트/app_repo/빈예제 3 cwd) 통과. 상세는 HARNESS-DEFECTS.md "수정 완료 요약".
 
 ---
 
@@ -92,5 +93,6 @@
 
 ## 6. 결론
 하네스의 **계약 정의(②)→게이트(Gate A)→발행(PACK)→SDD(plan/tasks)→TDD(RED→GREEN)→커밋 게이트→E2E→리뷰** 전 구간이
-TODO 도메인에서 의도대로 작동함을 **양성(통과)·음성(차단) 모두로 확인**했다. 발견된 결함 2건은 모두 **cwd 정합성** 문제로,
-공용 훅을 git 최상위 기준으로 정규화하는 **단일 패치**로 해소 가능하다(제안 포함). 기능 결함·스파인 추적 단절은 없었다.
+TODO 도메인에서 의도대로 작동함을 **양성(통과)·음성(차단) 모두로 확인**했다.
+발견된 결함(DEF-001 cwd 정합성, DEF-002 Node 백엔드 탐지, OBS-004 한글 출력)은 **모두 프로젝트 비의존적으로 일반화 수정·검증 완료**했다.
+이제 다음 프로젝트는 스택이 Node든 JVM든 Python든, 훅을 app_repo에 설치만 하면 **HARNESS_TEST_CMD 핀 없이** TDD 게이트가 자동 동작한다. 기능 결함·스파인 추적 단절은 없었다.

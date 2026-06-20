@@ -19,12 +19,27 @@ from pathlib import Path
 import yaml
 
 
-SRC = Path(os.environ.get("HARNESS_SPEC_PACK_DIR", "model_repo/specs"))
-DST = Path("app_repo/specs")
+def _project_root() -> Path:
+    """projects/<id> 루트를 cwd 기준으로 해석한다(cwd 가정에 의존하지 않음).
+    - 설치된 git 훅(post-commit): git 은 app_repo 저장소 루트에서 실행 → cwd=app_repo →
+      model_repo 는 형제(..) 에 있다 → root='..'.
+    - 프로젝트 루트에서 수동 실행: cwd=projects/<id> → root='.'.
+    (이전에는 cwd=projects/<id> 만 가정해 훅 실행 시 model_repo/specs 를 못 찾고 SKIP 했다.)
+    """
+    for cand in (Path("."), Path("..")):
+        if (cand / "model_repo").is_dir() or (cand / "app_repo").is_dir():
+            return cand
+    return Path(".")
+
+
+_ROOT = _project_root()
+# HARNESS_SPEC_PACK_DIR 가 있으면 그대로(절대/명시 경로), 없으면 해석된 루트 기준.
+SRC = Path(os.environ["HARNESS_SPEC_PACK_DIR"]) if os.environ.get("HARNESS_SPEC_PACK_DIR") else _ROOT / "model_repo" / "specs"
+DST = _ROOT / "app_repo" / "specs"
 
 # 프론트엔드 pages 디렉터리·shell 확장자는 ①의 tech-stack.md 스택에 따른다(고정값 아님).
 # 다른 스택은 환경변수로 덮어쓴다: HARNESS_PAGES_DIR, HARNESS_SHELL_EXT(쉼표구분).
-PAGES_DIR = Path(os.environ.get("HARNESS_PAGES_DIR", "app_repo/frontend/src/pages"))
+PAGES_DIR = Path(os.environ["HARNESS_PAGES_DIR"]) if os.environ.get("HARNESS_PAGES_DIR") else _ROOT / "app_repo" / "frontend" / "src" / "pages"
 DEFAULT_SHELL_EXT = (".tsx", ".jsx", ".ts", ".js", ".vue", ".svelte")
 
 
@@ -47,7 +62,13 @@ def resolve_shell_ref(scr_id: str) -> str | None:
     for ext in shell_exts():
         for cand in (PAGES_DIR / name / f"index{ext}", PAGES_DIR / f"{name}{ext}"):
             if cand.exists():
-                return cand.as_posix()
+                # 계약에는 프로젝트 루트 상대 경로(canonical)로 저장한다.
+                # (cwd=app_repo 로 훅이 돌면 _ROOT='..' 라 cand 가 '../app_repo/...' 가 되는데,
+                #  그 cwd-상대 prefix 를 벗겨 'app_repo/...' 로 정규화한다.)
+                try:
+                    return cand.relative_to(_ROOT).as_posix()
+                except ValueError:
+                    return cand.as_posix()
     return None
 
 

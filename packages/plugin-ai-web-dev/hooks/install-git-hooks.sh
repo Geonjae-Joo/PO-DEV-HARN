@@ -53,6 +53,7 @@ cat > "${HOOK_DST}/commit-msg" <<EOF
 #!/usr/bin/env bash
 # PO-DEV-HARN-HOOK (commit-msg) — 자동 생성. 수정하지 말 것.
 set -e
+export PYTHONIOENCODING=utf-8 PYTHONUTF8=1   # Windows 콘솔 한글 출력 깨짐 방지
 ${TEST_CMD_LINE}
 HOOKS_DIR="${HOOKS_SRC_DIR}"
 "${PY}" "\${HOOKS_DIR}/tdd-gate.py" "\$1" || exit 1
@@ -65,6 +66,7 @@ backup "${HOOK_DST}/post-commit"
 cat > "${HOOK_DST}/post-commit" <<EOF
 #!/usr/bin/env bash
 # PO-DEV-HARN-HOOK (post-commit) — 자동 생성. 수정하지 말 것.
+export PYTHONIOENCODING=utf-8 PYTHONUTF8=1   # Windows 콘솔 한글 출력 깨짐 방지
 HOOKS_DIR="${HOOKS_SRC_DIR}"
 "${PY}" "\${HOOKS_DIR}/manifest-sync.py" || true
 EOF

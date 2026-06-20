@@ -2,9 +2,11 @@
 """
 Hook: manifest-sync.py
 트리거: commit 이후 (post-commit)
-목적:  ②의 spec 팩 link-manifest를 app_repo/specs/ 와 동기화한다.
-       - input/spec-pack/PACK-*/spec.yaml → app_repo/specs/PACK-*/spec.yaml 반영
+목적:  ②의 spec 팩(model_repo/specs)을 app_repo/specs/ 와 동기화한다.
+       - model_repo/specs/PACK-*/spec.yaml → app_repo/specs/PACK-*/spec.yaml 반영
        - Phase α 이후 생성된 shell 경로를 screens[].shell_ref 에 갱신 (실존 파일만)
+경로: 3-Tier 신구조 기준(②가 model_repo/specs 에 발행 → ③가 app_repo/specs 로 동기화).
+      cwd = projects/<id>/ 로 가정. 다른 위치는 HARNESS_SPEC_PACK_DIR 로 덮어쓴다.
 종료코드: 0 = 성공(비차단 — post-commit이므로 실패해도 commit은 유지)
 정책: README(③) Phase α/β, ②의 link-manifest
 """
@@ -17,7 +19,7 @@ from pathlib import Path
 import yaml
 
 
-SRC = Path("input/spec-pack")
+SRC = Path(os.environ.get("HARNESS_SPEC_PACK_DIR", "model_repo/specs"))
 DST = Path("app_repo/specs")
 
 # 프론트엔드 pages 디렉터리·shell 확장자는 ①의 tech-stack.md 스택에 따른다(고정값 아님).

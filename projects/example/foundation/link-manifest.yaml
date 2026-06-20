@@ -42,8 +42,16 @@ design_system:
 
 design_pages:
   dir: design-pages/
-  # DP 페이지 재작업 예정 (이전 DP-BASE/MAIN/POPUP 삭제됨). 재작성 시 여기에 등록.
-  registry: []
+  # DP 등록 인덱스. 단일 출처는 design-pages/*.yaml. 신규 DP는 의미명으로 발번하고 여기에 추가.
+  registry:
+    - id: DP-MAIN
+      version: 1
+      archetype: main
+      slots: [header, header-actions, content, footer]
+    - id: DP-POPUP
+      version: 1
+      archetype: popup
+      slots: [content, footer-actions]
 
 # DP- ID는 숫자 시퀀스가 아니라 의미명(DP-MAIN·DP-POPUP·DP-BASE 등, spine-ids.md 참조).
 # 따라서 숫자 next_id를 두지 않는다. 신규 DP는 의미명으로 발번하고 registry에 추가한다.

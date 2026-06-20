@@ -1,15 +1,57 @@
 #!/usr/bin/env python3
 """
 ds-guide-validate.py
-Trigger: ds-allowlist.md 저장 시
-역할: DS 컴포넌트 목록의 형식·필수 필드 검증
+Trigger: Claude Code PostToolUse(Write|Edit) hook — ds-allowlist.md 저장 직후.
+역할: DS 컴포넌트 목록의 형식·필수 필드 검증.
+
+호출 규약(현행 Claude Code 훅):
+  - 훅 payload(JSON)가 stdin 으로 들어온다: {"tool_input": {"file_path": "...", ...}, ...}
+  - settings.json 은 matcher 로 도구명(Write|Edit)만 거른다. 파일 경로 필터는 이 스크립트가 한다.
+  - PostToolUse 이므로 파일은 이미 디스크에 기록됨(=새 내용 검증 가능).
+종료코드: 0 = 통과/대상아님, 2 = 검증 실패(모델에 stderr 피드백, 수정 유도).
 """
 
 import sys
 import re
+import json
 from pathlib import Path
 
-DESIGN_GUIDE_PATH = Path("foundation/design-system/ds-allowlist.md")
+# Windows 콘솔(cp949 등) 유니코드 출력 크래시 방지
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
+    except Exception:
+        pass
+
+DEFAULT_GUIDE_PATH = Path("foundation/design-system/ds-allowlist.md")
+ALLOWLIST_BASENAME = "ds-allowlist.md"
+
+
+def resolve_target() -> Path | None:
+    """검증 대상 경로 결정. 우선순위: 훅 stdin JSON > argv > 기본.
+    대상이 ds-allowlist.md 가 아니면 None(검증 스킵)."""
+    file_path = None
+    # 1) 훅 stdin payload
+    if not sys.stdin.isatty():
+        try:
+            raw = sys.stdin.read()
+            if raw.strip():
+                payload = json.loads(raw)
+                file_path = (payload.get("tool_input") or {}).get("file_path")
+        except Exception:
+            file_path = None
+    # 2) argv 폴백
+    if not file_path:
+        args = [a for a in sys.argv[1:] if not a.startswith("--")]
+        if args:
+            file_path = args[0]
+    # 3) 기본
+    if not file_path:
+        return DEFAULT_GUIDE_PATH if DEFAULT_GUIDE_PATH.exists() else None
+    p = Path(file_path)
+    if p.name != ALLOWLIST_BASENAME:
+        return None  # 다른 파일 저장 — 이 훅의 관심사 아님
+    return p
 
 REQUIRED_FIELDS = ["name", "props", "description"]
 OPTIONAL_FIELDS = ["usage", "variants", "slots"]
@@ -61,12 +103,15 @@ def validate_component(cmp: dict) -> None:
 
 
 def main() -> int:
-    if not DESIGN_GUIDE_PATH.exists():
-        ERRORS.append(f"ds-allowlist.md 파일이 없습니다: {DESIGN_GUIDE_PATH}")
+    target = resolve_target()
+    if target is None:
+        return 0  # 대상 파일 아님 — 조용히 통과
+    if not target.exists():
+        ERRORS.append(f"ds-allowlist.md 파일이 없습니다: {target}")
         report()
-        return 1
+        return 2
 
-    text = DESIGN_GUIDE_PATH.read_text(encoding="utf-8")
+    text = target.read_text(encoding="utf-8")
 
     if "# DS Allowlist" not in text and "# ds allowlist" not in text.lower():
         WARNINGS.append("ds-allowlist.md에 '# DS Allowlist' 헤더가 없습니다.")
@@ -80,7 +125,7 @@ def main() -> int:
             validate_component(cmp)
 
     report()
-    return 1 if ERRORS else 0
+    return 2 if ERRORS else 0
 
 
 def report() -> None:

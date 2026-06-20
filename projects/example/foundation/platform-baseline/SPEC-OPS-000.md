@@ -57,7 +57,7 @@
 ## 5. ③에서의 처리 흐름 (참고)
 
 ```
-input/harness/ 에서 SPEC-OPS-000.md(①이 작성한 명세) + ops-stack.md(결정) 수신
+foundation/platform-baseline/SPEC-OPS-000.md(①이 작성한 명세) + foundation/decisions/ops-stack.md(결정) 수신
   │
   ▼
 /speckit.specify  요건별 전달 모드(A/B) 결정 → baseline-delivery-manifest.yaml 에 OPS-* 추가

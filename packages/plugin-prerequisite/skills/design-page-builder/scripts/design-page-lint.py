@@ -10,6 +10,13 @@ import re
 import yaml
 from pathlib import Path
 
+# Windows 콘솔(cp949 등) 유니코드 출력 크래시 방지
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
+    except Exception:
+        pass
+
 # ── 공용 DS 폐쇄 라이브러리 (harness-core/lib) 단일 출처 ─────────────────────────
 # 시스템 모노레포에서는 packages/harness-core/lib 에 위치
 # (이 스크립트: packages/plugin-prerequisite/skills/design-page-builder/scripts/).
@@ -22,8 +29,19 @@ try:
 except Exception:
     _core_allowed_names = None
 
-DESIGN_GUIDE_PATH = Path("foundation/design-system/ds-allowlist.md")
-DESIGN_PAGES_DIR = Path("foundation/design-pages")
+# 프로젝트 루트(projects/<id>/) 기준 상대경로. 다른 cwd 에서 실행 시 --root 로 지정.
+# 우선순위: --root 인자 > 환경변수 PROJECT_ROOT > cwd.
+def _project_root() -> Path:
+    args = sys.argv[1:]
+    if "--root" in args:
+        return Path(args[args.index("--root") + 1])
+    import os
+    return Path(os.environ.get("PROJECT_ROOT", "."))
+
+
+_ROOT = _project_root()
+DESIGN_GUIDE_PATH = _ROOT / "foundation/design-system/ds-allowlist.md"
+DESIGN_PAGES_DIR = _ROOT / "foundation/design-pages"
 DP_ID_PATTERN = re.compile(r"^DP-[A-Z0-9]+(-[A-Z0-9]+)*$")
 
 ERRORS = []

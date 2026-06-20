@@ -17,6 +17,13 @@ import yaml
 import re
 from pathlib import Path
 
+# Windows 콘솔(cp949 등) 유니코드 출력 크래시 방지
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
+    except Exception:
+        pass
+
 ERRORS = []
 WARNINGS = []
 
@@ -37,6 +44,7 @@ NOTE_RE = re.compile(r"^NOTE-[A-Z][A-Z0-9-]+\.\d{3}$")
 NFR_RE  = re.compile(r"^NFR-[A-Z][A-Z0-9-]+\.\d{3}$")
 PRM_RE  = re.compile(r"^PRM-\d{3,}$")
 DP_RE   = re.compile(r"^DP-[A-Z][A-Z0-9-]+$")
+Q_RE    = re.compile(r"^Q-\d{3,}$")
 
 
 def err(msg: str):
@@ -210,6 +218,8 @@ def validate_intake(intake: dict, path: str):
         for field in ("id", "ask", "status"):
             if field not in q:
                 err(f"{loc}: 필수 필드 '{field}' 없음")
+        if "id" in q and not Q_RE.match(str(q["id"])):
+            err(f"{loc}.id: Q- 패턴 불일치 (값: {q['id']}, 예: Q-001)")
         if "status" in q and q["status"] == "deferred" and "defer_reason" not in q:
             err(f"{loc}: status=deferred인데 defer_reason 없음")
 

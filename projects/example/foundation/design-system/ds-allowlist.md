@@ -1,7 +1,7 @@
 # DS Allowlist — 허용 컴포넌트 집합 (가드레일)
 
 > **이 파일은 가이드(안내서)가 아니라 DS 폐쇄를 강제하는 계약/가드레일이다.** 여기 `## 이름`으로 등록된 컴포넌트만 screen model·design page에 쓸 수 있고, lint가 기계적으로 강제한다. DS 종류와 무관한 stack-agnostic 형식(`## 이름` + `description` + `props`)만 담는다.
-> 이 프로젝트의 DS 정체성·셋업·컴포넌트 추가 절차(사람용 안내서)는 `input/design-system/project-design-guide.md` 및 `foundation/decisions/tech-stack.md`(DS 핀의 단일 출처)를 참조하라.
+> 이 프로젝트의 DS 정체성·셋업·컴포넌트 추가 절차(사람용 안내서)는 plugin-prerequisite `docs/project-design-guide.md` 및 `foundation/decisions/tech-stack.md`(DS 핀의 단일 출처)를 참조하라.
 
 ## Button
 - **description**: 액션을 실행하는 기본 버튼

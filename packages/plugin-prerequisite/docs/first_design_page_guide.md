@@ -9,7 +9,7 @@
 
 이 가이드는 아래가 끝난 다음 단계입니다.
 
-- ✅ `input/design-system/ds-source/` 에 shadcn 컴포넌트 소스 29개
+- ✅ `foundation/design-system/ds-source/` 에 shadcn 컴포넌트 소스 29개
 - ✅ `foundation/design-system/ds-allowlist.md` 에 컴포넌트 29개 매니페스트 (검증 통과)
 
 지금부터 만들 것:

@@ -17,6 +17,13 @@ import yaml
 import re
 from pathlib import Path
 
+# Windows 콘솔(cp949 등) 유니코드 출력 크래시 방지
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
+    except Exception:
+        pass
+
 # ── 공용 DS 폐쇄 라이브러리 (harness-core/lib) 단일 출처 ─────────────────────────
 # 시스템 모노레포에서는 packages/harness-core/lib 에 위치.
 # 런타임 레이아웃이 달라 import 실패 시 동치 로컬 구현으로 폴백한다.
@@ -222,10 +229,13 @@ def lint_L3_consistency(layout: list, actions: list, screen_id: str, all_screens
 
 # ── L4: 커버리지 ──────────────────────────────────────────────────────────────
 
-def lint_L4_coverage(layout: list, actions: list, screen_id: str):
+def lint_L4_coverage(layout: list, actions: list, screen_id: str, status: str = "draft"):
     """
-    L4-1: actions[]의 component가 layout에 없는 CMP를 참조하면 error
+    L4-1: actions[]의 component가 layout에 없는 CMP를 참조하면 error (항상)
     L4-2: 모든 interactive CMP에 user_confirmed action이 있어야 함 (Gate A 직전 커버리지)
+          — 작성 중(draft/layout_confirmed/actions_in_progress)에는 정상적으로 미완이므로
+            error 가 아니라 warning 으로 보고하고, review/confirmed 단계에서만 error 로 강제한다.
+            (이전에는 draft 에서도 error 가 떠 Gate A 사전 점검을 오염시켰다.)
     """
     layout_ids = {item.get("id") for item in (layout or [])}
     # L4-1
@@ -234,6 +244,7 @@ def lint_L4_coverage(layout: list, actions: list, screen_id: str):
         if comp and comp not in layout_ids:
             l4_err(f"{screen_id}: action '{action.get('id')}'의 component '{comp}'이 layout에 없음 — 실존하지 않는 CMP 참조")
     # L4-2
+    enforce = status in ("review", "confirmed")
     confirmed_comps = {
         a.get("component") for a in (actions or [])
         if a.get("status") == "user_confirmed"
@@ -242,7 +253,11 @@ def lint_L4_coverage(layout: list, actions: list, screen_id: str):
         if (item.get("meta") or {}).get("interactive"):
             cid = item.get("id")
             if cid not in confirmed_comps:
-                l4_err(f"{screen_id}.{cid}: interactive=true인데 user_confirmed action 없음 — 커버리지 미달")
+                if enforce:
+                    l4_err(f"{screen_id}.{cid}: interactive=true인데 user_confirmed action 없음 — 커버리지 미달")
+                else:
+                    warn(f"{screen_id}.{cid}: interactive=true인데 아직 user_confirmed action 없음 "
+                         f"(status={status}) — Gate A 전 채워야 함")
 
 
 # ── main ──────────────────────────────────────────────────────────────────────
@@ -311,6 +326,7 @@ def main():
             continue
 
         screen_id = doc.get("screen", {}).get("id", fp.stem)
+        status    = doc.get("screen", {}).get("status", "draft")
         layout    = doc.get("layout", [])
         actions   = doc.get("actions", [])
         notes     = doc.get("notes", [])
@@ -318,7 +334,7 @@ def main():
         lint_L1_ds_closure(layout, allowed, dp_slots, screen_id)
         lint_L2_completeness(layout, actions, notes, screen_id)
         lint_L3_consistency(layout, actions, screen_id, all_screen_ids)
-        lint_L4_coverage(layout, actions, screen_id)
+        lint_L4_coverage(layout, actions, screen_id, status)
 
     # 결과 출력
     all_errors = L1_ERRORS + L2_ERRORS + L3_ERRORS + L4_ERRORS

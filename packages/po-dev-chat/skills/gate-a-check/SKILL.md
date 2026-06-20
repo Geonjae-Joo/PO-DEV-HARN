@@ -39,6 +39,7 @@ python3 skills/gate-a-check/scripts/gate-a-check.py model_repo/screens/SCR-*.yam
 | 모든 action status: user_confirmed | YAML 직접 확인 |
 | open_questions: open 항목 0개 | deferred는 defer_reason 필수 |
 | PO 명시적 승인 | --pi-approved 플래그 |
+| 전역 스파인 ID 유일성 | harness-core/lib/spine_ledger.py (link-manifest 원장 기준 중복 차단) |
 
 > 상태 전환 규칙: [state-machine.md](../../rules/state-machine.md)
 

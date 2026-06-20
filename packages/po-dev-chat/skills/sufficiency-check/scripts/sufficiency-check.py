@@ -12,6 +12,13 @@ import yaml
 import json
 from pathlib import Path
 
+# Windows 콘솔(cp949 등) 유니코드 출력 크래시 방지
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
+    except Exception:
+        pass
+
 # 결과 버킷
 RESULTS = {
     "error":    [],   # Gate A 차단

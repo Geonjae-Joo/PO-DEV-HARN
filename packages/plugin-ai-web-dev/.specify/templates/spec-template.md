@@ -4,7 +4,7 @@
 **Feature Branch**: `[###-pack-name]`  
 **Created**: [DATE]  
 **Status**: Draft  
-**Input**: `input/spec-pack/PACK-[NAME]/spec.yaml` (PO 계약 원문 번들)
+**Input**: `model_repo/specs/PACK-[NAME]/spec.yaml` (PO 계약 원문 번들)
 
 <!--
   하니스 규칙(constitution): 이 spec은 ②가 확정(Gate A)한 spec-pack에서 **파생**된다.
@@ -14,7 +14,7 @@
 
 ## Pack Scope *(mandatory)*
 
-- **Screens (SCR-)**: [SCR-ORDER-LIST, SCR-ORDER-DETAIL …] — `yaml_ref` / `render_ref` / `shell_ref`(Phase α 산출) / `pinned_version`·`pinned_hash`
+- **Screens (SCR-)**: [SCR-ORDER-LIST, SCR-ORDER-DETAIL …] — `yaml_ref` / `render_ref` / `shell_ref`(Phase α 산출) / `pinned_contract`(version·hash·git_ref)
 - **Components (CMP-)**: [CMP-ORDER-LIST.table …]
 - **Requirements (REQ-)**: [REQ-ORDER-LIST.001 …]
 - **Actor/Entity 경계**: [예: user 플로우, ENT-ORDER 도메인]
@@ -61,6 +61,19 @@
 ## Non-Functional Requirements *(include if present)*
 
 - **NFR-[ID]** (category: [performance|concurrency|audit|security|availability]): [concurrent_users / response_target / priority]
+
+## Data Contracts (ENT-/EXT-) *(include if present)*
+
+<!-- 팩의 entities[]/externals[] ref. ②의 개념 계약 원본. ③ /speckit-plan이 data-model.md·ERD·어댑터로 *파생*(물리설계는 여기서 하지 않음). 새 엔티티 발명 금지. -->
+
+- **ENT-[ID]** (`model_repo/entities/ENT-[ID].yaml`): [엔티티 의미 한 줄, owner_screens]
+- **EXT-[ID]** (`model_repo/externals/EXT-[ID].yaml`): [외부 시스템 의미, protocol, failure_policy 요약]
+
+## Journeys (E2E, JRN-) *(include if present)*
+
+<!-- 팩 화면을 거치는 여정 ref. ③ Phase γ가 JRN-당 Playwright(+BDD) E2E 1개로 구현. step 검증은 각 화면 action의 acceptance를 재사용. -->
+
+- **JRN-[ID]** (`model_repo/journeys/JRN-[ID].yaml`, priority: [high|med|low]): [여정 한 줄] — steps: [SCR-…/REQ-… 순서]
 
 ## Open Items (deferred) *(from intake.open_questions)*
 

@@ -80,5 +80,5 @@ external:
 ## 3. 검증 (sufficiency-check 연동)
 
 - action의 `outcome.type ∈ {query, mutate, export}`이면 `outcome.target`이 `ENT-`/`EXT-` 형식이어야 한다 — **현재 구현됨**(`sufficiency-check.py` CHK-ACT-DATASOURCE).
-- (목표) 참조된 모든 `ENT-`/`EXT-` ID는 `model_repo/entities|externals/`에 **실존**해야 한다 — 실존 교차검증은 sufficiency-check 확장 backlog.
+- 참조된 모든 `ENT-`/`EXT-` ID는 `model_repo/entities|externals/`에 **실존**해야 한다 — **spec-generator 발행 가드(`scripts/spec-pack-guard.py`)가 팩 발행 전 dangling ref 를 차단**한다(전역 유일성은 `spine_ledger.py`).
 - Gate A 전 모든 참조 엔티티/외부가 정의·확정되는 것을 권장한다.

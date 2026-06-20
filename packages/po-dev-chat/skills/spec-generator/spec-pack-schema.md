@@ -118,16 +118,18 @@ screens:
     yaml_ref: "model_repo/screens/SCR-ORDER-LIST.yaml"
     render_ref: "model_repo/renders/SCR-ORDER-LIST.render.html"
     shell_ref: "app_repo/frontend/src/pages/OrderList/index.tsx"  # Phase α 산출
-    pinned_version: 12
-    pinned_hash: "sha256:..."
-    git_ref: "abc1234"
+    pinned_contract:            # 고정 계약 스냅샷 (구현은 이 위에서만 — freeze). 소비자(speckit-specify)가 읽는 단일 키.
+      version: 12
+      hash: "sha256:..."
+      git_ref: "abc1234"
   - id: SCR-ORDER-DETAIL
     yaml_ref: "model_repo/screens/SCR-ORDER-DETAIL.yaml"
     render_ref: "model_repo/renders/SCR-ORDER-DETAIL.render.html"
     shell_ref: "app_repo/frontend/src/pages/OrderDetail/index.tsx"
-    pinned_version: 8
-    pinned_hash: "sha256:..."
-    git_ref: "abc1234"
+    pinned_contract:
+      version: 8
+      hash: "sha256:..."
+      git_ref: "abc1234"
 
 # ─────────────────────────────────────────────
 # SCOPE — 이 팩에 포함된 REQ·CMP 범위
@@ -142,6 +144,39 @@ scope:
     - CMP-ORDER-LIST.filterbar
     - CMP-ORDER-LIST.table
     - CMP-ORDER-DETAIL.statusBadge
+
+# ─────────────────────────────────────────────
+# ENTITIES — 이 팩이 다루는 개념 데이터 계약(ENT-) ref
+# 복사 아님. model_repo/entities/ENT-*.yaml 원본 참조. ③ Phase β가 data-model·ERD로 파생.
+# 수집 규칙: scope.reqs 의 action outcome.target 중 ENT- + 그 화면 owner_screens 로 역참조.
+# ─────────────────────────────────────────────
+entities:
+  - id: ENT-ORDER
+    ref: "model_repo/entities/ENT-ORDER.yaml"
+    version: 1
+  - id: ENT-MEMBER
+    ref: "model_repo/entities/ENT-MEMBER.yaml"
+    version: 1
+
+# ─────────────────────────────────────────────
+# EXTERNALS — 이 팩이 거치는 외부 연동 계약(EXT-) ref
+# model_repo/externals/EXT-*.yaml 원본 참조. ③ Phase β가 어댑터로 구현.
+# ─────────────────────────────────────────────
+externals:
+  - id: EXT-PAYMENT
+    ref: "model_repo/externals/EXT-PAYMENT.yaml"
+    version: 1
+
+# ─────────────────────────────────────────────
+# JOURNEYS — 이 팩의 화면을 거치는 E2E 여정(JRN-) ref
+# model_repo/journeys/JRN-*.yaml 원본 참조. ③ Phase γ가 Playwright(+BDD) E2E로 구현.
+# 수집 규칙: steps[].screen 이 이 팩 screens 에 1개라도 포함되는 JRN- 을 넣는다.
+# ─────────────────────────────────────────────
+journeys:
+  - id: JRN-ORDER-REFUND
+    ref: "model_repo/journeys/JRN-ORDER-REFUND.yaml"
+    version: 1
+    priority: high
 
 # ─────────────────────────────────────────────
 # ACTIONS — screen model actions[] 원문 추출 (scope 범위만)
@@ -201,10 +236,12 @@ open_items:
 |---|---|
 | screens: yaml_ref + render_ref + shell_ref | Data Model, ERD |
 | scope: REQ-/CMP- 범위 | API endpoint 설계 |
+| entities (ENT- ref) + externals (EXT- ref) | data-model.md 물리 설계·어댑터 코드 |
+| journeys (JRN- ref) | Playwright E2E 코드 |
 | actions + acceptance 원문 | bl-analyst decision_table |
 | notes 원문 (verbatim, complexity) | T### task 목록 |
 | open_items 원문 | 테스트 코드 |
-| pinned contract (version + hash) | impl 패턴·힌트 |
+| pinned_contract (version + hash + git_ref) | impl 패턴·힌트 |
 
 ---
 
@@ -212,7 +249,8 @@ open_items:
 
 | speckit 명령 | 읽는 팩 섹션 | 산출물 |
 |---|---|---|
-| `speckit.specify` | meta + scope + open_items | 범위 확정, 필요 시 sub-pack 분할, deferred 처리 방향 |
-| `speckit.plan` | screens(yaml_ref) + actions + notes(complexity) | Data Model, ERD, API 설계; complexity:high → bl-analyst |
+| `speckit.specify` | meta + scope + entities + externals + journeys + open_items | 범위 확정, 필요 시 sub-pack 분할, deferred 처리 방향 |
+| `speckit.plan` | screens(yaml_ref) + actions + notes(complexity) + entities(ENT- ref) + externals(EXT- ref) | Data Model, ERD, API 설계; complexity:high → bl-analyst |
 | `speckit.tasks` | actions + acceptance + (bl-analyst 산출) | T### 목록, test-first 정렬, [P] 병렬 마커 |
 | `speckit.implement` | acceptance + screens(shell_ref + render_ref) | TDD 구현; shell_ref 컴포넌트에 wiring |
+| `Phase γ` (E2E) | journeys(JRN- ref) → 각 step의 SCR/action acceptance | Playwright(+BDD) E2E 스펙 (JRN-당 1개) |

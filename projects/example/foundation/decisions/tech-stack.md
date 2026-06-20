@@ -51,6 +51,24 @@
 
 ## Design System 연동
 
+> **DS 핀의 단일 출처(ds-allowlist.md가 이 파일을 참조).** 허용집합은 `foundation/design-system/ds-allowlist.md`, 원본 소스는 `foundation/design-system/ds-source/src/components/ui/`.
+
+| 항목 | 값 |
+|---|---|
+| 사용 DS | shadcn/ui (Radix UI + Tailwind CSS) |
+| 스타일 | new-york |
+| 기반 색상 | neutral |
+| 컴포넌트 소스 위치 | `foundation/design-system/ds-source/src/components/ui/` |
+| 허용 목록 원본 | `foundation/design-system/ds-allowlist.md` |
+
+경로 별칭(ds-source 프로젝트 기준):
+
+| 별칭 | 실제 경로 |
+|---|---|
+| `@/components/ui` | `src/components/ui/` |
+| `@/lib` | `src/lib/` |
+| `@/hooks` | `src/hooks/` |
+
 - DS design token → CSS custom properties (`--color-primary`, `--spacing-md` 등)
 - Tailwind config에서 design token을 `extend`로 참조
 - shadcn/ui 컴포넌트 기반으로 DS 컴포넌트 wrapper 작성

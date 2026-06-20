@@ -13,11 +13,26 @@ Hook: tdd-gate.py
 """
 
 import os
+import re
 import sys
 import subprocess
 
+# Windows 콘솔(cp949 등) 출력 크래시 방지
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
+    except Exception:
+        pass
+
 
 SKIP_MARKERS = ("[SCAFFOLD]",)
+
+# 테스트 파일 판별 — 명확한 테스트 네이밍 컨벤션만 매칭한다.
+# 주의: 'spec' 부분문자열을 통째로 쓰면 하니스의 spec-pack 디렉터리(specs/)·spec.yaml·spec.md를
+# 테스트로 오인한다. 따라서 파일명 컨벤션(.spec.<ext>/.test.<ext>/test_*/*_test) + 테스트 전용
+# 디렉터리(test/tests/__tests__/e2e)만 인정하고, 'specs'는 테스트 디렉터리로 보지 않는다.
+TEST_FILE_RE = re.compile(r"(^test_|_test\.|\.test\.|\.spec\.|_spec\.)", re.IGNORECASE)
+TEST_DIR_PARTS = {"test", "tests", "__tests__", "e2e"}
 
 # 구현/테스트 판별용 소스 확장자 (스택 중립). 필요 시 HARNESS_SRC_EXT로 확장.
 DEFAULT_SRC_EXT = (".java", ".kt", ".ts", ".tsx", ".js", ".jsx",
@@ -50,15 +65,8 @@ def staged_files() -> list[str]:
         return []
 
 
-def run_tests() -> bool:
-    """프로젝트 테스트 실행.
-    1순위: HARNESS_TEST_CMD 환경변수(① tech-stack.md가 지정한 명시 명령).
-    2순위: 일반 생태계 자동 탐지(JVM/Node/Python/Go). 하나라도 실패하면 False.
-    """
-    override = os.environ.get("HARNESS_TEST_CMD")
-    if override:
-        return subprocess.run(["bash", "-lc", override]).returncode == 0
-
+def detect_test_commands() -> list:
+    """일반 생태계 자동 탐지(JVM/Node/Python/Go). 러너를 못 찾으면 빈 리스트."""
     commands = []
     # JVM (Gradle/Maven)
     if os.path.exists("app_repo/backend/build.gradle") or os.path.exists("app_repo/backend/build.gradle.kts"):
@@ -74,13 +82,22 @@ def run_tests() -> bool:
     # Go
     if os.path.exists("app_repo/backend/go.mod"):
         commands.append(["bash", "-lc", "cd app_repo/backend && go test ./..."])
+    return commands
 
+
+def run_tests():
+    """프로젝트 테스트 실행.
+    1순위: HARNESS_TEST_CMD 환경변수(① tech-stack.md가 지정한 명시 명령).
+    2순위: 일반 생태계 자동 탐지(JVM/Node/Python/Go).
+    반환: True=green, False=실패, None=러너를 찾지 못함(판정 불가).
+    """
+    override = os.environ.get("HARNESS_TEST_CMD")
+    if override:
+        return subprocess.run(["bash", "-lc", override]).returncode == 0
+
+    commands = detect_test_commands()
     if not commands:
-        # 러너를 못 찾으면 보수적으로 통과(다른 게이트가 잡도록). HARNESS_TEST_CMD로 명시 권장.
-        print("[tdd-gate] WARN: 테스트 러너 자동 탐지 실패. "
-              "HARNESS_TEST_CMD 환경변수로 테스트 명령을 지정하세요(① tech-stack.md 참조).",
-              file=sys.stderr)
-        return True
+        return None  # 러너 미탐지 — silent pass 하지 않고 호출자가 정책 결정
     for cmd in commands:
         if subprocess.run(cmd).returncode != 0:
             return False
@@ -97,8 +114,12 @@ def main() -> int:
     exts = src_exts()
 
     def is_test_path(f: str) -> bool:
-        low = f.lower()
-        return ("test" in low or "spec" in low or "__tests__" in low or "_test." in low)
+        low = f.replace("\\", "/").lower()
+        name = low.rsplit("/", 1)[-1]
+        if TEST_FILE_RE.search(name):
+            return True
+        # 디렉터리 경로 성분이 테스트 전용 폴더명과 정확히 일치할 때만 (부분문자열 금지)
+        return any(part in TEST_DIR_PARTS for part in low.split("/")[:-1])
 
     impl_changed = any(
         f.endswith(exts) and not is_test_path(f)
@@ -115,10 +136,22 @@ def main() -> int:
         return 1
 
     # 테스트 스위트는 구현 파일이 스테이징된 commit에만 적용한다.
-    # (spec/plan/tasks 등 문서-only 커밋은 코드 스위트의 red 여부로 막지 않는다.)
-    if impl_changed and not run_tests():
-        print("[tdd-gate] BLOCK: 테스트가 실패했습니다. green 상태에서만 commit 가능합니다.", file=sys.stderr)
-        return 1
+    # (spec/plan/tasks 등 문서-only 커밋은 코드 스위트의 green 여부로 막지 않는다.)
+    if impl_changed:
+        result = run_tests()
+        if result is False:
+            print("[tdd-gate] BLOCK: 테스트가 실패했습니다. green 상태에서만 commit 가능합니다.", file=sys.stderr)
+            return 1
+        if result is None:
+            # 러너 미탐지 → silent pass 금지. 명시 명령 또는 명시적 escape 필요.
+            if os.environ.get("HARNESS_TDD_ALLOW_NO_RUNNER") == "1":
+                print("[tdd-gate] WARN: 테스트 러너를 찾지 못했으나 HARNESS_TDD_ALLOW_NO_RUNNER=1 로 통과. "
+                      "(스캐폴드 초기 단계에서만 사용 권장)", file=sys.stderr)
+            else:
+                print("[tdd-gate] BLOCK: 테스트 러너를 자동 탐지하지 못했습니다. "
+                      "HARNESS_TEST_CMD 로 테스트 명령을 지정하세요(① tech-stack.md 핀). "
+                      "초기 스캐폴드 등 의도적 우회는 HARNESS_TDD_ALLOW_NO_RUNNER=1.", file=sys.stderr)
+                return 1
 
     print("[tdd-gate] PASS")
     return 0

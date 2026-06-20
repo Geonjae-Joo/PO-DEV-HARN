@@ -4,5 +4,5 @@
   "description": "① PREREQUISITE — DS 허용집합·design page·platform-baseline 준비. 프로젝트 워크스페이스의 foundation/ 에 작업.",
   "components": { "skills": "skills/", "hooks": "hooks/", "docs": "docs/" },
   "shared": "../harness-core",
-  "_note": "hook 정의 상세는 settings.json 참조. 플러그인 매니페스트 스키마는 현행 Claude Code 문서로 최종 검증 필요."
+  "_note": "hook 정의 상세는 settings.json 참조 — 현행 Claude Code 훅 스키마(PostToolUse matcher + command, payload는 stdin JSON, 차단은 exit 2)를 따른다."
 }

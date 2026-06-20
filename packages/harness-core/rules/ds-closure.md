@@ -34,9 +34,9 @@ DS 집합 밖의 컴포넌트는 PO가 요청하더라도 layout-recommend skill
 
 ```
 1. 개발 리드가 DS 팀/디자이너와 협의
-2. input/design-system/ 에 컴포넌트 추가
+2. foundation/design-system/ds-source/ 에 컴포넌트 추가
 3. ds-allowlist.md에 섹션 추가 (## ComponentName + 필수 필드)
 4. ds-guide-validate.py 실행 → 통과 확인
 5. design-page-lint.py 재실행 → 기존 design page 영향 없는지 확인
-6. link-manifest.yaml 갱신
+6. foundation/link-manifest.yaml 의 design_system.components 에 등록
 ```

@@ -23,7 +23,7 @@ disable-model-invocation: false
   3. **복잡 BL 위임** — `complexity:high` 노트는 `.claude/agents/bl-analyst.md` 호출 → decision table·state machine·worked examples 수령. open decision 1개라도 남으면 Gate B 통과 불가
   4. **frontend wiring 계획** — Phase α shell(`shell_ref`) 기준으로 컴포넌트↔API hook↔상태↔권한 조건부 렌더↔에러 처리 명시. layout은 건드리지 않음
   5. 산출물을 `/speckit-tasks` 입력으로 넘김
-  - 입력: `input/spec-pack/PACK-X/spec.yaml`, `model_repo/renders/*.render.html`, `app_repo/specs/PACK-X/spec.yaml`(shell_ref)
+  - 입력: `model_repo/specs/PACK-X/spec.yaml`(entities ENT-/externals EXT- ref 포함), `model_repo/entities/ENT-*.yaml`·`model_repo/externals/EXT-*.yaml`(데이터 계약 원본), `model_repo/renders/*.render.html`, `app_repo/specs/PACK-X/spec.yaml`(shell_ref)
 
 ## User Input
 

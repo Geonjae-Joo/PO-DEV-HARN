@@ -84,4 +84,4 @@ Write-Host "  → $hookDst\commit-msg   (tdd-gate + commit-spine-id, blocking)"
 Write-Host "  → $hookDst\post-commit  (manifest-sync, non-blocking)"
 Write-Host "  python: $py"
 if ($testCmdLine) { Write-Host "  HARNESS_TEST_CMD 고정됨" }
-else { Write-Host "  HARNESS_TEST_CMD 미지정 — tdd-gate 자동 탐지 사용(①/tech-stack.md 권장)" }
+else { Write-Host "  HARNESS_TEST_CMD 미지정 — tdd-gate 자동 탐지 사용(foundation/decisions/tech-stack.md 권장)" }

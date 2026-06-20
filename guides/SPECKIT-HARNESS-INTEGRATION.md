@@ -15,7 +15,7 @@
 ```
 ② PACK-*/spec.yaml  (Gate A confirmed 계약)
         │
-        ▼  input/spec-pack/ 로 인계
+        ▼  model_repo/specs/ 로 인계
 /speckit-specify    팩 scope 확정 → spec.md (Pack Scope·SCR/REQ·acceptance 원문)   ┐
 /speckit-clarify    open_items(deferred Q-)·모호점 HITL 해소 (verbatim 노트 불변)   │ 설계
 /speckit-checklist  (선택) Gate A 인계 점검 체크리스트                              │

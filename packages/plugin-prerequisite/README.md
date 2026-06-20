@@ -11,7 +11,7 @@
 ## Workflow
 
 ```
-1. 사용자가 기존 design component를 input/design-system/ 에 직접 저장
+1. 사용자가 기존 design component를 foundation/design-system/ds-source/ 에 직접 저장
    (새로 만들지 않음 — 기존 DS 그대로 투입, design token 포함)
      └ hook: ds-guide-validate.py 자동 실행 (목록·필수 필드 검증)
 
@@ -49,11 +49,11 @@
 
 ### Hooks — 저장 이벤트 자동 실행 (AI 없는 결정론)
 
-hooks는 `.claude/settings.json`의 `hooks` 키에 Claude Code hook 이벤트로 정의된다(프로젝트 훅은 settings.json에서 로드됨). 스크립트 경로: `${CLAUDE_PROJECT_DIR}/.claude/hooks/`
+hooks는 플러그인 `settings.json`의 `hooks` 키에 Claude Code hook 이벤트(PostToolUse matcher + command)로 정의된다. 스크립트 경로: `${CLAUDE_PLUGIN_ROOT}/hooks/`. payload는 stdin JSON, 차단은 exit 2.
 
 | 스크립트 | 이벤트 | 트리거 | 설명 |
 |---|---|---|---|
-| `.claude/hooks/ds-guide-validate.py` | `PreToolUse(Write\|Edit)` | ds-allowlist.md 저장 시 | 컴포넌트 목록 형식, 필수 필드(이름·props·용도) 존재 여부 검증. ds-allowlist.md는 사람이 직접 작성·편집하는 공유 foundation 아티팩트(②의 허용 집합 원본)이므로 저장 이벤트 훅으로 최상위에 둔다. (②의 `on-save-schema-validate.py`와 동일 위상.) |
+| `hooks/ds-guide-validate.py` | `PostToolUse(Write\|Edit)` | ds-allowlist.md 저장 직후 | 컴포넌트 목록 형식, 필수 필드(이름·props·용도) 존재 여부 검증. 훅 payload(JSON)를 **stdin**으로 받아 파일 경로를 자기필터(ds-allowlist.md만 검증, 그 외 조용히 통과), 실패 시 **exit 2**로 모델에 피드백. 현행 Claude Code 훅 스키마(matcher + command). settings.json 선언은 `${CLAUDE_PLUGIN_ROOT}/hooks/`. |
 
 ### Rules — 변경 없는 불변 규칙 (전 레이어 공유)
 

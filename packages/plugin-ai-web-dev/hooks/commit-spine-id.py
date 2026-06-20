@@ -15,9 +15,18 @@ Hook: commit-spine-id.py
 import sys
 import re
 
+# Windows 콘솔(cp949 등) 출력 크래시 방지
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
+    except Exception:
+        pass
+
 
 # [PACK-ORDER/T001] ... (REQ-...)  형태
 SPEC_RE = re.compile(r"^\[(PACK|SPEC|MOD)-?[A-Z0-9-]*\/T\d+\]")
+# baseline 사유 토큰: (baseline) / (ops baseline) 등 괄호 안에 'baseline' 포함
+BASELINE_RE = re.compile(r"\([^)]*baseline[^)]*\)", re.IGNORECASE)
 SCAFFOLD_RE = re.compile(r"^\[SCAFFOLD\]")
 CO_RE = re.compile(r"^\[CO\/(dismiss|amend|regenerate)\]")
 # [E2E/JRN-ORDER-REFUND] ... — 화면 간 여정 Playwright E2E (③ Phase γ). JRN-가 스파인 ID 역할.
@@ -68,10 +77,14 @@ def main() -> int:
               "예) [PACK-ORDER/T001] 요약 (REQ-ORDER-LIST.001)", file=sys.stderr)
         return 1
 
-    # PACK/MOD(도메인 작업)은 관련 REQ- 필수. SPEC-(baseline)은 REQ- 면제.
+    # PACK/MOD(도메인 작업)은 관련 REQ- 필수. SPEC-(baseline)은 REQ- 대신 (baseline) 사유 토큰 필수.
     prefix = m.group(1)
     if prefix in ("PACK", "MOD") and not REQ_RE.search(msg):
         print("[commit-spine-id] BLOCK: 관련 REQ- 스파인 ID가 메시지에 없습니다.", file=sys.stderr)
+        return 1
+    if prefix == "SPEC" and not (REQ_RE.search(msg) or BASELINE_RE.search(msg)):
+        print("[commit-spine-id] BLOCK: SPEC- 커밋은 REQ- 또는 (baseline)/(ops baseline) 사유 토큰이 "
+              "필요합니다 (commit-convention.md). 예) [SPEC-000/T003] JWT 인증 필터 (baseline)", file=sys.stderr)
         return 1
 
     print("[commit-spine-id] PASS")

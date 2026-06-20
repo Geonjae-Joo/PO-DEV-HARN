@@ -3,8 +3,13 @@
 <!--
   이 파일은 spec-kit의 모든 명령(/speckit-specify·clarify·plan·tasks·analyze·implement·checklist)이
   비-협상(non-negotiable) 권위로 읽는다. /speckit-analyze는 이 원칙 위반을 자동 CRITICAL로 분류한다.
-  원본 하드 룰: packages/harness-core/rules/constitution.md (전 레이어 공통). 이 파일은 그 사본을
-  spec-kit 권위 슬롯(.specify/memory/constitution.md)에 동기화한 것이다. 둘은 항상 일치해야 한다.
+
+  원본 하드 룰: packages/harness-core/rules/constitution.md (전 레이어 공통).
+  관계: 이 파일은 그 *사본*이 아니라, harness-core의 핵심 원칙(원칙 1~8)을 **그대로 담은 위에**
+  ③ AI-WEB-DEV/spec-kit 전용 절차(§V Gate B, §Development Workflow 매핑, §Technology Stack 슬롯)를
+  **덧붙인 spec-kit 권위 뷰**다. 따라서 구조(I~VII + 부록)는 다를 수 있으나, **핵심 원칙의 내용은
+  harness-core와 항상 일치**해야 한다(접두사 집합·TDD·DS폐쇄·커밋규칙 등). harness-core를 고치면
+  이 파일의 해당 원칙도 함께 고친다.
 -->
 
 3-레이어 하니스(① PREREQUISITE → ② PO-DEV-CHAT → ③ AI-WEB-DEV)에서 ③(AI-WEB-DEV)가
@@ -24,7 +29,8 @@ DS(`foundation/design-system/ds-allowlist.md`) 허용 집합 밖의 컴포넌트
 
 모든 아티팩트는 스파인 ID를 가지며 끝까지 추적된다:
 `SCR → CMP → REQ → acceptance → PACK → task(T###) → test → commit`.
-접두사: `SCR-`(화면) `CMP-`(컴포넌트) `REQ-`(요구사항) `NOTE-`/`NFR-`(노트) `PACK-`(도메인 팩) `SPEC-`(baseline) `T###`(태스크) `DP-`(design page). spec-kit의 spec/plan/tasks/test/commit은 이 ID를 보존해야 한다(`packages/harness-core/rules/spine-ids.md`).
+데이터/여정 추적: `REQ/action → ENT-/EXT-(계약) → data-model·ERD(파생)`, `JRN-(여정) → SCR/action → e2e-test`.
+접두사(harness-core spine-ids.md와 동일 집합): `SCR-`(화면) `CMP-`(컴포넌트) `REQ-`(요구사항) `ENT-`(개념 엔티티 계약) `EXT-`(외부 연동 계약) `NOTE-`/`NFR-`(노트) `JRN-`(화면 간 여정=E2E) `Q-`(HITL 질문) `PRM-`(prompt log) `PACK-`(도메인 팩) `SPEC-`(baseline) `T###`(태스크) `DP-`(design page). spec-kit의 spec/plan/tasks/test/commit은 이 ID를 보존해야 한다. 전역 유일성은 `harness-core/lib/spine_ledger.py`가 강제한다(`packages/harness-core/rules/spine-ids.md`).
 
 ### IV. Test-First TDD (NON-NEGOTIABLE)
 
@@ -49,7 +55,7 @@ DS(`foundation/design-system/ds-allowlist.md`) 허용 집합 밖의 컴포넌트
 ## Scope & Boundaries
 
 - *명세*는 ①, *계약(정의)*은 ②, *구현(코드)*은 ③의 책임이다. ③는 **새 계약·요구사항·규칙을 만들지 않는다**.
-- ③의 입력: `input/spec-pack/PACK-*/spec.yaml`(② 발행) + `input/harness/`의 SPEC-000 명세 + ①의 tech-stack·design 자산. spec-kit의 feature spec(`spec.md`)은 이 spec-pack에서 파생되어야 하며, 새 화면·REQ를 발명하지 않는다.
+- ③의 입력: `model_repo/specs/PACK-*/spec.yaml`(② 발행) + `foundation/platform-baseline/`의 SPEC-000·SPEC-OPS-000 명세 + ①의 tech-stack·design 자산(`foundation/`). spec-kit의 feature spec(`spec.md`)은 이 spec-pack에서 파생되어야 하며, 새 화면·REQ를 발명하지 않는다.
 - 프레임워크·테스트 스택은 **프로젝트마다 다르다**. 특정 스택을 가정하지 않는다. ① PREREQUISITE에서 `/speckit-constitution`으로 정의해 `foundation/decisions/tech-stack.md`에 핀으로 박는다(§Technology Stack). 모든 스택 의존 값(테스트 러너·`HARNESS_TEST_CMD`·shell 확장자 등)은 그 핀을 참조한다.
 
 ## Development Workflow (spec-kit ↔ harness 매핑)
@@ -85,6 +91,6 @@ DS(`foundation/design-system/ds-allowlist.md`) 허용 집합 밖의 컴포넌트
 
 ## Governance
 
-이 constitution은 ③의 모든 다른 관행에 우선한다. 위반은 `/speckit-analyze`에서 CRITICAL로 분류되며, 원칙 희석·재해석·무시가 아니라 spec/plan/tasks를 수정해 해소한다. 원칙 자체의 변경은 ①의 `.claude/rules/constitution.md`를 먼저 고치고 이 파일을 동기화하는 별도 절차로만 가능하다(전 레이어 README·CLAUDE.md 동반 갱신).
+이 constitution은 ③의 모든 다른 관행에 우선한다. 위반은 `/speckit-analyze`에서 CRITICAL로 분류되며, 원칙 희석·재해석·무시가 아니라 spec/plan/tasks를 수정해 해소한다. 핵심 원칙(I~IV·VI~VII = harness-core 원칙 1~8) 자체의 변경은 `packages/harness-core/rules/constitution.md`를 먼저 고치고 이 파일의 해당 원칙을 함께 고치는 절차로만 가능하다(전 레이어 README·CLAUDE.md 동반 갱신). §V Gate B 등 ③ 전용 절차는 이 파일이 단일 출처다.
 
 **Version**: 1.0.0 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-06-15 | **Source**: `packages/harness-core/rules/constitution.md`

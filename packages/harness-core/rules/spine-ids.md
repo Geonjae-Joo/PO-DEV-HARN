@@ -101,7 +101,7 @@ DP-MAIN / DP-POPUP / DP-LIST / DP-DETAIL / DP-FORM / DP-WIZARD
 ## 불변 원칙
 
 1. **결번 유지**: 삭제된 ID는 재사용하지 않는다.
-2. **전역 유일**: 같은 접두사 내에서 중복 금지.
-3. **자동 채번 금지**: AI가 임의로 ID를 발명하지 않는다. link-manifest.yaml의 다음 번호를 참조한다.
-4. **커밋에 포함**: 모든 커밋 메시지에 관련 스파인 ID가 포함되어야 한다.
+2. **전역 유일**: 같은 접두사 내에서 중복 금지. **기계 강제**: `harness-core/lib/spine_ledger.py` 가 model_repo 전체를 스캔해 파일을 가로지르는 중복을 탐지하며, Gate A(`gate-a-check.py` 조건 6)에서 중복 시 차단한다.
+3. **자동 채번 금지**: AI가 임의로 ID를 발명하지 않는다. link-manifest.yaml의 다음 번호를 참조한다. `spine_ledger.py --reconcile` 로 관측 ID 기준 카운터를 원장에 반영하며, `check` 모드가 카운터 드리프트를 경고한다.
+4. **커밋에 포함**: 모든 커밋 메시지에 관련 스파인 ID가 포함되어야 한다. (③ `commit-spine-id.py` 가 강제)
 5. **해시 제외 필드**: prompt_log, provenance, intake는 해시 계산에서 제외. 해시는 semantic 필드만(layout·actions·notes body).

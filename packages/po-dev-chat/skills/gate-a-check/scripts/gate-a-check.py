@@ -11,6 +11,7 @@ Gate A 통과 조건 (AND):
   3. 모든 action이 user_confirmed
   4. open_questions 중 status=open인 항목 0개 (all answered or deferred with reason)
   5. PO 승인 확인 (--pi-approved 플래그 또는 환경변수 GATE_A_PO_APPROVED=1)
+  6. 전역 스파인 ID 유일성 (link-manifest 원장 기준, harness-core/lib/spine_ledger.py)
 """
 
 import sys
@@ -19,6 +20,25 @@ import json
 import subprocess
 import os
 from pathlib import Path
+
+# Windows 콘솔(cp949 등) 유니코드 출력 크래시 방지
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
+    except Exception:
+        pass
+
+# 하위 스크립트(lint/sufficiency)는 UTF-8로 출력하므로 파이프도 UTF-8로 디코드한다.
+# (text=True 기본 디코더가 cp949면 한글/em-dash에서 UnicodeDecodeError → 거짓 차단)
+os.environ.setdefault("PYTHONUTF8", "1")
+os.environ.setdefault("PYTHONIOENCODING", "utf-8")
+
+# harness-core 공용 ledger 라이브러리 (전역 ID 유일성 단일 출처)
+sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "harness-core" / "lib"))
+try:
+    import spine_ledger
+except Exception:  # noqa: BLE001
+    spine_ledger = None
 
 BLOCKS = []   # 차단 이유 목록
 PASSES = []   # 통과 항목
@@ -40,7 +60,7 @@ def check_lint(targets: list[str]) -> bool:
         return False
     result = subprocess.run(
         [sys.executable, str(lint_script)] + targets,
-        capture_output=True, text=True
+        capture_output=True, text=True, encoding="utf-8", errors="replace"
     )
     if result.returncode != 0:
         # L1 에러가 있음
@@ -68,7 +88,7 @@ def check_sufficiency(targets: list[str]) -> bool:
         return False
     result = subprocess.run(
         [sys.executable, str(suf_script)] + targets,
-        capture_output=True, text=True
+        capture_output=True, text=True, encoding="utf-8", errors="replace"
     )
     try:
         data = json.loads(result.stdout)
@@ -138,6 +158,27 @@ def check_pi_approved(args: list[str]) -> bool:
     return False
 
 
+# ── 조건 6: 전역 스파인 ID 유일성 ────────────────────────────────────────────
+
+def check_spine_uniqueness() -> bool:
+    if spine_ledger is None:
+        warn_unavailable = "spine_ledger 라이브러리 로드 실패 — 전역 ID 유일성 검사 건너뜀"
+        ok(warn_unavailable)  # 비차단: 라이브러리 부재 시 게이트를 막지 않음(보수적)
+        return True
+    root = Path("model_repo")
+    res = spine_ledger.check(root, root / "link-manifest.yaml")
+    if not res["ok"]:
+        lines = [f"{i}: {', '.join(fs)}" for i, fs in res["dups"].items()]
+        block(f"전역 스파인 ID 중복 {len(res['dups'])}건 — 채번 충돌:\n" +
+              "\n".join(f"    {l}" for l in lines))
+        return False
+    note = ""
+    if res["warnings"]:
+        note = " (경고: " + "; ".join(res["warnings"]) + ")"
+    ok(f"전역 ID 유일성 OK — {res['id_count']}개 ID{note}")
+    return True
+
+
 # ── status: confirmed 전환 ────────────────────────────────────────────────────
 
 def transition_to_confirmed(targets: list[str], docs_map: dict):
@@ -192,6 +233,7 @@ def main():
     c3 = check_actions_confirmed(docs)
     c4 = check_open_questions(docs)
     c5 = check_pi_approved(flag_args)
+    c6 = check_spine_uniqueness()
 
     print("\n[Gate A 판정 결과]")
     for p in PASSES:

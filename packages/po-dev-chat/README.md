@@ -18,8 +18,8 @@
 | 컴포넌트 기능·비즈니스 로직 확립 | **Stage 2~3** — action-interview(순회 인터뷰 → actions[]) + note-intake(verbatim 노트) |
 | 데이터·외부 연동 계약 정의 | **Stage 2.5** — entity-intake(ENT-) + external-intake(EXT-). action `outcome.target` 데이터 출처 식별 |
 | 화면 간 여정(E2E 시나리오) 정의 | **journey-map** — navigate 집계 → JRN- 여정 + 고립 화면 탐지 |
-| 충분성 판정 후 확정 | **Stage 4 → Gate A** — sufficiency-check(기계+AI gap) → gate-a-check(5조건) |
-| 계약 발행 | spec-generator — confirmed 화면 → 도메인 단위 **PACK-* 팩**(+ENT-/EXT-/JRN- ref) → ③ 인계 |
+| 충분성 판정 후 확정 | **Stage 4 → Gate A** — sufficiency-check(기계+AI gap) → gate-a-check(6조건, 전역 ID 유일성 포함) |
+| 계약 발행 | spec-generator — confirmed 화면 → 도메인 단위 **PACK-* 팩**(+ENT-/EXT-/JRN- ref) → ③ 인계. 발행 전 `spec-pack-guard.py`가 confirmed·참조 무결 기계 검증 |
 | 결정론적 렌더·버저닝·Lint | HTML 파생 렌더(저장 시 자동) / optimistic locking·`version` / L1~L4 lint |
 
 **경계 원칙:** 이 레이어는 **계약만** 만든다. 불변 규칙·DS·템플릿의 *명세*는 ①, 그 계약의 *구현(코드)*은 ③의 책임이다. ②는 새 컴포넌트를 발명하지 않고(①의 DS 폐쇄), 코드를 쓰지 않는다.
@@ -76,10 +76,12 @@ Stage 4  sufficiency-check
 Gate A  gate-a-check  [disable-model-invocation: true — PO 명시 요청 시만]
   lint error 0 + sufficiency pass/pass_with_deferred
   + 전 action user_confirmed + PO 승인
+  + 전역 스파인 ID 유일성(harness-core/lib/spine_ledger.py — link-manifest 원장)
   → status: confirmed + confirmed_at 기록
   │
   ▼
 spec-generator  [disable-model-invocation: true]
+  발행 전 가드(필수): scripts/spec-pack-guard.py — confirmed 아님/ENT·EXT dangling ref 차단
   confirmed screen model → 도메인 단위 PACK-* 팩 발행 (+ENT-/EXT-/JRN- ref) → ③ 인계
   절단 기준: Entity 응집 > Workflow 연결성 > Actor 경계
   (포맷: skills/spec-generator/spec-pack-schema.md)
@@ -107,9 +109,9 @@ journey-map  (복수 화면 confirmed 후, 횡단)
 | `skills/entity-intake/SKILL.md` | Stage 2.5 | — | action이 참조하는 개념 데이터 엔티티(ENT-) 계약 정의. 의미·속성·관계까지만(물리 설계는 ③). |
 | `skills/external-intake/SKILL.md` | Stage 2.5 | — | 외부 연동(EXT-) 계약 정의. 엔드포인트 목적·인증·장애처리 규약까지만(어댑터 코드는 ③). |
 | `skills/journey-map/SKILL.md` | confirmed 후 | — | navigate 집계 → 화면 간 여정(JRN-) 정의. 고립 화면 탐지. ③ Phase γ E2E 시나리오 출처. |
-| `skills/sufficiency-check/SKILL.md` | Stage 4 | — | sufficiency-check.py 실행 후 AI gap 분석. open_questions 생성. action 데이터 출처의 ENT-/EXT- 형식 검증 포함(실존 검증은 backlog). |
-| `skills/gate-a-check/SKILL.md` | Gate A | **true** | 5가지 조건 종합 판정. PO 명시 요청 시만 실행. |
-| `skills/spec-generator/SKILL.md` | Gate A 후 | **true** | confirmed 화면 → PACK-* 팩 발행. |
+| `skills/sufficiency-check/SKILL.md` | Stage 4 | — | sufficiency-check.py 실행 후 AI gap 분석. open_questions 생성. action 데이터 출처의 ENT-/EXT- 형식 검증(실존 검증은 spec-pack-guard가 발행 전 강제). |
+| `skills/gate-a-check/SKILL.md` | Gate A | **true** | 6가지 조건 종합 판정(전역 ID 유일성 포함). PO 명시 요청 시만 실행. |
+| `skills/spec-generator/SKILL.md` | Gate A 후 | **true** | confirmed 화면 → PACK-* 팩 발행. 발행 전 `scripts/spec-pack-guard.py` 필수. |
 
 ### Hooks
 
@@ -121,7 +123,9 @@ hooks는 `.claude/settings.json`의 `hooks` 키에 Claude Code hook 이벤트로
 | `on-save-schema-validate.py` | `PreToolUse(Write\|Edit)` | SCR-*.yaml 저장 전 | schema v2 필수 필드·enum 검증. 실패 시 저장 차단(exit 1). |
 | `on-save-lint-L1-L4.py` | `PostToolUse(Write\|Edit)` | SCR-*.yaml 저장 후 | L1 DS준수·L2 완전성·L3 일관성·L4 커버리지. L1 error → 저장 차단. |
 | `skills/sufficiency-check/scripts/sufficiency-check.py` | (skill 직접 호출) | Stage 4 진입 | sufficiency-check skill이 Bash로 실행. JSON 결과 → AI gap 분석 입력. |
-| `skills/gate-a-check/scripts/gate-a-check.py` | (skill 직접 호출) | Gate A 요청 | gate-a-check skill이 Bash로 실행. 통과 시 status: confirmed 전환. |
+| `skills/gate-a-check/scripts/gate-a-check.py` | (skill 직접 호출) | Gate A 요청 | gate-a-check skill이 Bash로 실행. 6조건 판정(조건6=전역 ID 유일성, `harness-core/lib/spine_ledger.py`). 통과 시 status: confirmed 전환. |
+| `skills/spec-generator/scripts/spec-pack-guard.py` | (skill 직접 호출) | PACK 발행 전 | confirmed 아님·ENT/EXT dangling ref 차단(exit 1). JRN 미커버 화면 경고. |
+| `harness-core/lib/spine_ledger.py` | (gate-a/CLI 호출) | Gate A·수동 | link-manifest 원장 기준 전역 ID 중복 탐지 + 카운터 드리프트 경고. `--reconcile`로 카운터 갱신. |
 
 ### Rules (Supporting Files — 공유)
 

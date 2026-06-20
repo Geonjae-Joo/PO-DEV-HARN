@@ -19,7 +19,7 @@
 
 | 파일 | 성격 | 위치 |
 |---|---|---|
-| **이 문서** (`project-design-guide.md`) | 사람용 **안내서** — 셋업·사용·추가 절차 | `input/design-system/` (원본 DS 자산 옆) |
+| **이 문서** (`project-design-guide.md`) | 사람용 **안내서** — 셋업·사용·추가 절차 | 플러그인 `docs/` (원본 DS 자산은 `foundation/design-system/ds-source/`) |
 | **`ds-allowlist.md`** | 기계 검증 **계약/가드레일** — 허용 컴포넌트 집합 | `foundation/design-system/` (②③로 핸드오프) |
 
 ### shadcn/ui란? (현재 프로젝트의 DS)
@@ -28,7 +28,7 @@
 
 > **shadcn은 npm으로 "설치"하지 않고, 컴포넌트 소스 코드(.tsx)를 내 프로젝트로 "복사"해 온다.**
 
-즉 `button.tsx` 같은 파일이 내 레포 안에 직접 들어와 **내가 소유**한다. 이 하니스의 `input/design-system/` = "기존 DS 원본을 투입하는 곳"과 궁합이 좋고, "내가 복사한 컴포넌트 = 쓸 수 있는 전부"라서 DS 폐쇄가 저절로 성립한다. (맨몸인 건 그 아래 Radix UI이고, shadcn은 그 위에 Tailwind 스타일을 입혀 제공한다.)
+즉 `button.tsx` 같은 파일이 내 레포 안에 직접 들어와 **내가 소유**한다. 이 하니스의 `foundation/design-system/ds-source/` = "기존 DS 원본을 투입하는 곳"과 궁합이 좋고, "내가 복사한 컴포넌트 = 쓸 수 있는 전부"라서 DS 폐쇄가 저절로 성립한다. (맨몸인 건 그 아래 Radix UI이고, shadcn은 그 위에 Tailwind 스타일을 입혀 제공한다.)
 
 ---
 
@@ -36,7 +36,7 @@
 
 ```
 [① 01-PREREQUISITE]  ← 여기서 세팅
-  input/design-system/                                  (A) DS 원본(shadcn 소스)을 담는다
+  foundation/design-system/ds-source/                   (A) DS 원본(shadcn 소스)을 담는다
         │  (이 문서의 절차로 가져온다)
         ▼
   foundation/design-system/ds-allowlist.md       (B) 허용 컴포넌트 "계약"(가드레일)
@@ -66,7 +66,7 @@
 
 ## 3. Step 1 — shadcn 작업용 프로젝트 만들기
 
-shadcn 컴포넌트는 React 프로젝트 안에 들어가야 하므로, **DS 원본을 담을 작은 프로젝트**를 `input/design-system/` 안에 만든다. (하니스가 이 폴더를 "기존 DS 원본 투입처"로 정의하고, shadcn 소스는 내가 소유하므로 그 자체가 DS 원본이 된다.)
+shadcn 컴포넌트는 React 프로젝트 안에 들어가야 하므로, **DS 원본을 담을 작은 프로젝트**를 `foundation/design-system/ds-source/` 로 만든다. (하니스가 이 폴더를 "기존 DS 원본 투입처"로 정의하고, shadcn 소스는 내가 소유하므로 그 자체가 DS 원본이 된다.)
 
 ```bash
 cd foundation/design-system
@@ -226,7 +226,7 @@ ds-allowlist.md 허용 집합만 조합해 **빈 페이지 골격**을 만든다
 
 ## 11. 체크리스트 (DoD)
 
-- [ ] `input/design-system/ds-source/`에 shadcn 프로젝트 + `components/ui/` 소스
+- [ ] `foundation/design-system/ds-source/`에 shadcn 프로젝트 + `components/ui/` 소스
 - [ ] `components.json` 생성
 - [ ] design token을 CSS 변수로 정의하고 Tailwind에 매핑
 - [ ] `foundation/design-system/ds-allowlist.md`에 `# DS Allowlist` + 컴포넌트별 `## 이름` + `description`/`props`

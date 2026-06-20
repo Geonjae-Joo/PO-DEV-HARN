@@ -1,0 +1,33 @@
+id: DP-MAIN
+archetype: main
+description: 목록·상세·폼 화면이 공통으로 사용하는 전체 페이지 기본 골격
+slots:
+  - header
+  - header-actions
+  - content
+  - footer
+components:
+  - ref: Header
+    slot: header
+    order: 1
+    note: 상단 앱 헤더 (로고·전역 내비 자리)
+  - ref: Breadcrumb
+    slot: header
+    order: 2
+    note: 현재 위치 경로 표시
+  - ref: Button
+    slot: header-actions
+    order: 1
+    note: 우측 상단 주요 액션 자리 (구체 동작은 ②에서 정의)
+  - ref: FilterBar
+    slot: content
+    order: 1
+    note: 목록 검색/필터 영역
+  - ref: DataTable
+    slot: content
+    order: 2
+    note: 메인 데이터 표
+  - ref: Separator
+    slot: footer
+    order: 1
+    note: 콘텐츠와 푸터 구분선

@@ -1,5 +1,7 @@
 ﻿# PO-Dev Harness — 3-Layer 통합 README
 
+> 🏗️ **구조 재편 완료 (2026-06-19)** — `01/02/03` 레이어 폴더의 자산은 **시스템 코드(`packages/`)와 프로젝트 데이터(`projects/`)로 분리 이전**되었습니다. 아키텍처·이행 결정은 [`docs/ADR-001`](docs/ADR-001-3runtime-architecture.md)·[`docs/MIGRATION-PLAN.md`](docs/MIGRATION-PLAN.md), ② 챗봇화 방법은 [`docs/CHATBOT-DEV-GUIDE.md`](docs/CHATBOT-DEV-GUIDE.md) 참조. 아래 본문의 파이프라인·계약·하드룰 설명은 그대로 유효하며, 경로는 신구조로 읽습니다(구 `01/.claude/rules/` → `packages/harness-core/rules/`, 구 `01/output/foundation/` → `projects/<id>/foundation/`, 구 `02·03/.claude/skills/` → `packages/{po-dev-chat,plugin-ai-web-dev}/skills/` 등). 각 패키지 README의 폴더 트리는 구 레이어 경로 기준이며 배너로 표시됩니다.
+
 > 디자인 자산·계약·코드를 **하나의 웹앱(`app_repo`)으로 수렴**시키는 3-레이어 개발 하네스.
 > 세 레이어는 독립 단계가 아니라 **계약 기반 파이프라인**이다: ①이 토대를 깔고 → ②가 계약(screen model)을 만들고 → ③이 계약을 코드로 구현한다.
 >
@@ -50,7 +52,7 @@
 | **만드는 것** | foundation 자산 + 규칙 + 빈 골격 | screen model + 데이터·여정 계약(PACK-*/ENT-/EXT-/JRN-) | 테스트 green 코드(app_repo) |
 | **절대 안 하는 것** | baseline·ops 코드 구현 | 코드 작성 | 새 계약/규칙 정의 |
 | **핵심 산출** | design-guide·design-pages·SPEC-000·SPEC-OPS-000 명세 | confirmed screen model + PACK-* 팩(+ENT-/EXT-/JRN-) | `app_repo` + 스파인 ID 커밋 |
-| **상세 문서** | [01-PREREQUISITE/README.md](01-PREREQUISITE/README.md) | [02-PO-DEV-CHAT/README.md](02-PO-DEV-CHAT/README.md) | [03-AI-WEB-DEV/README.md](03-AI-WEB-DEV/README.md) |
+| **상세 문서** | [packages/plugin-prerequisite/README.md](packages/plugin-prerequisite/README.md) | [packages/po-dev-chat/README.md](packages/po-dev-chat/README.md) | [packages/plugin-ai-web-dev/README.md](packages/plugin-ai-web-dev/README.md) |
 
 ---
 
@@ -100,11 +102,11 @@
 
 PO 작업과 개발이 시작되기 전에 **디자인 자산·규칙·앱 골격을 1회 준비**한다. "빈 흰 캔버스" 문제를 없애는 것이 목적 — PO에게 백지를 주는 대신, 허용집합(design-guide)·페이지 템플릿(design-page)·불변 규칙(constitution)·ID 체계를 상류에서 못 박아 이후 단계가 그 틀 **안에서만** 움직이게 한다.
 
-**워크플로우**: 사용자가 기존 DS를 `input/`에 투입 → `design-guide.md` 작성(허용집합 원본) → `design-page-builder` 스킬로 빈 페이지 템플릿(DP-*) 생성 → rules(ops-stack 포함)·SPEC-000·SPEC-OPS-000 명세 확정 → 빈 `app_repo` 스캐폴드.
+**워크플로우**: 사용자가 기존 DS를 `input/`에 투입 → `ds-allowlist.md` 작성(허용집합 원본) → `design-page-builder` 스킬로 빈 페이지 템플릿(DP-*) 생성 → 불변 rules + 프로젝트 결정(tech-stack·ops-stack)·SPEC-000·SPEC-OPS-000 명세 확정 → 빈 `app_repo` 스캐폴드.
 
-**핵심 자산**: `design-page-builder` 스킬(+전용 `design-page-lint.py`), 저장 이벤트 훅 `ds-guide-validate.py`, 공유 규칙 5종(constitution/spine-ids/tech-stack/ds-closure/ops-stack).
+**핵심 자산**: `design-page-builder` 스킬(+전용 `design-page-lint.py`), 저장 이벤트 훅 `ds-guide-validate.py`, 불변 규칙 3종(constitution/spine-ids/ds-closure, `.claude/rules/`), 프로젝트 결정 2종(tech-stack/ops-stack, `output/foundation/decisions/`).
 
-**산출물**: `foundation/`(design-system·design-guide·design-pages) + SPEC-000 명세 + **SPEC-OPS-000 명세(배포·CI/CD·관측성)** + `.claude` 하네스 골격(rules 포함) + 빈 `app_repo`.
+**산출물**: `foundation/`(design-system·design-pages·**decisions: tech-stack·ops-stack**·link-manifest) + SPEC-000 명세 + **SPEC-OPS-000 명세(배포·CI/CD·관측성)** + `.claude` 하네스 골격(불변 rules 포함) + 빈 `app_repo`.
 **baseline·ops 코드는 만들지 않는다** — 무엇이 공통 기능/운영 요건인지 *명세*까지만, 구현은 ③ Phase 0.
 
 ### ② PO-DEV-CHAT — 화면·요구사항 정의
@@ -127,7 +129,7 @@ spec-generator              confirmed 화면 → 도메인 단위 PACK-* 팩 발
 
 **상태 머신**: `draft → layout_confirmed → actions_in_progress → review → confirmed`
 
-**핵심 자산**: 9개 스킬(layout-recommend·action-interview·note-intake·**entity-intake**·**external-intake**·**journey-map**·sufficiency-check·gate-a-check·spec-generator), 저장 이벤트 훅 2종(schema-validate·lint-L1-L4), 공유 규칙(screen-model-schema-v2·data-contract-schema·journey-schema 외).
+**핵심 자산**: 9개 스킬(layout-recommend·action-interview·note-intake·**entity-intake**·**external-intake**·**journey-map**·sufficiency-check·gate-a-check·spec-generator), 저장 이벤트 훅 2종(schema-validate·lint-L1-L4), 발행 가드 `spec-pack-guard.py`(confirmed·참조 무결), 공유 규칙(screen-model-schema-v2·data-contract-schema·journey-schema 외). Gate A는 6조건(전역 ID 유일성 = `harness-core/lib/spine_ledger.py`).
 
 **산출물**: `model_repo/`(screens SCR-*.yaml 단일 원본 + **entities ENT-*.yaml + externals EXT-*.yaml + journeys JRN-*.yaml** + renders 파생 HTML + specs PACK-* 팩 + link-manifest).
 
@@ -162,9 +164,9 @@ spec-generator              confirmed 화면 → 도메인 단위 PACK-* 팩 발
 
 | 인계 | 무엇이 넘어가나 | 출발 → 도착 |
 |---|---|---|
-| **① → ②** | foundation 전체: design-system(token) + design-guide.md + design-pages(DP-*) | `①/output/foundation/` → `②/input/` |
-| **① → ③** | `.claude` 하네스(command·skill·hook·subagent **+ rules**) + foundation 전체 + **SPEC-000·SPEC-OPS-000 명세**(구현 아님) + 빈 app_repo 골격 | `①/output/` → `③/input/harness/` |
-| **② → ③** | **PACK-\* spec 팩**: screens(yaml_ref·render_ref·pinned_contract) + scope(REQ-/CMP-) + **데이터 계약(ENT-/EXT- ref)** + actions+acceptance 원문 + notes(verbatim·complexity) + **여정(JRN- ref)** + open_items | `②/model_repo/specs/` → `③/input/spec-pack/` |
+| **① → ②** | foundation 전체: design-system(token) + ds-allowlist.md + design-pages(DP-*) + link-manifest.yaml(등록 인덱스) | `projects/<id>/foundation/` (②가 직접 참조) |
+| **① → ③** | `.claude` 하네스(command·skill·hook·subagent **+ 불변 rules: constitution·spine-ids·ds-closure**) + foundation 전체(design-system·design-pages·**decisions: tech-stack·ops-stack**·link-manifest) + **SPEC-000·SPEC-OPS-000 명세**(구현 아님) + 빈 app_repo 골격 | `projects/<id>/foundation/` + 플러그인 `.claude/` (③가 직접 참조) |
+| **② → ③** | **PACK-\* spec 팩**: screens(yaml_ref·render_ref·pinned_contract) + scope(REQ-/CMP-) + **데이터 계약(ENT-/EXT- ref)** + actions+acceptance 원문 + notes(verbatim·complexity) + **여정(JRN- ref)** + open_items | `projects/<id>/model_repo/specs/` → `app_repo/specs/`(manifest-sync) |
 | **③ → ②** | **Change Order** 판정 결과: dismiss / amend / regenerate. 별도 ② 스킬 없이 PO가 기존 Gate A 흐름으로 재확정 → spec-generator가 버전 +1로 재발행 | `③` 변경요청 → `②/model_repo` 재확정·re-pin |
 
 **경계 원칙 요약**: *명세*는 ①, *계약(정의)*은 ②, *구현(코드)*은 ③. 어느 레이어도 하류의 책임을 침범하지 않는다. 특히 SPEC-000은 ①이 명세하고 ③ Phase 0가 구현하며, rules는 ①이 작성해 `.claude`로 번들되어 ②·③의 hook이 강제한다.
@@ -185,29 +187,40 @@ spec-generator              confirmed 화면 → 도메인 단위 PACK-* 팩 발
 ## 8. 폴더 구조 (최상위)
 
 ```
-PO-DEV-Harn/
-├── README.md                  # (이 문서) 3-레이어 통합 진입 문서
-├── 01-PREREQUISITE/           # ① 준비 — foundation·rules·빈 app_repo 골격
-│   ├── input/ .claude/{skills/hooks/rules/settings.json} output/
-│   └── README.md
-├── 02-PO-DEV-CHAT/            # ② 화면·요구사항 정의 — screen model 계약
-│   ├── .claude/{skills/hooks/rules/settings.json} output/model_repo/
-│   └── README.md
-└── 03-AI-WEB-DEV/           # ③ 개발 — app_repo 구현
-    ├── input/ .claude/{skills/hooks/agents/rules} output/app_repo/
-    └── README.md
+PO-DEV-Harn/                       # 모노레포 (시스템 코드 + 프로젝트 데이터)
+├── README.md                      # (이 문서) 통합 진입 문서
+├── package.json                   # workspace 루트 (packages/* 워크스페이스)
+├── marketplace.json               # ①③ Claude Code 플러그인 마켓플레이스
+├── CLAUDE.md                      # Claude Code 진입 컨텍스트
+├── docs/                          # 아키텍처·이행 문서
+│   ├── ADR-001-3runtime-architecture.md
+│   ├── MIGRATION-PLAN.md
+│   └── CHATBOT-DEV-GUIDE.md       # ② Agent SDK 챗봇 빌드 가이드
+├── guides/                        # speckit×TDD 설계 노트 (참고/이력)
+├── packages/                      # ── Tier 1: 시스템 코드 (전 프로젝트 공용) ──
+│   ├── harness-core/              # 불변 rules 3종 + 공용 라이브러리(lib/)
+│   │   ├── lib/ds_closure.py      #   DS 폐쇄 검증 단일 출처 (①②③ 공유)
+│   │   ├── lib/spine_ledger.py    #   스파인 ID 전역 유일성·채번 단일 출처 (Gate A·CLI)
+│   │   └── rules/                 #   constitution·spine-ids·ds-closure
+│   ├── plugin-prerequisite/       # ① → Claude Code 플러그인 (plugin.json·settings.json)
+│   │   ├── skills/design-page-builder/
+│   │   ├── hooks/ds-guide-validate.py
+│   │   └── docs/
+│   ├── plugin-ai-web-dev/         # ③ → Claude Code 플러그인 (speckit + TDD)
+│   │   ├── skills/ (speckit-*·design-system-usage·coding-style·complex-bl·baseline-guides)
+│   │   ├── agents/ (bl-analyst·test-author·code-reviewer)
+│   │   ├── hooks/ (tdd-gate·commit-spine-id·manifest-sync + install-git-hooks)
+│   │   ├── rules/ · .specify/
+│   └── po-dev-chat/               # ② → Agent SDK 챗봇 소스 (skills·hooks·rules)
+│       └── settings.json.legacy   #   구 Claude Code 훅 정의 (챗봇 빌드 시 코드로 대체)
+└── projects/                      # ── Tier 2+3: 프로젝트 데이터 (참조, 복사 아님) ──
+    └── example/                   # 프로젝트 1개 (멀티테넌트: <customer-id>/ 로 증식)
+        ├── .claude/settings.json  #   PROJECT_ROOT + 활성 플러그인
+        ├── foundation/            #   Tier 2 (① 산출): design-system·design-pages·
+        │                          #     decisions·platform-baseline·link-manifest·VERSION
+        ├── model_repo/            #   Tier 3 (② 산출): screens·entities·externals·
+        │                          #     journeys·renders·specs·link-manifest
+        └── app_repo/              #   Tier 3 (③ 산출): backend·frontend·specs
 ```
 
----
-
-## 9. 문서 맵
-
-| 보고 싶은 것 | 문서 |
-|---|---|
-| 전체 파이프라인·인계·하드 룰 (이 문서) | `README.md` |
-| 디자인 자산·규칙·골격 준비 방법 | `01-PREREQUISITE/README.md` |
-| PO 화면 정의 4-Stage HITL·상태 머신 | `02-PO-DEV-CHAT/README.md` |
-| screen model schema v2 전문 | `02-PO-DEV-CHAT/.claude/rules/screen-model-schema-v2.md` |
-| 데이터 계약(ENT-/EXT-)·여정(JRN-) 스키마 | `02-PO-DEV-CHAT/.claude/rules/data-contract-schema.md`, `journey-schema.md` |
-| 배포·CI/CD·관측성 명세·스택 결정 | `01-PREREQUISITE/output/foundation/platform-baseline/SPEC-OPS-000.md`, `.claude/rules/ops-stack.md` |
-| SDD+TDD 개발 4-Phase·baseline 전달 모드 | `03-AI-WEB-DEV/README.md` |
+> **이행 메모(2026-06-19):** 구 `01-PREREQUISITE/`·`02-PO-DEV-CHAT/` 폴더는 내용이 전부 신구조로 이전되어 **빈 껍데기만 남았다**. 샌드박스가 이 두 최상위 디렉터리의 삭제를 막으므로 **파일 탐색기에서 수동 삭제**가 필요하다(`03-AI-WEB-DEV/`·`_archive_pre_migration/`는 제거 완료).

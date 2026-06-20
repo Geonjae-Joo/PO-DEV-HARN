@@ -5,5 +5,17 @@ __pycache__/
 node_modules/
 dist/
 .vite/
-01-PREREQUISITE/input/
-01-PREREQUISITE/output/
+
+# ── 프로젝트 생성 인스턴스 데이터 (예제/테스트 산출물 — 커밋 제외) ──
+# Tier 3(model_repo/app_repo)는 ②③가 생성하는 출력 데이터다. 디렉터리 스켈레톤(.gitkeep)과
+# 원장(link-manifest.yaml)만 추적하고, 골든패스 등으로 생성된 SCR/ENT/EXT/JRN/PACK·렌더·앱 코드는 무시한다.
+projects/*/model_repo/screens/*
+projects/*/model_repo/entities/*
+projects/*/model_repo/externals/*
+projects/*/model_repo/journeys/*
+projects/*/model_repo/renders/*
+projects/*/model_repo/specs/*
+projects/*/app_repo/specs/*
+projects/*/app_repo/backend/*
+projects/*/app_repo/frontend/*
+!**/.gitkeep

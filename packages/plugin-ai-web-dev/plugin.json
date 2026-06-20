@@ -1,0 +1,9 @@
+{
+  "name": "ai-web-dev",
+  "version": "0.2.0",
+  "description": "③ AI-WEB-DEV — confirmed screen model + spec-pack을 SDD+TDD로 app_repo에 구현.",
+  "components": { "skills": "skills/", "hooks": "hooks/", "agents": "agents/", "rules": "rules/" },
+  "speckit": ".specify/",
+  "shared": "../harness-core",
+  "_note": "git 생애주기 훅은 hooks/install-git-hooks.sh가 app_repo/.git/hooks 에 설치. 매니페스트 스키마는 현행 문서로 최종 검증 필요."
+}

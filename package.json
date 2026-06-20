@@ -1,0 +1,7 @@
+{
+  "name": "po-dev-harness",
+  "private": true,
+  "version": "0.2.0",
+  "description": "PO-DEV Harness — 3-runtime monorepo (① ③ Claude Code 플러그인 + ② Agent SDK 챗봇)",
+  "workspaces": ["packages/*"]
+}

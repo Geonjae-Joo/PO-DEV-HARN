@@ -1,0 +1,3 @@
+foundation-version: 1
+updated: 2026-06-19
+note: ① 산출(foundation) 버전 핀. ① 수정 시 +1. ②는 세션 시작 시, ③는 빌드 시 이 값을 핀해 재현성 확보.

@@ -1,0 +1,34 @@
+{
+  "description": "AI-WEB-DEV layer git 훅 — commit 생애주기 자동 검증/동기화 체인. install-git-hooks.sh/.ps1 이 app_repo/.git/hooks/ 에 설치한다. 이 파일은 설치 결과를 기술하는 문서용 매니페스트이며 설치기가 파싱하지 않는다(설치기가 단일 출처). 경로/단계는 설치기의 실제 동작과 일치한다.",
+  "install": "app_repo 루트에서: bash \"$CLAUDE_PLUGIN_ROOT/hooks/install-git-hooks.sh\" (또는 .ps1). 훅 본문은 ${CLAUDE_PLUGIN_ROOT}/hooks/ 의 .py 를 절대경로로 호출한다.",
+  "lifecycle": {
+    "commit-msg": [
+      {
+        "type": "command",
+        "command": "${CLAUDE_PLUGIN_ROOT}/hooks/tdd-gate.py",
+        "args": ["$1"],
+        "blocking": true,
+        "statusMessage": "TDD 게이트 검사 중...",
+        "note": "테스트 없음/실패 시 commit 차단. [SCAFFOLD] 커밋은 skip. 커밋 메시지 파일($1)이 필요해 pre-commit이 아닌 commit-msg 단계."
+      },
+      {
+        "type": "command",
+        "command": "${CLAUDE_PLUGIN_ROOT}/hooks/commit-spine-id.py",
+        "args": ["$1"],
+        "blocking": true,
+        "statusMessage": "스파인 ID 검증 중...",
+        "note": "[<PACK|SPEC|MOD>/<task>] 요약 (REQ-...) 형식. PACK/MOD은 REQ- 포함 강제, SPEC-(baseline)은 (baseline) 등 사유 토큰 강제. SCAFFOLD/CO/E2E/spec-kit prefix 예외."
+      }
+    ],
+    "post-commit": [
+      {
+        "type": "command",
+        "command": "${CLAUDE_PLUGIN_ROOT}/hooks/manifest-sync.py",
+        "args": [],
+        "blocking": false,
+        "statusMessage": "spec 팩 manifest 동기화 중...",
+        "note": "model_repo/specs/PACK-* → app_repo/specs/ 동기화 + shell_ref 갱신. 실패해도 commit 유지."
+      }
+    ]
+  }
+}

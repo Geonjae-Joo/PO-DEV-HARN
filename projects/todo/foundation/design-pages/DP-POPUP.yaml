@@ -1,0 +1,23 @@
+id: DP-POPUP
+archetype: popup
+description: 모달/팝업(생성·수정·확인) 화면이 공통으로 사용하는 골격
+slots:
+  - content
+  - footer-actions
+components:
+  - ref: Dialog
+    slot: content
+    order: 1
+    note: 팝업 컨테이너 (제목·본문 영역)
+  - ref: Form
+    slot: content
+    order: 2
+    note: 입력 폼 영역 (필드 구성은 ②에서 정의)
+  - ref: Button
+    slot: footer-actions
+    order: 1
+    note: 확인/저장 액션 자리
+  - ref: Button
+    slot: footer-actions
+    order: 2
+    note: 취소/닫기 액션 자리

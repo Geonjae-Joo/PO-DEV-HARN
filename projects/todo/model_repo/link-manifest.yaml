@@ -1,0 +1,64 @@
+# link-manifest.yaml — 스파인 ID 단일 원장 (projects/todo)
+# 화면→요구사항→팩→task→commit 추적 그래프의 연결 원장. 전역 유일 채번.
+manifest_version: 1
+
+counters:
+  PRM: 1
+  Q:   1
+  PACK: {}
+  SPEC:
+    next: 1
+  T:
+    # 팩별 task 다음 번호 (③가 채번)
+    PACK-TODO: 1
+
+screens:
+  - id: SCR-TODO-LIST
+    status: confirmed
+    version: 2
+    template: DP-MAIN
+    next_seq:
+      CMP: 5
+      REQ: 5
+      NOTE: 5
+      NFR: 1
+    components:
+      - CMP-TODO-LIST.titleInput
+      - CMP-TODO-LIST.addBtn
+      - CMP-TODO-LIST.filterbar
+      - CMP-TODO-LIST.table
+    requirements:
+      - REQ-TODO-LIST.001
+      - REQ-TODO-LIST.002
+      - REQ-TODO-LIST.003
+      - REQ-TODO-LIST.004
+    notes:
+      - NOTE-TODO-LIST.001
+      - NOTE-TODO-LIST.002
+      - NOTE-TODO-LIST.003
+      - NOTE-TODO-LIST.004
+
+packs:
+  - id: PACK-TODO
+    screens: [SCR-TODO-LIST]
+    reqs: [REQ-TODO-LIST.001, REQ-TODO-LIST.002, REQ-TODO-LIST.003, REQ-TODO-LIST.004]
+    status: ready       # spec-generator 발행 완료
+    tasks: []
+    commits: []
+
+entities:
+  - id: ENT-TODO
+    version: 1
+
+journeys:
+  - id: JRN-TODO-MANAGE
+    version: 1
+    priority: high
+
+design_pages:
+  - id: DP-MAIN
+    version: 1
+    slots: [header, header-actions, content, footer]
+  - id: DP-POPUP
+    version: 1
+    slots: [content, footer-actions]

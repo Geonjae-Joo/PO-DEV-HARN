@@ -88,7 +88,13 @@ PACK-ORDER-ADMIN:  admin 전용 (SCR-ADMIN-ORDER-LIST, SCR-ADMIN-ORDER-CANCEL)
 각 화면에서 **이 팩 scope에 해당하는 것만** 추출한다. 전체 screen model을 복사하지 않는다.
 
 **포함**:
-- `screens[]`: yaml_ref + render_ref + `pinned_contract`(version·hash·git_ref 를 묶은 단일 매핑 — 소비자 speckit-specify가 읽는 키)
+- `screens[]`: yaml_ref + render_ref + `pinned_contract`(version·hash·layout_hash·render_hash·git_ref 를 묶은 단일 매핑 — 소비자 speckit-specify가 읽는 키)
+
+> **pinned_contract 핀은 손으로 쓰지 않는다 (결정론적 계산 위임, ADR-002 D5).** `layout_hash`·`render_hash`·`version` 은 LLM이 추측해 쓰지 말고, `pins.py` 단일 출처로 계산해 채운다:
+> ```bash
+> python skills/spec-generator/scripts/spec-pack-guard.py --write-pins model_repo/specs/PACK-<...>/spec.yaml
+> ```
+> 발행 전 검증 시 같은 가드가 `compute_pins` 로 재계산해 대조한다 — 핀 불일치(stale)면 error로 차단, placeholder/누락이면 `--write-pins` 안내 warn.
 - `scope`: 이 팩에 속하는 REQ-/CMP- ID 목록
 - `entities[]`: scope actions의 `outcome.target` 중 ENT- 를 모아 ref(`model_repo/entities/ENT-*.yaml`)로 등록 (복사 아님)
 - `externals[]`: outcome.target / EXT 참조 중 EXT- 를 ref(`model_repo/externals/EXT-*.yaml`)로 등록

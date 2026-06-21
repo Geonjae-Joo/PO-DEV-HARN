@@ -2,16 +2,20 @@
 
 > **이 파일은 가이드(안내서)가 아니라 DS 폐쇄를 강제하는 계약/가드레일이다.** 여기 `## 이름`으로 등록된 컴포넌트만 screen model·design page에 쓸 수 있고, lint가 기계적으로 강제한다. DS 종류와 무관한 stack-agnostic 형식(`## 이름` + `description` + `props`)만 담는다.
 > 이 프로젝트의 DS 정체성·셋업·컴포넌트 추가 절차(사람용 안내서)는 plugin-prerequisite `docs/project-design-guide.md` 및 `foundation/decisions/tech-stack.md`(DS 핀의 단일 출처)를 참조하라.
+>
+> **선택 필드 `states` (ADR-002 D4·§9 결정):** 컴포넌트가 지원하는 표준 상태(반응) 목록을 `- **states**: default, hover, ...`로 선언할 수 있다. DS 카탈로그가 이 목록만 시각 렌더한다. 생략 시 카탈로그가 컴포넌트 종류 기반 기본 상태셋을 추정한다. 표준 상태 집합: `default·hover·focus·active·disabled·loading·error·selected·read-only·empty`.
 
 ## Button
 - **description**: 액션을 실행하는 기본 버튼
 - **props**: label: string, variant: default|secondary|destructive|outline|ghost|link, size: default|sm|lg|icon, disabled: boolean
 - **usage**: 폼 제출, 액션 트리거, 다이얼로그 확인/취소
+- **states**: default, hover, focus, active, disabled, loading
 
 ## Input
 - **description**: 한 줄 텍스트 입력 필드
 - **props**: value: string, placeholder: string, type: text|email|password|number, disabled: boolean
 - **usage**: 폼 입력, 검색, 필터
+- **states**: default, focus, disabled, error, read-only
 
 ## Select
 - **description**: 드롭다운 단일 선택 컴포넌트

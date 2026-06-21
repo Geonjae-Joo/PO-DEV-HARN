@@ -141,6 +141,28 @@ def check(root: Path, manifest_path: Path) -> dict:
     }
 
 
+def mint_scr_id(root: Path, domain: str, screen_type: str) -> str:
+    """
+    DP→SCR 인스턴스화용 SCR- ID 채번 (§6.2 step 2).
+
+    `SCR-{DOMAIN}-{TYPE}` 형태로 구성하고 model_repo 전체에서 전역 유일성을 검증한다.
+    이미 존재하면 ValueError(채번 충돌) — 자동 접미사 부여 없음(결번 유지 원칙).
+
+    domain/screen_type 은 대문자·하이픈만 허용(spine-ids.md SCR 형식).
+    """
+    dom = re.sub(r"[^A-Z0-9-]", "", (domain or "").upper())
+    typ = re.sub(r"[^A-Z0-9-]", "", (screen_type or "").upper())
+    if not dom or not typ:
+        raise ValueError(f"domain/type 비어있음 또는 형식 오류 (domain={domain!r}, type={screen_type!r})")
+    scr_id = f"SCR-{dom}-{typ}"
+    if not re.match(r"^SCR-[A-Z][A-Z0-9-]+$", scr_id):
+        raise ValueError(f"SCR 형식 불일치: {scr_id}")
+    existing = scan_ids(root)
+    if scr_id in existing:
+        raise ValueError(f"SCR ID 채번 충돌(이미 존재): {scr_id} @ {', '.join(existing[scr_id])}")
+    return scr_id
+
+
 def reconcile(root: Path, manifest_path: Path) -> dict:
     """관측값으로 manifest 카운터/screens 레지스트리를 재작성(명시 호출 전용)."""
     if yaml is None:

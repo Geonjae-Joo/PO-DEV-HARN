@@ -1,0 +1,612 @@
+<!-- GENERATED DS CATALOG — source: ds-allowlist.md + design tokens — DO NOT EDIT -->
+<!-- rendered-by: harness-core/render/engine.py -->
+<!-- rendered-at: 2026-06-21T12:39:33.268772+00:00 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DS 카탈로그</title>
+  <style>
+    * { box-sizing: border-box; }
+    body{color:#1a1a1a;font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans KR", sans-serif;margin:0;padding:24px}
+    .catalog{margin:0 auto;max-width:1100px}
+    .lead{color:#555}
+    .toc{border-bottom:1px solid #eee;margin-bottom:24px;padding-bottom:12px}
+    section{margin-bottom:40px}
+    h2{border-bottom:2px solid #111;padding-bottom:4px}
+    .swatches{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+    .swatch{font-size:13px}
+    .chip{border:1px solid #ddd;border-radius:6px;height:48px;margin-bottom:4px;width:100%}
+    .swatch code{display:block;font-weight:600}
+    .swatch span{color:#777}
+    .type-row{align-items:center;display:flex;gap:16px;margin:8px 0}
+    .token-table{border-collapse:collapse;width:100%}
+    .token-table th, .token-table td{border:1px solid #eee;padding:6px 10px;text-align:left}
+    .space-row{align-items:center;display:flex;gap:12px;margin:6px 0}
+    .space-bar{background:#aa3bff;display:inline-block;height:12px}
+    .comp-card{border:1px solid #e5e5e5;border-radius:8px;margin-bottom:16px;padding:16px}
+    .comp-card .ref{color:#888;font-size:12px;font-weight:400}
+    .desc{color:#555;margin:4px 0}
+    .props code{background:#f4f3ec;font-size:12px;padding:2px 4px}
+    .states{display:flex;flex-wrap:wrap;gap:16px;margin-top:12px}
+    .state-cell{border:1px dashed #ccc;border-radius:6px;min-height:64px;min-width:120px;padding:8px}
+    .state-name{color:#999;display:block;font-size:11px;margin-bottom:6px;text-transform:uppercase}
+    .guide dt{font-weight:600;margin-top:8px}
+    .guide dd{color:#555;margin:0 0 4px 0}
+    .empty{color:#999;font-style:italic}
+    .sources{border-top:1px solid #eee;color:#999;font-size:12px;margin-top:32px;padding-top:12px}
+    [data-state="disabled"]{cursor:not-allowed;opacity:0.45}
+    [data-state="error"]{border-color:#d33;color:#d33}
+    [data-state="focus"]{outline:2px solid #aa3bff}
+    [data-state="selected"]{background:#aa3bff;color:#fff}
+    .chip[data-token="accent"]{background:#aa3bff}
+    .chip[data-token="accent-bg"]{background:rgba(170, 59, 255, 0.1)}
+    .chip[data-token="accent-border"]{background:rgba(170, 59, 255, 0.5)}
+    .chip[data-token="bg"]{background:#fff}
+    .chip[data-token="border"]{background:#e5e4e7}
+    .chip[data-token="code-bg"]{background:#f4f3ec}
+    .chip[data-token="social-bg"]{background:rgba(244, 243, 236, 0.5)}
+    .chip[data-token="text"]{background:#6b6375}
+    .chip[data-token="text-h"]{background:#08060d}
+    .space-bar[data-space="0"]{width:2px}
+    .space-bar[data-space="4"]{width:4px}
+    .space-bar[data-space="8"]{width:8px}
+    .space-bar[data-space="12"]{width:12px}
+    .space-bar[data-space="16"]{width:16px}
+    .space-bar[data-space="24"]{width:24px}
+    .space-bar[data-space="32"]{width:32px}
+    .space-bar[data-space="48"]{width:48px}
+  </style>
+</head>
+<body>
+  <div class="catalog">
+    <h1>DS 카탈로그</h1>
+    <p class="lead">PO는 이 카탈로그의 <b>이름</b>으로 AI에게 디자인을 지시한다. 각 이름은 screen model의 source.ref·토큰명과 동일.</p>
+    <nav class="toc"><a href="#colors">색상</a> · <a href="#type">타이포</a> · <a href="#space">치수</a> · <a href="#components">컴포넌트</a> · <a href="#guide">사용 가이드</a></nav>
+    <section id="colors"><h2>색상 토큰</h2>
+      <div class="swatches">
+        <div class="swatch">
+          <div class="chip" data-token="accent"></div>
+          <code>--accent</code><span>#aa3bff</span>
+        </div>
+        <div class="swatch">
+          <div class="chip" data-token="accent-bg"></div>
+          <code>--accent-bg</code><span>rgba(170, 59, 255, 0.1)</span>
+        </div>
+        <div class="swatch">
+          <div class="chip" data-token="accent-border"></div>
+          <code>--accent-border</code><span>rgba(170, 59, 255, 0.5)</span>
+        </div>
+        <div class="swatch">
+          <div class="chip" data-token="bg"></div>
+          <code>--bg</code><span>#fff</span>
+        </div>
+        <div class="swatch">
+          <div class="chip" data-token="border"></div>
+          <code>--border</code><span>#e5e4e7</span>
+        </div>
+        <div class="swatch">
+          <div class="chip" data-token="code-bg"></div>
+          <code>--code-bg</code><span>#f4f3ec</span>
+        </div>
+        <div class="swatch">
+          <div class="chip" data-token="social-bg"></div>
+          <code>--social-bg</code><span>rgba(244, 243, 236, 0.5)</span>
+        </div>
+        <div class="swatch">
+          <div class="chip" data-token="text"></div>
+          <code>--text</code><span>#6b6375</span>
+        </div>
+        <div class="swatch">
+          <div class="chip" data-token="text-h"></div>
+          <code>--text-h</code><span>#08060d</span>
+        </div>
+      </div>
+    </section>
+    <section id="type"><h2>타이포 토큰</h2>
+      <div class="type-row"><code>--heading</code><span class="type-sample">system-ui, 'Segoe UI', Roboto, sans-serif</span></div>
+      <div class="type-row"><code>--mono</code><span class="type-sample">ui-monospace, Consolas, monospace</span></div>
+      <div class="type-row"><code>--sans</code><span class="type-sample">system-ui, 'Segoe UI', Roboto, sans-serif</span></div>
+    </section>
+    <section id="space"><h2>치수·스페이싱 토큰</h2>
+      <table class="token-table"><thead><tr><th>토큰</th><th>값</th><th>견본</th></tr></thead><tbody>
+      </tbody></table>
+      <h3>엔진 기본 spacing (token-only 치수)</h3>
+      <div class="space-scale">
+        <div class="space-row"><code>space-0</code><span class="space-bar" data-space="0"></span><span>0px</span></div>
+        <div class="space-row"><code>space-1</code><span class="space-bar" data-space="4"></span><span>4px</span></div>
+        <div class="space-row"><code>space-2</code><span class="space-bar" data-space="8"></span><span>8px</span></div>
+        <div class="space-row"><code>space-3</code><span class="space-bar" data-space="12"></span><span>12px</span></div>
+        <div class="space-row"><code>space-4</code><span class="space-bar" data-space="16"></span><span>16px</span></div>
+        <div class="space-row"><code>space-5</code><span class="space-bar" data-space="24"></span><span>24px</span></div>
+        <div class="space-row"><code>space-6</code><span class="space-bar" data-space="32"></span><span>32px</span></div>
+        <div class="space-row"><code>space-8</code><span class="space-bar" data-space="48"></span><span>48px</span></div>
+      </div>
+    </section>
+    <section id="components"><h2>컴포넌트 갤러리</h2>
+      <article class="comp-card">
+        <h3>Alert <code class="ref">source.ref: Alert</code></h3>
+        <p class="desc">화면 내 인라인 알림/안내 메시지 박스 (제목+설명)</p>
+        <p class="props">props: <code>variant, title, description</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Alert" data-state="default">Alert</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Avatar <code class="ref">source.ref: Avatar</code></h3>
+        <p class="desc">사용자 프로필 이미지/이니셜 표시 (이미지 실패 시 fallback). AvatarBadge·AvatarGroup 합성 지원</p>
+        <p class="props">props: <code>src, alt, fallback, size</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Avatar" data-state="default">Avatar</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Badge <code class="ref">source.ref: Badge</code></h3>
+        <p class="desc">상태·분류를 표시하는 작은 라벨</p>
+        <p class="props">props: <code>label, variant</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <span data-ref="Badge" data-state="default">Badge</span>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">selected</span>
+            <span data-ref="Badge" data-state="selected">Badge</span>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Breadcrumb <code class="ref">source.ref: Breadcrumb</code></h3>
+        <p class="desc">현재 위치를 경로로 보여주는 탐색 경로</p>
+        <p class="props">props: <code>items, separator</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <nav data-ref="Breadcrumb" data-state="default">Breadcrumb</nav>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Button <code class="ref">source.ref: Button</code></h3>
+        <p class="desc">액션을 실행하는 기본 버튼</p>
+        <p class="props">props: <code>label, variant, size, disabled</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <button data-ref="Button" data-state="default">Button</button>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">hover</span>
+            <button data-ref="Button" data-state="hover">Button</button>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">focus</span>
+            <button data-ref="Button" data-state="focus">Button</button>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">active</span>
+            <button data-ref="Button" data-state="active">Button</button>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">disabled</span>
+            <button data-ref="Button" data-state="disabled">Button</button>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">loading</span>
+            <button data-ref="Button" data-state="loading">Button</button>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Calendar <code class="ref">source.ref: Calendar</code></h3>
+        <p class="desc">날짜 선택 달력 기본 컴포넌트</p>
+        <p class="props">props: <code>mode, selected, onSelect</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Calendar" data-state="default">Calendar</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Card <code class="ref">source.ref: Card</code></h3>
+        <p class="desc">정보를 묶어 보여주는 카드 컨테이너</p>
+        <p class="props">props: <code>title, footer</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Card" data-state="default">Card</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Checkbox <code class="ref">source.ref: Checkbox</code></h3>
+        <p class="desc">체크박스 입력 컴포넌트</p>
+        <p class="props">props: <code>checked, label, disabled</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <input data-ref="Checkbox" type="checkbox" data-state="default" />
+          </div>
+          <div class="state-cell">
+            <span class="state-name">selected</span>
+            <input data-ref="Checkbox" type="checkbox" data-state="selected" />
+          </div>
+          <div class="state-cell">
+            <span class="state-name">disabled</span>
+            <input data-ref="Checkbox" type="checkbox" data-state="disabled" />
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>DataTable <code class="ref">source.ref: DataTable</code></h3>
+        <p class="desc">정렬·페이지네이션을 지원하는 데이터 테이블 (Table + TanStack Table 합성)</p>
+        <p class="props">props: <code>columns, rows, sortable, pageSize</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <table class="ds-table" data-ref="DataTable" data-state="default">
+              <thead><tr><th>—</th></tr></thead>
+              <tbody><!-- 데이터 파생 렌더, 행 없음 --></tbody>
+            </table>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">loading</span>
+            <table class="ds-table" data-ref="DataTable" data-state="loading">
+              <thead><tr><th>—</th></tr></thead>
+              <tbody><!-- 데이터 파생 렌더, 행 없음 --></tbody>
+            </table>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">empty</span>
+            <table class="ds-table" data-ref="DataTable" data-state="empty">
+              <thead><tr><th>—</th></tr></thead>
+              <tbody><!-- 데이터 파생 렌더, 행 없음 --></tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>DatePicker <code class="ref">source.ref: DatePicker</code></h3>
+        <p class="desc">날짜 선택기 (Calendar + Popover 합성)</p>
+        <p class="props">props: <code>value, onChange, range, placeholder</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="DatePicker" data-state="default">DatePicker</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Dialog <code class="ref">source.ref: Dialog</code></h3>
+        <p class="desc">모달 팝업 컨테이너</p>
+        <p class="props">props: <code>open, title, onClose</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Dialog" data-state="default">Dialog</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>DropdownMenu <code class="ref">source.ref: DropdownMenu</code></h3>
+        <p class="desc">클릭 시 펼쳐지는 드롭다운 메뉴</p>
+        <p class="props">props: <code>items, trigger</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="DropdownMenu" data-state="default">DropdownMenu</div>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">disabled</span>
+            <div data-ref="DropdownMenu" data-state="disabled">DropdownMenu</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>FilterBar <code class="ref">source.ref: FilterBar</code></h3>
+        <p class="desc">목록 화면 상단의 필터 묶음 (Input + Select + Button 합성)</p>
+        <p class="props">props: <code>fields, onApply</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="FilterBar" data-state="default">FilterBar</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Form <code class="ref">source.ref: Form</code></h3>
+        <p class="desc">react-hook-form 기반 폼 래퍼 (유효성 검사 통합)</p>
+        <p class="props">props: <code>onSubmit, resolver</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <form data-ref="Form" data-state="default">Form</form>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">error</span>
+            <form data-ref="Form" data-state="error">Form</form>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Header <code class="ref">source.ref: Header</code></h3>
+        <p class="desc">전체 페이지 상단 글로벌 헤더 셸 (좌 브랜드 · 중 NavMenu 대메뉴 · 우 actions 3분할 합성)</p>
+        <p class="props">props: <code>brand, menu, actions</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Header" data-state="default">Header</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Input <code class="ref">source.ref: Input</code></h3>
+        <p class="desc">한 줄 텍스트 입력 필드</p>
+        <p class="props">props: <code>value, placeholder, type, disabled</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <input data-ref="Input" placeholder="Input" type="text" data-state="default" />
+          </div>
+          <div class="state-cell">
+            <span class="state-name">focus</span>
+            <input data-ref="Input" placeholder="Input" type="text" data-state="focus" />
+          </div>
+          <div class="state-cell">
+            <span class="state-name">disabled</span>
+            <input data-ref="Input" placeholder="Input" type="text" data-state="disabled" />
+          </div>
+          <div class="state-cell">
+            <span class="state-name">error</span>
+            <input data-ref="Input" placeholder="Input" type="text" data-state="error" />
+          </div>
+          <div class="state-cell">
+            <span class="state-name">read-only</span>
+            <input data-ref="Input" placeholder="Input" type="text" data-state="read-only" />
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Label <code class="ref">source.ref: Label</code></h3>
+        <p class="desc">폼 필드 레이블 컴포넌트</p>
+        <p class="props">props: <code>htmlFor, label</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Label" data-state="default">Label</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>NavMenu <code class="ref">source.ref: NavMenu</code></h3>
+        <p class="desc">상단 헤더의 가로 대메뉴 (Button variant=ghost 묶음으로 만든 합성 컴포넌트)</p>
+        <p class="props">props: <code>items, value</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="NavMenu" data-state="default">NavMenu</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Popover <code class="ref">source.ref: Popover</code></h3>
+        <p class="desc">기준 요소 기준으로 떠오르는 레이어 컨테이너</p>
+        <p class="props">props: <code>open, trigger, content</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Popover" data-state="default">Popover</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Select <code class="ref">source.ref: Select</code></h3>
+        <p class="desc">드롭다운 단일 선택 컴포넌트</p>
+        <p class="props">props: <code>options, value, placeholder, disabled</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <select data-ref="Select" data-state="default">Select</select>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">focus</span>
+            <select data-ref="Select" data-state="focus">Select</select>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">disabled</span>
+            <select data-ref="Select" data-state="disabled">Select</select>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">error</span>
+            <select data-ref="Select" data-state="error">Select</select>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Separator <code class="ref">source.ref: Separator</code></h3>
+        <p class="desc">영역을 시각적으로 나누는 구분선</p>
+        <p class="props">props: <code>orientation, decorative</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <hr data-ref="Separator" data-state="default" />
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Sheet <code class="ref">source.ref: Sheet</code></h3>
+        <p class="desc">화면 가장자리에서 슬라이드되는 패널 (Dialog 기반 드로어)</p>
+        <p class="props">props: <code>open, side, title, onClose</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Sheet" data-state="default">Sheet</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Skeleton <code class="ref">source.ref: Skeleton</code></h3>
+        <p class="desc">콘텐츠 로딩 중 자리표시 플레이스홀더 (펄스 애니메이션)</p>
+        <p class="props">props: <code>className</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Skeleton" data-state="default">Skeleton</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Sonner <code class="ref">source.ref: Sonner</code></h3>
+        <p class="desc">토스트 알림 컴포넌트 (화면 상단/하단 팝업 메시지)</p>
+        <p class="props">props: <code>message, type</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Sonner" data-state="default">Sonner</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Switch <code class="ref">source.ref: Switch</code></h3>
+        <p class="desc">켜짐/꺼짐 토글 스위치</p>
+        <p class="props">props: <code>checked, onCheckedChange, disabled, size</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Switch" data-state="default">Switch</div>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">selected</span>
+            <div data-ref="Switch" data-state="selected">Switch</div>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">disabled</span>
+            <div data-ref="Switch" data-state="disabled">Switch</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Table <code class="ref">source.ref: Table</code></h3>
+        <p class="desc">기본 HTML 테이블 구조 컴포넌트 (헤더·바디·푸터 슬롯 포함)</p>
+        <p class="props">props: <code>headers, rows</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <table class="ds-table" data-ref="Table" data-state="default">
+              <thead><tr><th>—</th></tr></thead>
+              <tbody><!-- 데이터 파생 렌더, 행 없음 --></tbody>
+            </table>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">loading</span>
+            <table class="ds-table" data-ref="Table" data-state="loading">
+              <thead><tr><th>—</th></tr></thead>
+              <tbody><!-- 데이터 파생 렌더, 행 없음 --></tbody>
+            </table>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">empty</span>
+            <table class="ds-table" data-ref="Table" data-state="empty">
+              <thead><tr><th>—</th></tr></thead>
+              <tbody><!-- 데이터 파생 렌더, 행 없음 --></tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Tabs <code class="ref">source.ref: Tabs</code></h3>
+        <p class="desc">탭 전환 컴포넌트</p>
+        <p class="props">props: <code>items, defaultValue</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Tabs" data-state="default">Tabs</div>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">selected</span>
+            <div data-ref="Tabs" data-state="selected">Tabs</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Textarea <code class="ref">source.ref: Textarea</code></h3>
+        <p class="desc">여러 줄 텍스트 입력 필드</p>
+        <p class="props">props: <code>value, placeholder, rows, disabled</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Textarea" data-state="default">Textarea</div>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">focus</span>
+            <div data-ref="Textarea" data-state="focus">Textarea</div>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">disabled</span>
+            <div data-ref="Textarea" data-state="disabled">Textarea</div>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">error</span>
+            <div data-ref="Textarea" data-state="error">Textarea</div>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">read-only</span>
+            <div data-ref="Textarea" data-state="read-only">Textarea</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Tooltip <code class="ref">source.ref: Tooltip</code></h3>
+        <p class="desc">호버 시 짧은 보조 설명을 띄우는 말풍선</p>
+        <p class="props">props: <code>content, side, delay</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Tooltip" data-state="default">Tooltip</div>
+          </div>
+        </div>
+      </article>
+    </section>
+    <section id="guide"><h2>사용 가이드</h2><dl class="guide">
+      <dt>Alert</dt><dd>경고·오류·안내 인라인 표시, 폼 검증 메시지, 상태 공지</dd>
+      <dt>Avatar</dt><dd>프로필 표시, 헤더 우측 계정 영역, 목록 작성자 표시</dd>
+      <dt>Badge</dt><dd>상태 표시, 태그, 분류 라벨</dd>
+      <dt>Breadcrumb</dt><dd>페이지 계층 경로, 상세 화면 내비게이션, 뒤로가기 경로 표시</dd>
+      <dt>Button</dt><dd>폼 제출, 액션 트리거, 다이얼로그 확인/취소</dd>
+      <dt>Calendar</dt><dd>DatePicker 내부 컴포넌트</dd>
+      <dt>Card</dt><dd>대시보드 위젯, 정보 그룹</dd>
+      <dt>Checkbox</dt><dd>다중 선택, 동의 여부, 필터 옵션</dd>
+      <dt>DataTable</dt><dd>목록 화면의 메인 데이터 표시</dd>
+      <dt>DatePicker</dt><dd>날짜 입력 필드, 기간 필터</dd>
+      <dt>Dialog</dt><dd>확인 팝업, 입력 팝업, 상세 팝업</dd>
+      <dt>DropdownMenu</dt><dd>더보기 메뉴, 행 액션, 컨텍스트 메뉴</dd>
+      <dt>FilterBar</dt><dd>목록 검색/필터 조건 입력 영역</dd>
+      <dt>Form</dt><dd>입력 폼 전체 래핑, 유효성 검사</dd>
+      <dt>Header</dt><dd>앱 전역 상단 바, 시스템명·대메뉴·프로필 배치</dd>
+      <dt>Input</dt><dd>폼 입력, 검색, 필터</dd>
+      <dt>Label</dt><dd>입력 필드 레이블</dd>
+      <dt>NavMenu</dt><dd>글로벌 대메뉴, 섹션 전환 (예: 프로젝트 관리/개발/설정)</dd>
+      <dt>Popover</dt><dd>DatePicker, 툴팁, 컨텍스트 패널</dd>
+      <dt>Select</dt><dd>단일 항목 선택, 필터 조건</dd>
+      <dt>Separator</dt><dd>섹션 구분, 메뉴 그룹 구분, 헤더 내 영역 분리</dd>
+      <dt>Sheet</dt><dd>모바일 네비게이션 드로어, 측면 상세/필터 패널, 보조 작업 영역</dd>
+      <dt>Skeleton</dt><dd>로딩 상태 표시, 테이블/카드 로딩 자리, 비동기 대기</dd>
+      <dt>Sonner</dt><dd>저장 성공, 오류 알림, 안내 메시지</dd>
+      <dt>Switch</dt><dd>설정 on/off, 활성화 토글, 폼 불리언 입력</dd>
+      <dt>Table</dt><dd>정적 데이터 표시, DataTable의 기반</dd>
+      <dt>Tabs</dt><dd>화면 내 카테고리 전환, 멀티뷰</dd>
+      <dt>Textarea</dt><dd>긴 텍스트 입력, 메모/설명 입력, 댓글 작성</dd>
+      <dt>Tooltip</dt><dd>아이콘 버튼 설명, 축약 텍스트 보충, 도움말</dd>
+    </dl></section>
+    <footer class="sources">토큰 출처: foundation/design-system/ds-source/src/index.css</footer>
+  </div>
+</body>
+</html>

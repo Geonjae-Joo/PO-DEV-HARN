@@ -1,23 +1,20 @@
 id: DP-POPUP
+version: 1
 archetype: popup
-description: 모달/팝업(생성·수정·확인) 화면이 공통으로 사용하는 골격
+description: 모달/팝업(생성·수정·확인) 화면이 공통으로 사용하는 골격 (ADR-002 캔버스 모델)
+# 팝업은 Dialog 프레임을 locked로 고정하고, 본문(content)·액션(footer-actions)을 editable 캔버스로 둔다.
+canvas:
+  grid: { columns: 12, gap: space-4, max_width: 720 }
+  breakpoints:
+    - { name: lg, min: 1280, columns: 12 }
+    - { name: md, min: 768,  columns: 8 }
+    - { name: sm, min: 0,    columns: 4 }
 slots:
-  - content
-  - footer-actions
+  - { id: frame,          editable: false, locks: [Dialog] }                # 팝업 컨테이너(고정)
+  - { id: content,        editable: true,  grid_columns: 12, overflow: scroll-y }  # 입력 폼 캔버스
+  - { id: footer-actions, editable: true,  grid_columns: 12 }              # 확인/취소 액션 자리
 components:
   - ref: Dialog
-    slot: content
+    slot: frame
     order: 1
-    note: 팝업 컨테이너 (제목·본문 영역)
-  - ref: Form
-    slot: content
-    order: 2
-    note: 입력 폼 영역 (필드 구성은 ②에서 정의)
-  - ref: Button
-    slot: footer-actions
-    order: 1
-    note: 확인/저장 액션 자리
-  - ref: Button
-    slot: footer-actions
-    order: 2
-    note: 취소/닫기 액션 자리
+    note: 팝업 컨테이너 (제목·본문 영역 프레임)

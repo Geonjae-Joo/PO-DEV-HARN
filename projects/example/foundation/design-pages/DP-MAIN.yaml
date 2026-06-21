@@ -1,11 +1,20 @@
 id: DP-MAIN
+version: 2
 archetype: main
-description: 목록·상세·폼 화면이 공통으로 사용하는 전체 페이지 기본 골격
+description: 목록·상세·폼 화면이 공통으로 사용하는 전체 페이지 기본 골격 (ADR-002 캔버스 모델)
+# ADR-002 D3 — 캔버스 봉쇄: 슬롯을 locked(① 확정·SCR 읽기전용 참조)와 editable(PO/AI 작업)로 구분.
+canvas:
+  grid: { columns: 12, gap: space-4, max_width: 1440 }
+  breakpoints:
+    - { name: lg, min: 1280, columns: 12 }
+    - { name: md, min: 768,  columns: 8 }
+    - { name: sm, min: 0,    columns: 4 }
 slots:
-  - header
-  - header-actions
-  - content
-  - footer
+  - { id: header,         editable: false, locks: [Header, Breadcrumb] }   # 고정 구성
+  - { id: header-actions, editable: true,  grid_columns: 12 }              # 화면별 주요 액션 자리
+  - { id: content,        editable: true,  grid_columns: 12, overflow: scroll-y }  # 빈 캔버스
+  - { id: footer,         editable: false, locks: [Separator] }            # 고정 구성
+# locked 슬롯이 렌더 시 그릴 실제 컴포넌트 (editable 슬롯은 ②가 채움)
 components:
   - ref: Header
     slot: header
@@ -15,18 +24,6 @@ components:
     slot: header
     order: 2
     note: 현재 위치 경로 표시
-  - ref: Button
-    slot: header-actions
-    order: 1
-    note: 우측 상단 주요 액션 자리 (구체 동작은 ②에서 정의)
-  - ref: FilterBar
-    slot: content
-    order: 1
-    note: 목록 검색/필터 영역
-  - ref: DataTable
-    slot: content
-    order: 2
-    note: 메인 데이터 표
   - ref: Separator
     slot: footer
     order: 1

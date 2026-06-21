@@ -120,7 +120,10 @@ screens:
     shell_ref: "app_repo/frontend/src/pages/OrderList/index.tsx"  # Phase α 산출
     pinned_contract:            # 고정 계약 스냅샷 (구현은 이 위에서만 — freeze). 소비자(speckit-specify)가 읽는 단일 키.
       version: 12
-      hash: "sha256:..."
+      hash: "sha256:..."          # 모델 semantic 해시 (layout·actions·notes body)
+      layout_hash: "sha256:..."   # 전 브레이크포인트 resolve 좌표 + 그리드 정의의 정규형 해시 (ADR-002 §4)
+      render_hash: "sha256:..."   # 렌더 HTML(rendered-at 주석 줄 제외, LF 정규화) 해시
+      from_template: "DP-MAIN@v2" # 인스턴스화 출처 (DP ID@버전)
       git_ref: "abc1234"
   - id: SCR-ORDER-DETAIL
     yaml_ref: "model_repo/screens/SCR-ORDER-DETAIL.yaml"
@@ -128,7 +131,10 @@ screens:
     shell_ref: "app_repo/frontend/src/pages/OrderDetail/index.tsx"
     pinned_contract:
       version: 8
-      hash: "sha256:..."
+      hash: "sha256:..."          # 모델 semantic 해시 (layout·actions·notes body)
+      layout_hash: "sha256:..."   # 전 브레이크포인트 resolve 좌표 + 그리드 정의의 정규형 해시 (ADR-002 §4)
+      render_hash: "sha256:..."   # 렌더 HTML(rendered-at 주석 줄 제외, LF 정규화) 해시
+      from_template: "DP-MAIN@v2" # 인스턴스화 출처 (DP ID@버전)
       git_ref: "abc1234"
 
 # ─────────────────────────────────────────────
@@ -241,7 +247,7 @@ open_items:
 | actions + acceptance 원문 | bl-analyst decision_table |
 | notes 원문 (verbatim, complexity) | T### task 목록 |
 | open_items 원문 | 테스트 코드 |
-| pinned_contract (version + hash + git_ref) | impl 패턴·힌트 |
+| pinned_contract (version + hash + layout_hash + render_hash + from_template + git_ref) | impl 패턴·힌트 |
 
 ---
 

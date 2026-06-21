@@ -1,64 +1,75 @@
-# ============================================================
-# link-manifest.yaml — 스파인 ID 단일 원장 (single source of numbering)
-# ------------------------------------------------------------
-# 역할:
-#   1) 스파인 ID 자동 채번의 유일한 근거. AI는 임의로 ID를 발명하지 않고
-#      여기의 next 카운터를 읽어 다음 번호를 채번한다 (spine-ids.md 불변원칙 3).
-#   2) 화면→요구사항→팩→task→commit 추적 그래프의 연결 원장.
-# 규칙:
-#   - 삭제된 ID는 결번 유지(재사용 금지). next는 감소하지 않는다.
-#   - 전역 유일. 같은 접두사 내 중복 금지.
-#   - 해시 제외 필드(prompt_log/provenance/intake)는 추적에는 기록하되 hash 계산 제외.
-# schema_version 과 동일하게 버전을 올릴 때 README/스키마를 함께 갱신.
-# ============================================================
+# link-manifest.yaml — 스파인 ID 단일 원장 (projects/example)
+# 화면→요구사항→팩→task→commit 추적 그래프의 연결 원장. 전역 유일 채번.
 manifest_version: 1
-
-# ── 채번 카운터 (다음 발급 번호) ─────────────────────────────
-# 도메인 스코프 ID(REQ-/NOTE-/NFR-/CMP-)는 화면별로 .NNN 순번을 가지므로
-# screens[].next_seq 에서 관리한다. 전역 카운터는 아래.
 counters:
-  PRM: 1          # PRM-0001 부터
-  Q:   1          # Q-001 부터
-  PACK: {}        # 도메인명 기반이라 순번 없음 (PACK-ORDER 등 도메인 키로 발급)
+  PRM: 1
+  Q: 1
+  PACK: {}
   SPEC:
-    next: 1       # SPEC-000은 baseline 예약. 추가 플랫폼 spec은 001부터
-  T:
-    # 팩별 task 순번. 키: PACK id, 값: 다음 T 번호
-    # 예) PACK-ORDER: 16  → 다음 task는 T016
-
-# ── 화면 원장 ────────────────────────────────────────────────
-# 각 화면의 ID와 하위 ID 순번, 추적 링크.
-screens: []
-# 예시:
-#   - id: SCR-ORDER-LIST
-#     status: confirmed
-#     version: 12
-#     template: DP-MAIN
-#     next_seq:        # 이 화면 스코프의 다음 .NNN 순번
-#       CMP: 4
-#       REQ: 3
-#       NOTE: 3
-#       NFR: 1
-#     components: [CMP-ORDER-LIST.filterbar, CMP-ORDER-LIST.table, CMP-ORDER-LIST.exportBtn]
-#     requirements: [REQ-ORDER-LIST.001, REQ-ORDER-LIST.002]
-#     notes: [NOTE-ORDER-LIST.001, NOTE-ORDER-LIST.002]
-
-# ── 팩 원장 (②가 발행 → ③ 구현) ─────────────────────────────
+    next: 1
+  T: {}
+screens:
+- id: SCR-PRODUCT-LIST
+  status: draft
+  version: 1
+  template: DP-MAIN
+  from_template: DP-MAIN@v2     # ADR-002 §6 인스턴스화 출처(DP→SCR 엣지)
+  next_seq:
+    CMP: 4
+    REQ: 4
+    NOTE: 2
+    NFR: 1
+  components:
+  - CMP-PRODUCT-LIST.addBtn
+  - CMP-PRODUCT-LIST.filterbar
+  - CMP-PRODUCT-LIST.table
+  requirements:
+  - REQ-PRODUCT-LIST.001
+  - REQ-PRODUCT-LIST.002
+  - REQ-PRODUCT-LIST.003
+  notes:
+  - NOTE-PRODUCT-LIST.001
+- id: SCR-ORDER-LIST
+  status: confirmed
+  version: 3
+  template: DP-MAIN
+  next_seq:
+    CMP: 4
+    REQ: 4
+    NOTE: 2
+    NFR: 1
+  components:
+  - CMP-ORDER-LIST.filterbar
+  - CMP-ORDER-LIST.table
+  - CMP-ORDER-LIST.exportBtn
+  requirements:
+  - REQ-ORDER-LIST.001
+  - REQ-ORDER-LIST.002
+  - REQ-ORDER-LIST.003
+  notes:
+  - NOTE-ORDER-LIST.001
+- id: SCR-ORDER-DETAIL
+  status: confirmed
+  version: 3
+  template: DP-MAIN
+  next_seq:
+    CMP: 4
+    REQ: 2
+    NOTE: 2
+    NFR: 1
+  components:
+  - CMP-ORDER-DETAIL.card
+  - CMP-ORDER-DETAIL.statusBadge
+  - CMP-ORDER-DETAIL.refundBtn
+  requirements:
+  - REQ-ORDER-DETAIL.001
+  notes:
+  - NOTE-ORDER-DETAIL.001
 packs: []
-# 예시:
-#   - id: PACK-ORDER
-#     screens: [SCR-ORDER-LIST, SCR-ORDER-DETAIL]
-#     reqs: [REQ-ORDER-LIST.001, REQ-ORDER-LIST.002]
-#     status: ready          # ready | in_progress | done
-#     tasks: [T001, T002]    # ③가 채번 (T 카운터)
-#     commits: []            # 스파인 ID 포함 커밋 해시
-
-# ── design page 원장 (① 발행) ────────────────────────────────
-design_pages: []
-# 예시:
-#   - id: DP-MAIN
-#     version: 2
-#     slots: [header, sidebar, content, header-actions]
-#   - id: DP-POPUP
-#     version: 1
-#     slots: [content, footer-actions]
+design_pages:
+- id: DP-MAIN
+  version: 2
+  slots: [header, header-actions, content, footer]
+- id: DP-POPUP
+  version: 1
+  slots: [frame, content, footer-actions]

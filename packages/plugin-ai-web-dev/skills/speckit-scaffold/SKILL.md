@@ -44,6 +44,7 @@ foundation/design-pages/         (DP-MAIN, DP-POPUP 등 템플릿)
 
 ### 실행 절차
 
+0. **진입 가드(필수)**: `python "$CLAUDE_PLUGIN_ROOT/hooks/layout-hash-guard.py" --root .` 를 실행해 각 화면의 재렌더 `layout_hash`가 ②확정 `pinned_contract`와 일치하는지 검증한다. exit 1(불일치)이면 scaffold를 진행하지 말고 SCR을 ②확정 상태로 되돌리거나 Change Order로 핀을 갱신한다(ADR-002 §5).
 1. `model_repo/screens/`에서 `status: confirmed`인 YAML 전체 수집.
 2. 각 screen model에 대해:
    a. `screen.template.page`로 design page 템플릿 선택.

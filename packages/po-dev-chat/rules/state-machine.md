@@ -5,6 +5,8 @@
 
 ## 상태 정의
 
+> **인스턴스화 진입 (ADR-002 §6):** PO가 design page를 고르면 `instantiate_screen.py`가 새 화면 골격을 만든다. 인스턴스화 산출 = `draft` 상태 SCR — 고정부(locked region)는 DP 참조를 상속하고, editable 캔버스는 빈 상태로 시작한다. 첫 저장부터 기존 save 파이프라인(schema-validate → lint L1~L5 → render)을 그대로 탄다. 이후 상태 전환은 아래 다이어그램대로 `draft → … → confirmed`.
+
 ```
 draft               초안. 편집 중.
 layout_confirmed    layout 확정. L1 error 0.
@@ -42,9 +44,9 @@ confirmed 후 변경: Change Order 프로세스 (③ change-order-policy.md)
 1. schema-validate (on-save-schema-validate.py)
    └ 실패 → 저장 차단 (400)
 
-2. lint L1~L4 (on-save-lint-L1-L4.py)
+2. lint L1~L5 (on-save-lint-L1-L4.py, L5 = canvas-bounds 추가)
    └ L1 error → 저장 차단
-   └ L2~L4 error → 저장 허용, 경고 표시
+   └ L2~L5 error → 저장 허용, 경고 표시
    └ warn → 저장 허용, 경고 표시
 
 3. optimistic lock 체크
@@ -52,8 +54,9 @@ confirmed 후 변경: Change Order 프로세스 (③ change-order-policy.md)
 
 4. 새 version 발급 → 저장 완료
 
-5. layout-recommend 렌더링 (lint 통과 시에만)
-   └ renders/SCR-*.render.html 갱신
+5. 결정론적 렌더 (lint 통과 시에만)
+   └ harness-core/render/render_screen.py (결정론적 엔진)가 수행 — 스킬 ad-hoc 아님
+   └ renders/SCR-*.render.html 갱신 (같은 입력 → 바이트 동일 HTML)
 ```
 
 ## Gate A 통과 조건 (gate-a-check.py)

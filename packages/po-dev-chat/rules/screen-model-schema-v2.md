@@ -23,6 +23,9 @@ screen:
     page: DP-MAIN           # ① design page ID
     version: 2
     slots_used: [content, header-actions]
+  from_template:            # 인스턴스화 출처 핀 (§6 instantiate_screen.py가 기록) — 권장(warn), 필수 아님(하위호환)
+    page: DP-MAIN           # 이 화면을 인스턴스화한 design page
+    version: 2              # 인스턴스화 시점의 DP 버전 (provenance freeze)
   pins:
     design_guide: v3        # 이 화면이 참조한 자산 버전 (재현성)
     ds_contract: v5
@@ -45,11 +48,23 @@ layout:
       kind: ds              # ds | page-region
       ref: FilterBar        # ds-allowlist.md 허용 목록의 키 (밖이면 lint L1 error)
       version: "1.2"
-    position:
-      slot: content         # design page 슬롯명
-      order: 1              # 슬롯 내 배치 순서
-      area: top             # top | main | side | footer
-      span: full            # full | half | third | auto
+    position:               # 반응형 그리드 좌표 (정규형, ADR-002 D2)
+      slot: content         # required — design page 슬롯명 (DP slot id)
+      base:                 # lg 기준 좌표. col_span은 shorthand 허용
+        col_start: 1
+        col_span: full      # full | half | third | quarter (shorthand) 또는 정수
+        row: 1
+        row_span: 1
+      at:                   # optional — 브레이크포인트 오버라이드 (미지정 bp는 자동 강등)
+        md: { col_start: 1, col_span: 8, row: 1 }
+        sm: { col_start: 1, col_span: 4, row: 2, hidden: false }
+      # shorthand(full/half/third/quarter)는 slot.grid_columns에 맞춰 정수로 resolve.
+      #   full=columns, half=round(columns/2), third=round(columns/3), quarter=round(columns/4).
+      #   저장값은 shorthand 가능, 핀/해시되는 계약값은 항상 resolve된 정수.
+      # 금지(lint error): 픽셀 좌표("320px" 등 단위 문자열), auto 흐름값.
+      # 레거시 하위호환: position: { slot, order } (base 없음)도 유효 —
+      #   엔진이 같은 slot 내 order 오름차순으로 각 컴포넌트를 full-width로 row=1,2,3... 세로 스택.
+      #   레거시 area/span 필드는 deprecated(무시, 경고).
     props: { fields: [dateRange, status] }
     meta:
       label: "기간/상태 필터"
@@ -58,7 +73,7 @@ layout:
 
   - id: CMP-ORDER-LIST.table
     source: { kind: ds, ref: DataTable, version: "1.2" }
-    position: { slot: content, order: 2, area: main, span: full }
+    position: { slot: content, order: 2, area: main, span: full }   # ← 레거시 형식 예시(하위호환). 신규는 위 base/at 정규형 권장. area/span은 deprecated
     props: { columns: [orderNo, customer, amount, status] }
     meta: { label: "주문 테이블", added_by: PRM-0002, interactive: true }
     reactive:               # 이 컴포넌트를 갱신시키는 트리거 — action-interview 중 query 타입에서 수집
@@ -185,6 +200,8 @@ checkpoints:
 | 필드 | 변경 가능 | AI 수정 가능 | 해시 포함 |
 |---|---|---|---|
 | layout | 확정 전 | 패치 반영 | ✓ |
+| layout[].position | 확정 전 | 패치 반영 | ✓ (정수 resolve 후 layout_hash) |
+| screen.from_template | 인스턴스화 시 1회 핀 | **금지** (provenance 불변) | ✗ |
 | layout[].reactive | 확정 전 | 인터뷰 결과 반영 | ✓ |
 | screen.permission | 확정 전 | 인터뷰 결과 반영 | ✓ |
 | screen.initial_state | 확정 전 | 인터뷰 결과 반영 | ✓ |
@@ -196,6 +213,8 @@ checkpoints:
 | prompt_log | append-only | **금지** | ✗ |
 | provenance.intent | 자동 갱신 | 재생성 | ✗ |
 | intake | 답변 갱신 | 질문 생성 | ✗ |
+
+> **position 반응형(ADR-002 D2):** `position`은 `slot` + `base:{col_start,col_span,row,row_span}` + optional `at:{md,sm}`의 반응형 그리드 좌표다. shorthand(full/half/third/quarter)는 slot 컬럼 수에 맞춰 정수로 resolve되며, 핀/해시되는 계약값은 항상 정수. 픽셀 좌표·`auto`는 lint error로 금지. 레거시 `{slot, order}`(base 없음)는 계속 허용되며 엔진이 결정론적으로 base로 자동 변환(order 오름차순 full-width 세로 스택), 레거시 `area`/`span`은 deprecated.
 
 ## screen.status 전환
 `draft → layout_confirmed → actions_in_progress → review → confirmed`

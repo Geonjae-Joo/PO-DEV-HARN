@@ -1,9 +1,17 @@
 # Spine IDs — 스파인 ID 채번 규칙
 
 전 레이어 공통 적용. 모든 아티팩트는 스파인 ID를 가진다.
-추적 그래프: `SCR → CMP → REQ → acceptance → PACK → task → test → commit`
+추적 그래프: `DP → SCR → CMP → REQ → acceptance → PACK → task → test → commit`
+- 인스턴스화 분기: `DP- → SCR- (② instantiate_screen.py가 DP를 SCR로 인스턴스화, provenance 엣지)`
 - 데이터 분기: `REQ/action → ENT-/EXT- (② 계약) → data-model·ERD (③ 파생) → migration`
 - 여정 분기: `JRN- (② navigate 집계) → SCR/action → Playwright e2e-test (③ Phase γ)`
+
+### DP- → SCR- 인스턴스화 엣지 (ADR-002 §6)
+DP가 SCR로 **인스턴스화**될 때, 그 출처(provenance) 엣지가 `link-manifest.yaml`에 기록된다.
+- `instantiate_screen.py`가 PO가 고른 design page로부터 새 화면 골격을 만들며 `SCR-{DOMAIN}-{TYPE}`를 채번한다.
+- 채번은 `spine_ledger.py`의 `mint_scr_id`가 수행 — model_repo 전체를 스캔해 **전역 유일**을 검증(충돌 시 에러).
+- 산출된 SCR에는 `screen.from_template: { page, version }` 핀이 박히고, `link-manifest.yaml`의 `screens[]`에 `template` + `from_template` 엣지가 기록되어 DP→SCR 추적이 성립한다.
+- DP 원본 YAML은 절대 수정되지 않는다(고정 구성은 참조 상속, 빈 캔버스만 SCR이 소유).
 
 ---
 

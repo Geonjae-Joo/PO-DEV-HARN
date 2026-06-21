@@ -10,6 +10,12 @@ Hook: on-save-schema-validate.py
   - layout item은 `source: {kind, ref, version}` (구 스키마의 `component:`가 아님)
   - action.status enum: proposed | user_confirmed
   - 최상위 `schema_version: 2`
+
+ADR-002 확장 (모두 OPTIONAL, 있을 때만 검증 — 하위호환 유지):
+  - position v2: `position.base: {col_start, col_span, row, row_span}` + `position.at.<bp>`
+    col_span은 정수 또는 shorthand(full/half/third/quarter). 픽셀 좌표·auto 흐름값 금지.
+    레거시 `position: {slot, order}` (base 없음)은 그대로 유효.
+  - `screen.from_template: {page: DP-*, version: int}` 인스턴스화 출처 핀 (권장).
 """
 
 import sys
@@ -35,6 +41,10 @@ COMPLEXITY      = {"low", "med", "high"}
 PERMISSIONS     = {"all", "login", "admin", "manager", "viewer"}   # 프로젝트별 확장 가능
 ACTION_STATUS   = {"proposed", "user_confirmed"}
 SOURCE_KINDS    = {"ds", "page-region"}
+
+# ── 위치 스키마 v2 (ADR-002 §1) ───────────────────────────────────────────────
+COLSPAN_SHORTHAND = {"full", "half", "third", "quarter"}
+BREAKPOINT_NAMES  = {"lg", "md", "sm"}
 
 # ── spine ID 패턴 ─────────────────────────────────────────────────────────────
 SCR_RE  = re.compile(r"^SCR-[A-Z][A-Z0-9-]+$")
@@ -87,6 +97,86 @@ def validate_screen(screen: dict, path: str):
     tmpl = screen.get("template", {})
     if isinstance(tmpl, dict) and "page" in tmpl and not DP_RE.match(str(tmpl["page"])):
         warn(f"{path}.screen.template.page: DP- 패턴 불일치 (값: {tmpl['page']})")
+    # from_template 핀 (신규, ADR-002 §5) — 있을 때만 검증 (하위호환: 없어도 무방)
+    ft = screen.get("from_template")
+    if ft is not None:
+        if not isinstance(ft, dict):
+            err(f"{path}.screen.from_template: dict 타입 필요 ({{page: DP-*, version: int}})")
+        else:
+            if "page" in ft and not DP_RE.match(str(ft["page"])):
+                err(f"{path}.screen.from_template.page: DP- 패턴 불일치 (값: {ft['page']})")
+            if "version" in ft and not isinstance(ft["version"], int):
+                err(f"{path}.screen.from_template.version: 정수 타입 필요 (값: {ft['version']})")
+
+
+def _is_pos_int(v) -> bool:
+    """양의 정수인지 (bool 제외) 판정."""
+    return isinstance(v, int) and not isinstance(v, bool) and v > 0
+
+
+def validate_grid_position(gp: dict, loc: str, require_full: bool = True):
+    """position.base 또는 at.<bp>의 그리드 좌표 dict를 검증한다 (ADR-002 §1).
+    col_start·row: 양의 정수 필수. col_span: 양의 정수 OR shorthand. row_span: 있으면 양의 정수.
+    픽셀 좌표("320px") / "auto" 흐름값 → ERROR.
+    """
+    if not isinstance(gp, dict):
+        err(f"{loc}: dict 타입 필요 ({{col_start, col_span, row}})")
+        return
+    # col_start
+    cs = gp.get("col_start")
+    if cs is None:
+        if require_full:
+            err(f"{loc}: 'col_start' 없음")
+    elif not _is_pos_int(cs):
+        err(f"{loc}.col_start: 양의 정수 필요 — 픽셀 좌표·auto 금지 (값: {cs!r})")
+    # col_span
+    sp = gp.get("col_span")
+    if sp is None:
+        if require_full:
+            err(f"{loc}: 'col_span' 없음")
+    elif isinstance(sp, str):
+        if sp not in COLSPAN_SHORTHAND:
+            err(f"{loc}.col_span: 양의 정수 또는 shorthand{sorted(COLSPAN_SHORTHAND)} 필요 — "
+                f"픽셀 좌표·auto 금지 (값: {sp!r})")
+    elif not _is_pos_int(sp):
+        err(f"{loc}.col_span: 양의 정수 또는 shorthand 필요 — 픽셀 좌표·auto 금지 (값: {sp!r})")
+    # row
+    rw = gp.get("row")
+    if rw is None:
+        if require_full:
+            err(f"{loc}: 'row' 없음")
+    elif not _is_pos_int(rw):
+        err(f"{loc}.row: 양의 정수 필요 — 픽셀 좌표·auto 금지 (값: {rw!r})")
+    # row_span (optional)
+    if "row_span" in gp and not _is_pos_int(gp["row_span"]):
+        err(f"{loc}.row_span: 양의 정수 필요 (값: {gp['row_span']!r})")
+
+
+def validate_position_v2(pos: dict, loc: str):
+    """신규 반응형 position(base/at)을 검증한다. base가 없으면 레거시로 간주(검증 안 함)."""
+    # 레거시 area/span → deprecated 경고 (에러 아님)
+    for legacy in ("area", "span"):
+        if legacy in pos:
+            warn(f"{loc}.position.{legacy}: deprecated 필드 — 무시됨 (base/at 사용 권장)")
+    base = pos.get("base")
+    if base is None:
+        return  # 레거시 {slot, order} — 하위호환, 검증 안 함
+    validate_grid_position(base, f"{loc}.position.base", require_full=True)
+    at = pos.get("at")
+    if at is not None:
+        if not isinstance(at, dict):
+            err(f"{loc}.position.at: dict 타입 필요 (브레이크포인트명: 좌표)")
+            return
+        for bp, gp in at.items():
+            if bp not in BREAKPOINT_NAMES:
+                warn(f"{loc}.position.at.{bp}: 비표준 브레이크포인트명 (허용: {sorted(BREAKPOINT_NAMES)})")
+            if not isinstance(gp, dict):
+                err(f"{loc}.position.at.{bp}: dict 타입 필요")
+                continue
+            # at 오버라이드는 부분 지정 허용(자동 강등 보완) — require_full=False
+            validate_grid_position(gp, f"{loc}.position.at.{bp}", require_full=False)
+            if "hidden" in gp and not isinstance(gp["hidden"], bool):
+                err(f"{loc}.position.at.{bp}.hidden: boolean 타입 필요 (값: {gp['hidden']!r})")
 
 
 def validate_layout(layout: list, path: str):
@@ -120,10 +210,16 @@ def validate_layout(layout: list, path: str):
             err(f"{loc}.source: dict 타입 필요 ({{kind, ref, version}})")
         if "position" in item:
             pos = item["position"]
-            if "slot" not in pos:
-                err(f"{loc}.position: 'slot' 없음")
-            if "order" not in pos:
-                warn(f"{loc}.position: 'order' 없음 (렌더링 순서 미정)")
+            if not isinstance(pos, dict):
+                err(f"{loc}.position: dict 타입 필요")
+            else:
+                if "slot" not in pos:
+                    err(f"{loc}.position: 'slot' 없음")
+                # 신규 반응형(base) vs 레거시({slot, order}) 분기
+                if "base" in pos:
+                    validate_position_v2(pos, loc)
+                elif "order" not in pos:
+                    warn(f"{loc}.position: 'order' 없음 (렌더링 순서 미정)")
         if "meta" in item and "interactive" in item["meta"]:
             if not isinstance(item["meta"]["interactive"], bool):
                 err(f"{loc}.meta.interactive: boolean 타입 필요")
@@ -243,6 +339,13 @@ def validate_file(file_path: Path):
     validate_schema_version(doc, p)
     validate_screen(screen, p)
     validate_layout(layout, p)
+    # 신규 반응형 position을 쓰면서 from_template 핀이 없으면 권장 경고 (하위호환: warn에 그침)
+    has_responsive = any(
+        isinstance(it, dict) and isinstance(it.get("position"), dict) and "base" in it["position"]
+        for it in (layout or [])
+    )
+    if has_responsive and not screen.get("from_template"):
+        warn(f"{p}.screen: 반응형 position(base)을 쓰는 신규 화면은 from_template 핀 권장 (ADR-002 §5)")
     validate_actions(doc.get("actions", []), layout, p)
     validate_notes(doc.get("notes", []), layout, p)
     validate_prompt_log(doc.get("prompt_log", []), p)

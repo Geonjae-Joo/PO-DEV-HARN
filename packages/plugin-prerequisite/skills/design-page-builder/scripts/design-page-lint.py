@@ -60,6 +60,71 @@ def load_allowed_components(guide_path: Path) -> set:
     return {m.group(1) for m in re.finditer(r"^##\s+(\w+)", text, re.MULTILINE)}
 
 
+def _is_pos_int(v) -> bool:
+    return isinstance(v, int) and not isinstance(v, bool) and v > 0
+
+
+def lint_canvas(name: str, canvas: dict) -> None:
+    """신규 캔버스 모델(ADR-002 §2) 검증 — canvas가 있을 때만 호출."""
+    if not isinstance(canvas, dict):
+        ERRORS.append(f"[{name}] canvas: dict 타입이어야 합니다.")
+        return
+    # canvas.grid
+    grid = canvas.get("grid")
+    if grid is None:
+        ERRORS.append(f"[{name}] canvas.grid 없음. {{columns, gap, max_width}}가 필요합니다.")
+    elif not isinstance(grid, dict):
+        ERRORS.append(f"[{name}] canvas.grid: dict 타입이어야 합니다.")
+    else:
+        if not _is_pos_int(grid.get("columns")):
+            ERRORS.append(f"[{name}] canvas.grid.columns: 양의 정수여야 합니다 (값: {grid.get('columns')!r}).")
+        if "max_width" in grid and not _is_pos_int(grid.get("max_width")):
+            ERRORS.append(f"[{name}] canvas.grid.max_width: 양의 정수여야 합니다 (값: {grid.get('max_width')!r}).")
+    # canvas.breakpoints
+    bps = canvas.get("breakpoints")
+    if bps is None:
+        WARNINGS.append(f"[{name}] canvas.breakpoints 없음 — 기본 lg/md/sm 권장.")
+    elif not isinstance(bps, list):
+        ERRORS.append(f"[{name}] canvas.breakpoints: 리스트여야 합니다.")
+    else:
+        for i, bp in enumerate(bps):
+            if not isinstance(bp, dict):
+                ERRORS.append(f"[{name}] canvas.breakpoints[{i}]: dict 타입이어야 합니다.")
+                continue
+            if not bp.get("name"):
+                ERRORS.append(f"[{name}] canvas.breakpoints[{i}]: 'name' 없음.")
+            mn = bp.get("min")
+            if not (isinstance(mn, int) and not isinstance(mn, bool) and mn >= 0):
+                ERRORS.append(f"[{name}] canvas.breakpoints[{i}].min: 0 이상 정수여야 합니다 (값: {mn!r}).")
+            if not _is_pos_int(bp.get("columns")):
+                ERRORS.append(f"[{name}] canvas.breakpoints[{i}].columns: 양의 정수여야 합니다 (값: {bp.get('columns')!r}).")
+
+
+def lint_slots_model(name: str, slots: list, allowed: set) -> None:
+    """slots가 dict 리스트(신규 모델)일 때 검증. 문자열 리스트(레거시)면 통과."""
+    for i, s in enumerate(slots):
+        if not isinstance(s, dict):
+            continue  # 레거시 평면 슬롯(문자열) — 유효
+        if not s.get("id"):
+            ERRORS.append(f"[{name}] slots[{i}]: 'id' 없음.")
+        editable = s.get("editable")
+        if editable is not None and not isinstance(editable, bool):
+            ERRORS.append(f"[{name}] slots[{i}].editable: boolean이어야 합니다 (값: {editable!r}).")
+        if editable is False:
+            locks = s.get("locks")
+            if not locks:
+                WARNINGS.append(f"[{name}] slots[{i}](editable:false)에 locks 권장 — 잠긴 슬롯의 DS 컴포넌트 명시.")
+            for ref in (locks or []):
+                if allowed and ref not in allowed:
+                    ERRORS.append(
+                        f"[{name}] slots[{i}].locks: '{ref}'는 ds-allowlist.md 허용 목록에 없습니다. "
+                        f"허용: {sorted(allowed)}"
+                    )
+        if editable:
+            if "grid_columns" in s and not _is_pos_int(s.get("grid_columns")):
+                ERRORS.append(f"[{name}] slots[{i}].grid_columns: 양의 정수여야 합니다 (값: {s.get('grid_columns')!r}).")
+
+
 def lint_page(page_path: Path, allowed: set[str]) -> None:
     try:
         data = yaml.safe_load(page_path.read_text(encoding="utf-8"))
@@ -78,6 +143,12 @@ def lint_page(page_path: Path, allowed: set[str]) -> None:
     slots = data.get("slots", [])
     if not slots:
         WARNINGS.append(f"[{page_path.name}] 'slots' 정의 없음. 슬롯 목록을 명시하세요.")
+
+    # 2b. 신규 캔버스 모델 검증 (있을 때만 — 레거시 평면 slots는 통과)
+    if "canvas" in data:
+        lint_canvas(page_path.name, data.get("canvas"))
+    if isinstance(slots, list) and any(isinstance(s, dict) for s in slots):
+        lint_slots_model(page_path.name, slots, allowed)
 
     # 3. 컴포넌트 DS 폐쇄 검증
     components = data.get("components", []) or data.get("layout", [])

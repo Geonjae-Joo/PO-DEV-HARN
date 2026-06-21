@@ -56,7 +56,7 @@ todo/
 │   ├── screens/SCR-TODO-LIST.yaml      # 화면 모델 (confirmed)
 │   ├── entities/ENT-TODO.yaml          # 데이터 계약
 │   ├── journeys/JRN-TODO-MANAGE.yaml   # E2E 여정
-│   └── specs/PACK-TODO/spec.yaml       # 발행된 spec 팩 (③ 입력)
+│   └── specs/PACK-TODO/spec-pack.yaml       # 발행된 spec 팩 (③ 입력)
 ├── app_repo/                  # ③ 산출: 실행 코드 (자체 git 레포)
 │   ├── backend/  (src/ test/)
 │   ├── frontend/ (src/ test/ e2e/)

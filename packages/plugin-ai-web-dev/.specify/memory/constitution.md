@@ -55,7 +55,7 @@ DS(`foundation/design-system/ds-allowlist.md`) 허용 집합 밖의 컴포넌트
 ## Scope & Boundaries
 
 - *명세*는 ①, *계약(정의)*은 ②, *구현(코드)*은 ③의 책임이다. ③는 **새 계약·요구사항·규칙을 만들지 않는다**.
-- ③의 입력: `model_repo/specs/PACK-*/spec.yaml`(② 발행) + `foundation/platform-baseline/`의 SPEC-000·SPEC-OPS-000 명세 + ①의 tech-stack·design 자산(`foundation/`). spec-kit의 feature spec(`spec.md`)은 이 spec-pack에서 파생되어야 하며, 새 화면·REQ를 발명하지 않는다.
+- ③의 입력: `model_repo/specs/PACK-*/spec-pack.yaml`(② 발행) + `foundation/platform-baseline/`의 SPEC-000·SPEC-OPS-000 명세 + ①의 tech-stack·design 자산(`foundation/`). spec-kit의 feature spec(`spec.md`)은 이 spec-pack에서 파생되어야 하며, 새 화면·REQ를 발명하지 않는다.
 - 프레임워크·테스트 스택은 **프로젝트마다 다르다**. 특정 스택을 가정하지 않는다. ① PREREQUISITE에서 `/speckit-constitution`으로 정의해 `foundation/decisions/tech-stack.md`에 핀으로 박는다(§Technology Stack). 모든 스택 의존 값(테스트 러너·`HARNESS_TEST_CMD`·shell 확장자 등)은 그 핀을 참조한다.
 
 ## Development Workflow (spec-kit ↔ harness 매핑)

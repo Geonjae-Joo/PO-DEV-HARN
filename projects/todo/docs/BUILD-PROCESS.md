@@ -60,7 +60,7 @@ python gate-a-check.py model_repo/screens/SCR-TODO-LIST.yaml --pi-approved
 ### 2.4 발행
 - 파생 렌더 `model_repo/renders/SCR-TODO-LIST.render.html` 생성(`GENERATED VIEW` 주석, constitution 원칙 1).
 - `spec-pack-guard.py` → ✅ (confirmed + 참조 무결 + 여정 커버).
-- **PACK-TODO 발행**: `model_repo/specs/PACK-TODO/spec.yaml`(+renders-ref.txt) — acceptance·notes 원문 보존.
+- **PACK-TODO 발행**: `model_repo/specs/PACK-TODO/spec-pack.yaml`(+renders-ref.txt) — acceptance·notes 원문 보존.
 - `model_repo/link-manifest.yaml` 갱신(screen confirmed v2, pack ready).
 
 → **(mono) `26bf910`** `[PACK-TODO] 리허설 ①②: foundation 핀 + 확정 screen model + PACK-TODO 발행`

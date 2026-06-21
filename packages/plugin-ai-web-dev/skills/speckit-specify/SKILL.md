@@ -13,12 +13,12 @@ disable-model-invocation: false
 
 ## 🔗 Harness Integration (PO-DEV-HARN ③ AI-WEB-DEV)
 
-- **입력은 자유 서술이 아니다.** ②가 발행한 `model_repo/specs/PACK-*/spec.yaml`(PO 계약 원문)에서 feature spec을 파생한다. **새 화면(SCR-)·요구사항(REQ-)을 발명하지 않는다.**
+- **입력은 자유 서술이 아니다.** ②가 발행한 `model_repo/specs/PACK-*/spec-pack.yaml`(PO 계약 원문)에서 feature spec을 파생한다. **새 화면(SCR-)·요구사항(REQ-)을 발명하지 않는다.**
 - 생성하는 `spec.md`는 하니스판 `spec-template.md`를 따른다: Pack Scope(SCR-/CMP-/REQ-, pinned_contract) · SCR-별 acceptance(②의 Gherkin **원문 그대로**) · 데이터 계약(entities ENT-/externals EXT-) · 여정(journeys JRN-) · notes(verbatim·complexity) · open_items.
 - 권위: `.specify/memory/constitution.md`(NON-NEGOTIABLE). scope를 벗어난 요구는 Change Order로 ②에 반환.
 - 크기 가드레일: 예상 T### 15개 초과/무관 Entity 3개↑ → sub-pack 분할. 다음 단계: `/speckit-clarify`.
 - **하니스 절차 요약**:
-  1. 팩 scope(`model_repo/specs/PACK-X/spec.yaml`) 확인 — 묶인 화면(SCR-*), REQ-/CMP- 범위, actor·entity 경계, 데이터 계약(ENT-/EXT-)·여정(JRN-) ref
+  1. 팩 scope(`model_repo/specs/PACK-X/spec-pack.yaml`) 확인 — 묶인 화면(SCR-*), REQ-/CMP- 범위, actor·entity 경계, 데이터 계약(ENT-/EXT-)·여정(JRN-) ref
   2. 크기 판정 — 예상 T### 15개 초과/무관 Entity 3개↑ → sub-pack 재분할
   3. `open_items` deferred 항목 처리 방향 결정 (이번 팩 처리 / 보류 / ②에 질의)
   4. `pinned_contract` 확인 — 각 화면이 고정된 계약 버전(version·hash·git_ref) 위에서 작업하는지 Pin

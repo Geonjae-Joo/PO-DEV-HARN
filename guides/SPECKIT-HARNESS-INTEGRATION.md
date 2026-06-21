@@ -13,7 +13,7 @@
 ## 1. 전체 명령 순서 (한 spec-pack 기준)
 
 ```
-② PACK-*/spec.yaml  (Gate A confirmed 계약)
+② PACK-*/spec-pack.yaml  (Gate A confirmed 계약)
         │
         ▼  model_repo/specs/ 로 인계
 /speckit-specify    팩 scope 확정 → spec.md (Pack Scope·SCR/REQ·acceptance 원문)   ┐

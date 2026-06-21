@@ -4,7 +4,7 @@
 **Feature Branch**: `[###-pack-name]`  
 **Created**: [DATE]  
 **Status**: Draft  
-**Input**: `model_repo/specs/PACK-[NAME]/spec.yaml` (PO 계약 원문 번들)
+**Input**: `model_repo/specs/PACK-[NAME]/spec-pack.yaml` (PO 계약 원문 번들)
 
 <!--
   하니스 규칙(constitution): 이 spec은 ②가 확정(Gate A)한 spec-pack에서 **파생**된다.

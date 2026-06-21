@@ -3,7 +3,7 @@
 Hook: manifest-sync.py
 트리거: commit 이후 (post-commit)
 목적:  ②의 spec 팩(model_repo/specs)을 app_repo/specs/ 와 동기화한다.
-       - model_repo/specs/PACK-*/spec.yaml → app_repo/specs/PACK-*/spec.yaml 반영
+       - model_repo/specs/PACK-*/spec-pack.yaml → app_repo/specs/PACK-*/spec-pack.yaml 반영
        - Phase α 이후 생성된 shell 경로를 screens[].shell_ref 에 갱신 (실존 파일만)
 경로: 3-Tier 신구조 기준(②가 model_repo/specs 에 발행 → ③가 app_repo/specs 로 동기화).
       cwd = projects/<id>/ 로 가정. 다른 위치는 HARNESS_SPEC_PACK_DIR 로 덮어쓴다.
@@ -73,7 +73,7 @@ def resolve_shell_ref(scr_id: str) -> str | None:
 
 
 def update_shell_refs(spec_path: Path) -> int:
-    """동기화된 spec.yaml의 screens[].shell_ref를 실존 shell 경로로 갱신."""
+    """동기화된 spec-pack.yaml의 screens[].shell_ref를 실존 shell 경로로 갱신."""
     try:
         doc = yaml.safe_load(spec_path.read_text(encoding="utf-8"))
     except Exception:
@@ -115,7 +115,7 @@ def sync_packs() -> int:
             if f.is_file():
                 shutil.copy2(f, target / f.name)
                 file_count += 1
-        spec_yaml = target / "spec.yaml"
+        spec_yaml = target / "spec-pack.yaml"
         if spec_yaml.exists():
             shell_count += update_shell_refs(spec_yaml)
     print(f"[manifest-sync] {file_count}개 파일 동기화, shell_ref {shell_count}건 갱신 (→ {DST}).")

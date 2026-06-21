@@ -11,8 +11,8 @@ Hook: layout-hash-guard.py  (ADR-002 D5 / §5 ③ — Phase α 해시 가드)
          (아직 ②가 핀을 발행하지 않은 단계).
 
 입력:
-  python layout-hash-guard.py <PACK/spec.yaml> [<spec.yaml> ...]
-  python layout-hash-guard.py --root <project>     # <project>/model_repo/specs/PACK-*/spec.yaml 전체
+  python layout-hash-guard.py <PACK/spec-pack.yaml> [<spec-pack.yaml> ...]
+  python layout-hash-guard.py --root <project>     # <project>/model_repo/specs/PACK-*/spec-pack.yaml 전체
 
 종료코드: 0 = 통과(또는 warn), 1 = layout_hash 불일치(빌드 차단)
 정책: ADR-002 §4·§5, rules/gate-b-checklist.md, README(③) Phase α
@@ -53,11 +53,11 @@ def _is_placeholder(h) -> bool:
 
 
 def find_specs(args: list) -> tuple[list[Path], Path | None]:
-    """입력 인자 → (spec.yaml 경로 리스트, project_root).
-    --root <project> 면 project/model_repo/specs/PACK-*/spec.yaml 전체."""
+    """입력 인자 → (spec-pack.yaml 경로 리스트, project_root).
+    --root <project> 면 project/model_repo/specs/PACK-*/spec-pack.yaml 전체."""
     if "--root" in args:
         root = Path(args[args.index("--root") + 1]).resolve()
-        specs = sorted((root / "model_repo" / "specs").glob("PACK-*/spec.yaml"))
+        specs = sorted((root / "model_repo" / "specs").glob("PACK-*/spec-pack.yaml"))
         return specs, root
     specs = [Path(a).resolve() for a in args if not a.startswith("--")]
     return specs, None
@@ -71,7 +71,7 @@ def project_root_for(spec_path: Path, root_hint: Path | None) -> Path:
     for parent in spec_path.parents:
         if (parent / "model_repo").is_dir():
             return parent
-    # PACK-*/spec.yaml 이 model_repo/specs 아래라 가정 → 4단계 상위가 프로젝트 루트.
+    # PACK-*/spec-pack.yaml 이 model_repo/specs 아래라 가정 → 4단계 상위가 프로젝트 루트.
     return spec_path.parents[3] if len(spec_path.parents) >= 4 else spec_path.parent
 
 
@@ -114,11 +114,11 @@ def check_screen(scr_id: str, scr_path: Path, contract: dict) -> str:
 
 
 def check_spec(spec_path: Path, root_hint: Path | None) -> int:
-    """단일 spec.yaml → 화면별 검증. 1개라도 error 면 1 반환."""
+    """단일 spec-pack.yaml → 화면별 검증. 1개라도 error 면 1 반환."""
     try:
         doc = yaml.safe_load(spec_path.read_text(encoding="utf-8")) or {}
     except Exception as e:
-        print(f"[layout-hash-guard] ⚠ {spec_path}: spec.yaml 파싱 실패 → skip (비차단): {e}",
+        print(f"[layout-hash-guard] ⚠ {spec_path}: spec-pack.yaml 파싱 실패 → skip (비차단): {e}",
               file=sys.stderr)
         return 0
     if not isinstance(doc, dict):
@@ -148,8 +148,8 @@ def main(argv: list) -> int:
     args = argv[1:]
     specs, root_hint = find_specs(args)
     if not specs:
-        print("[layout-hash-guard] 검사할 spec.yaml 이 없습니다. "
-              "사용법: layout-hash-guard.py <spec.yaml ...> | --root <project>", file=sys.stderr)
+        print("[layout-hash-guard] 검사할 spec-pack.yaml 이 없습니다. "
+              "사용법: layout-hash-guard.py <spec-pack.yaml ...> | --root <project>", file=sys.stderr)
         return 0  # 검사 대상 부재는 빌드를 막지 않는다(비차단).
 
     rc = 0

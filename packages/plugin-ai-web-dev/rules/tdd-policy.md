@@ -18,7 +18,7 @@ constitution(①)의 하드 룰 5번(TDD)을 ③에서 구체화한다. `tdd-gat
 
 - **테스트 없는 구현 금지.** 대응 테스트가 없거나 실패 상태면 `tdd-gate.py`가 commit을 차단한다.
 - **테스트 러너 필수.** `tdd-gate.py`가 러너를 자동 탐지하지 못하고 `HARNESS_TEST_CMD`도 없으면 구현 커밋을 **차단**한다(이전의 silent-pass 폐지). 초기 스캐폴드 등 의도적 우회는 `HARNESS_TDD_ALLOW_NO_RUNNER=1`로만 허용된다.
-- **테스트 파일 판별은 네이밍 컨벤션 기준**(`test_*`/`*_test.*`/`*.test.*`/`*.spec.*`/`*_spec.*` 또는 `test/tests/__tests__/e2e` 디렉터리). 하니스의 spec-pack(`specs/`, `spec.yaml/md`)은 테스트로 오인하지 않는다.
+- **테스트 파일 판별은 네이밍 컨벤션 기준**(`test_*`/`*_test.*`/`*.test.*`/`*.spec.*`/`*_spec.*` 또는 `test/tests/__tests__/e2e` 디렉터리). 하니스의 spec-pack(`specs/`, `spec-pack.yaml/md`)은 테스트로 오인하지 않는다.
 - 각 T### 구현 태스크는 앞선 테스트 태스크와 짝을 이룬다(`/speckit.tasks` 정렬).
 - 2계층 테스트: **API 레벨 + 화면 레벨** 모두 요구된다(커버리지 책임은 `/speckit.tasks`·Gate B `gate-b-checklist.md`; 훅은 파일 존재·green만 본다).
 - decision table의 모든 row, state machine의 모든 전이는 최소 1 테스트로 커버한다(Gate B 점검).

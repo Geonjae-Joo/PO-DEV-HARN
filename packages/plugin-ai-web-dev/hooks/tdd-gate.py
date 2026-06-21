@@ -28,7 +28,7 @@ for _stream in (sys.stdout, sys.stderr):
 SKIP_MARKERS = ("[SCAFFOLD]",)
 
 # 테스트 파일 판별 — 명확한 테스트 네이밍 컨벤션만 매칭한다.
-# 주의: 'spec' 부분문자열을 통째로 쓰면 하니스의 spec-pack 디렉터리(specs/)·spec.yaml·spec.md를
+# 주의: 'spec' 부분문자열을 통째로 쓰면 하니스의 spec-pack 디렉터리(specs/)·spec-pack.yaml·spec.md를
 # 테스트로 오인한다. 따라서 파일명 컨벤션(.spec.<ext>/.test.<ext>/test_*/*_test) + 테스트 전용
 # 디렉터리(test/tests/__tests__/e2e)만 인정하고, 'specs'는 테스트 디렉터리로 보지 않는다.
 TEST_FILE_RE = re.compile(r"(^test_|_test\.|\.test\.|\.spec\.|_spec\.)", re.IGNORECASE)

@@ -152,7 +152,9 @@ spec-generator              confirmed 화면 → 도메인 단위 PACK-* 팩 발
 - **모드 B (직접 코드 주입)**: *완성 코드*를 통째로 app_repo에 구현(테스트 green). 변형 불필요한 기능(로그인/SSO 모듈, JWT 필터, RBAC 엔티티) → Phase β는 호출만.
 - 판정 한 줄: **"프로젝트마다 변형되나?"** → 예면 A, 아니면 B. 결과는 `baseline-delivery-manifest.yaml`에 기록.
 
-**핵심 자산**: 5개 speckit 명령(specify·scaffold·plan·tasks·implement), 스킬(design-system-usage·coding-style·complex-bl·baseline-guides), 생애주기 훅(tdd-gate·commit-spine-id·manifest-sync — `git-hooks.manifest.json` 선언 + `install-git-hooks.sh/.ps1`로 `.git/hooks/`에 설치), 서브에이전트(bl-analyst·test-author·code-reviewer), 규칙(gate-b-checklist·tdd-policy·commit-convention·change-order-policy).
+**핵심 자산**: 5개 speckit 명령(specify·scaffold·plan·tasks·implement), 스킬(design-system-usage·coding-style·complex-bl·baseline-guides), 생애주기 훅(tdd-gate·commit-spine-id·**speckit-artifact-guard**·manifest-sync — `git-hooks.manifest.json` 선언 + `install-git-hooks.sh/.ps1`로 `.git/hooks/`에 설치), **부트스트랩/동기화기(install-speckit·speckit-sync)**, **pack→spec 브리지(pack-to-spec.py)**, 서브에이전트(bl-analyst·test-author·code-reviewer), 규칙(gate-b-checklist·tdd-policy·commit-convention·change-order-policy).
+
+> **speckit 메커니즘/상태 경계 (부트스트랩).** speckit 의 `.specify/`(scripts·templates·workflows = 메커니즘)는 **플러그인이 단일 원본**이고, `app_repo` 에는 `install-speckit.sh/.ps1` 이 **vendoring**한다(speckit 스크립트가 `.specify/`를 위로 찾기 때문). `app_repo/.specify/` 의 `memory/constitution.md`·`feature.json`·`templates/overrides/` 는 **프로젝트 상태**로 app_repo 가 소유한다. 플러그인 업그레이드 시 `speckit-sync.sh/.ps1` 가 메커니즘만 재복사하고 상태는 보존한다. speckit **산출물**(`spec.md`·`plan.md`·`tasks.md`)은 model_repo 가 아니라 **app_repo/specs/** 에 있다(권위=②/model_repo, 구현·파생=③/app_repo).
 
 **산출물**: `app_repo/` — 테스트 green 코드 + 스파인 ID 커밋 히스토리.
 

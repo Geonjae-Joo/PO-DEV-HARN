@@ -66,6 +66,7 @@ $testCmdLine
 HOOKS_DIR="$srcUnix"
 "$py" "`${HOOKS_DIR}/tdd-gate.py" "`$1" || exit 1
 "$py" "`${HOOKS_DIR}/commit-spine-id.py" "`$1" || exit 1
+"$py" "`${HOOKS_DIR}/speckit-artifact-guard.py" "`$1" || exit 1
 "@
 Backup-Hook (Join-Path $hookDst "commit-msg")
 [IO.File]::WriteAllText((Join-Path $hookDst "commit-msg"), ($commitMsg -replace "`r`n","`n"))
@@ -82,7 +83,7 @@ Backup-Hook (Join-Path $hookDst "post-commit")
 [IO.File]::WriteAllText((Join-Path $hookDst "post-commit"), ($postCommit -replace "`r`n","`n"))
 
 Write-Host "✔ 설치 완료"
-Write-Host "  → $hookDst\commit-msg   (tdd-gate + commit-spine-id, blocking)"
+Write-Host "  → $hookDst\commit-msg   (tdd-gate + commit-spine-id + speckit-artifact-guard, blocking)"
 Write-Host "  → $hookDst\post-commit  (manifest-sync, non-blocking)"
 Write-Host "  python: $py"
 if ($testCmdLine) { Write-Host "  HARNESS_TEST_CMD 고정됨" }

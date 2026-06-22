@@ -18,6 +18,14 @@
         "blocking": true,
         "statusMessage": "스파인 ID 검증 중...",
         "note": "[<PACK|SPEC|MOD>/<task>] 요약 (REQ-...) 형식. PACK/MOD은 REQ- 포함 강제, SPEC-(baseline)은 (baseline) 등 사유 토큰 강제. SCAFFOLD/CO/E2E/spec-kit prefix 예외."
+      },
+      {
+        "type": "command",
+        "command": "${CLAUDE_PLUGIN_ROOT}/hooks/speckit-artifact-guard.py",
+        "args": ["$1"],
+        "blocking": true,
+        "statusMessage": "speckit 산출물 검사 중...",
+        "note": "[spec-kit/specify|plan|tasks] 커밋이 마커만 붙고 산출물(spec.md/plan.md/tasks.md)이 없는 단락을 차단. .specify/feature.json 으로 feature_dir 해석. 해석 불가 시 graceful PASS. commit-spine-id 의 spec-kit 예외와 짝을 이뤄 프로세스 누락을 막는다(C4/C5)."
       }
     ],
     "post-commit": [

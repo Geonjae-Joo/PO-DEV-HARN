@@ -47,7 +47,7 @@ backup() {
   fi
 }
 
-# ── commit-msg: tdd-gate → commit-spine-id (둘 다 blocking) ──────────────
+# ── commit-msg: tdd-gate → commit-spine-id → speckit-artifact-guard (모두 blocking) ──
 backup "${HOOK_DST}/commit-msg"
 cat > "${HOOK_DST}/commit-msg" <<EOF
 #!/usr/bin/env bash
@@ -58,6 +58,7 @@ ${TEST_CMD_LINE}
 HOOKS_DIR="${HOOKS_SRC_DIR}"
 "${PY}" "\${HOOKS_DIR}/tdd-gate.py" "\$1" || exit 1
 "${PY}" "\${HOOKS_DIR}/commit-spine-id.py" "\$1" || exit 1
+"${PY}" "\${HOOKS_DIR}/speckit-artifact-guard.py" "\$1" || exit 1
 EOF
 chmod +x "${HOOK_DST}/commit-msg"
 
@@ -73,7 +74,7 @@ EOF
 chmod +x "${HOOK_DST}/post-commit"
 
 echo "✔ 설치 완료"
-echo "  → ${HOOK_DST}/commit-msg   (tdd-gate + commit-spine-id, blocking)"
+echo "  → ${HOOK_DST}/commit-msg   (tdd-gate + commit-spine-id + speckit-artifact-guard, blocking)"
 echo "  → ${HOOK_DST}/post-commit  (manifest-sync, non-blocking)"
 echo "  python: ${PY}"
 [ -n "${TEST_CMD_LINE}" ] && echo "  HARNESS_TEST_CMD 고정됨" || \

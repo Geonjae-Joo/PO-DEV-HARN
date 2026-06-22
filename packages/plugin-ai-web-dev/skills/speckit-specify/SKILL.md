@@ -13,7 +13,9 @@ disable-model-invocation: false
 
 ## 🔗 Harness Integration (PO-DEV-HARN ③ AI-WEB-DEV)
 
+- **선행조건(부트스트랩).** app_repo 루트에 `.specify/` 가 있어야 이 명령이 동작한다(speckit 스크립트가 위로 `.specify/`를 찾음). 없으면 먼저 `bash "$CLAUDE_PLUGIN_ROOT/hooks/install-speckit.sh"`(Windows: `install-speckit.ps1`)로 vendoring + git hook 설치. 미설치 상태에서 plan.md를 손으로 쓰고 `[spec-kit/plan]` 마커만 붙이는 단락은 금지(speckit-artifact-guard 가 차단).
 - **입력은 자유 서술이 아니다.** ②가 발행한 `model_repo/specs/PACK-*/spec-pack.yaml`(PO 계약 원문)에서 feature spec을 파생한다. **새 화면(SCR-)·요구사항(REQ-)을 발명하지 않는다.**
+- **파생은 기계 단계로 시작.** `python "$CLAUDE_PLUGIN_ROOT/.specify/scripts/bash/pack-to-spec.py" PACK-<ID> --feature-dir specs/<NNN>-<slug>` 로 `spec.md` 초안을 생성한 뒤 검토·범위확정한다. 산문으로 처음부터 작성하지 않는다. acceptance 본문의 권위는 screen model(SCR-*.yaml), 데이터 계약은 ENT-, 여정은 JRN- 이며 pack 은 묶음+ref 다.
 - 생성하는 `spec.md`는 하니스판 `spec-template.md`를 따른다: Pack Scope(SCR-/CMP-/REQ-, pinned_contract) · SCR-별 acceptance(②의 Gherkin **원문 그대로**) · 데이터 계약(entities ENT-/externals EXT-) · 여정(journeys JRN-) · notes(verbatim·complexity) · open_items.
 - 권위: `.specify/memory/constitution.md`(NON-NEGOTIABLE). scope를 벗어난 요구는 Change Order로 ②에 반환.
 - 크기 가드레일: 예상 T### 15개 초과/무관 Entity 3개↑ → sub-pack 분할. 다음 단계: `/speckit-clarify`.

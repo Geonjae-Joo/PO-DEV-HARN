@@ -56,9 +56,16 @@ python "${HARNESS_CORE}/render/instantiate_screen.py" \
 3. 화면 archetype(list/detail/form/dashboard/popup) 판단 → 적합한 design page 템플릿 선택
 4. screen model YAML 초안 생성 — `position.slot` + 반응형 정수 좌표 `position.base: {col_start, col_span, row, row_span}` (필요 시 `position.at: {md, sm}` 오버라이드). `col_span` shorthand(full/half/third/quarter) 사용 가능(렌더러가 정수 resolve). **editable 슬롯에만 배치**(locked 슬롯 침범 시 lint L5 차단). 픽셀 좌표·`auto` 금지. 레거시 `{slot, order}`도 허용(엔진 자동 변환)
 5. 초안 PO에게 제시 → patch 단위 수정 요청 시 반영
-6. 저장 시 lint hook 자동 실행
+6. YAML 저장 완료 직후 HTML 렌더 실행 (§2 참조):
+   ```bash
+   python "${HARNESS_CORE}/render/render_screen.py" \
+     projects/<id>/model_repo/screens/SCR-<ID>.yaml
+   ```
+   - 산출: `model_repo/renders/SCR-<ID>.render.html`
+   - 실패 시(lint 오류 등) stderr 확인 후 YAML 수정, 성공할 때까지 반복
+7. 저장 시 lint hook 자동 실행
 
-**출력:** `model_repo/screens/SCR-{ID}.yaml`
+**출력:** `model_repo/screens/SCR-{ID}.yaml` + `model_repo/renders/SCR-{ID}.render.html`
 
 > 스키마 상세: [screen-model-schema-v2.md](../../rules/screen-model-schema-v2.md)
 

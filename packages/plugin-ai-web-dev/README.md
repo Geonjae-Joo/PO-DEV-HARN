@@ -215,7 +215,7 @@ NFR 처리 (성능·동시성·보안·감사)
 
 | 파일 | 설명 |
 |---|---|
-| `speckit.specify.md` | 팩 scope 확인·확정. 너무 크면 sub-pack 분할. open_items 처리 방향 결정. |
+| `speckit.specify.md` | 팩 scope 확인·확정. 너무 크면 sub-pack 분할. open_items 처리 방향 결정. **선행: `install-speckit` 부트스트랩.** `.specify/scripts/bash/pack-to-spec.py PACK-<ID> --feature-dir specs/<NNN>-<slug>` 로 spec-pack+screen model → `spec.md` 초안 생성 후 검토(산문 직접작성 금지). |
 | `speckit.scaffold.md` | **[Phase α 전용]** 전체 확정 screen model → 프론트엔드 shell 컴포넌트 일괄 생성 (①의 `frontend.framework`에서 확장자·구조 파생). |
 | `speckit.plan.md` | 도메인 Data Model·ERD·API 설계. **②의 ENT-/EXT- 계약에서 물리 설계 파생**(발명 금지). complexity:high 노트 → bl-analyst 호출. |
 | `speckit.tasks.md` | T### 태스크 목록 생성. test-first 정렬. [P] 병렬 마커. |
@@ -236,11 +236,29 @@ NFR 처리 (성능·동시성·보안·감사)
 |---|---|---|
 | `tdd-gate.py` | commit-msg | 테스트 없음/실패 시 commit 차단(blocking). 테스트 러너 미탐지+`HARNESS_TEST_CMD` 미설정 시에도 **차단**(silent-pass 폐지) — 의도적 우회는 `HARNESS_TDD_ALLOW_NO_RUNNER=1`. 테스트 파일은 네이밍 컨벤션(`*.test.*`/`*_test.*`/`test/` 등)으로 판별(spec-pack `specs/` 오인 안 함). `[SCAFFOLD]` skip. |
 | `commit-spine-id.py` | commit-msg | 커밋 메시지에 스파인 ID 포함 여부 검증(blocking). 형식: `[<PACK\|SPEC\|MOD>/<task>] 요약 (REQ-...)`. PACK/MOD은 REQ- 필수, **SPEC-은 REQ- 또는 `(baseline)`/`(ops baseline)` 사유 토큰 필수**. `[SCAFFOLD]`·`[CO/...]`·`[E2E/JRN-...]`·`[spec-kit/...]` prefix는 예외. |
+| `speckit-artifact-guard.py` | commit-msg | `[spec-kit/specify\|plan\|tasks]` 커밋이 **마커만 붙고 산출물(spec.md/plan.md/tasks.md)이 없는 단락**을 차단(blocking). `.specify/feature.json` 으로 feature_dir 해석, 해석 불가 시 graceful PASS. commit-spine-id 의 spec-kit 예외와 짝을 이뤄 프로세스 누락(v2 회귀)을 막는다. |
 | `layout-hash-guard.py` | Phase α 진입 | 각 pack의 `screens[].yaml_ref`(SCR)를 ②와 동일 엔진(`harness-core/render/pins`)으로 재렌더해 `pinned_contract.layout_hash`와 비교(blocking). 불일치(②확정 위치 변경)면 **빌드 차단**(exit 1). `layout_hash` 미발행(placeholder)이면 warn·비차단. `render_hash` 불일치는 엔진 버전 의존성이 커 warn(비차단). 사용: `layout-hash-guard.py --root <project>` 또는 `<spec-pack.yaml ...>`. (ADR-002 §5 ③) |
 | `manifest-sync.py` | post-commit | `model_repo/specs/PACK-*` → `app_repo/specs/` 동기화 + shell_ref 갱신. 비차단(non-blocking) — 실패해도 commit 유지. |
 | `git-hooks.manifest.json` | — | 위 3개 git 훅의 생애주기 선언(pre-commit 차단 체인 + post-commit 동기화)과 인자·blocking 여부를 한곳에 정의한 **문서용 매니페스트**(설치기가 파싱하지 않음). 파일명은 Claude Code 플러그인 훅 규약(`hooks/hooks.json`)과 구분하기 위해 `git-hooks.manifest.json` 사용. |
 | `install-git-hooks.sh` | — | 이 매니페스트가 선언한 git 훅을 실제로 설치(bash/Git Bash·Linux·macOS). 메시지 파일이 필요한 tdd-gate·commit-spine-id는 `commit-msg`, manifest-sync는 `post-commit` 훅으로 `.git/hooks/`에 설치. `PYTHON`·`HARNESS_TEST_CMD` 환경변수 지원. |
 | `install-git-hooks.ps1` | — | 동일 설치기의 Windows/PowerShell 버전(설치되는 훅 본문은 셸 스크립트). |
+| `install-speckit.sh` / `.ps1` | — | **app_repo 부트스트랩**: 플러그인 `.specify/` 메커니즘을 app_repo 에 vendoring + `.source`(버전 핀) 기록 + git hook 설치 호출. speckit 명령이 동작하기 위한 **선행조건**. |
+| `speckit-sync.sh` / `.ps1` | — | 플러그인 업그레이드 시 **메커니즘만**(scripts·templates 코어·workflows·extensions scripts) 재복사. 상태(memory·feature.json·overrides·git-config)는 **보존**. |
+| `pack-to-spec.py` (`.specify/scripts/bash/`) | (speckit-specify 호출) | `spec-pack.yaml`+screen/entity/journey → `spec.md` 초안 생성(G2 브리지). 권위 본문은 screen model 에서 끌어오고 Gherkin 부재 시 '파생 초안'으로 표시. |
+
+### speckit 메커니즘/상태 경계 (.specify)
+
+speckit 스크립트는 cwd 에서 위로 `.specify/` 를 찾아 루트를 정한다. 따라서 `.specify/` 는 **app_repo 에 물리적으로** 있어야 하지만, 그 안은 소유권이 둘로 갈린다.
+
+| 구역 | 내용 | 소유 | 업그레이드 |
+|---|---|---|---|
+| **메커니즘** | `scripts/`·`templates/`(core)·`workflows/`·`extensions/*/scripts·commands` | **플러그인 단일 원본** | `speckit-sync` 가 재복사(손대지 않음) |
+| **상태** | `memory/constitution.md`·`feature.json`·`templates/overrides/`·`extensions/git/git-config.yml` | **app_repo** | sync 가 **보존** |
+
+- **부트스트랩**: `install-speckit` 이 메커니즘을 vendoring 하고 `.specify/.source` 에 `plugin@version`·speckit 버전을 기록한다. 상태 파일은 덮지 않는다(멱등).
+- **커스터마이즈**: core 템플릿을 직접 고치지 말고 `templates/overrides/` 에 얹는다(`common.sh: resolve_template` 가 overrides→presets→extensions→core 순으로 해석).
+- **constitution 단일 원본**: 권위는 ①(`harness-core/rules/constitution.md`). `.specify/memory/constitution.md` 는 `/speckit-constitution` 이 동기화하는 **파생 상태**다(손으로 양쪽 유지 금지).
+- **산출물 위치**: `spec.md`·`plan.md`·`tasks.md` 는 `app_repo/specs/<NNN>-<slug>/` (구현 산출, 재생성 가능). PO 계약(`SCR-`·`ENT-`·`JRN-`·`spec-pack.yaml`)은 `model_repo/` (권위). `manifest-sync` 가 `model_repo/specs/PACK-*` → `app_repo/specs/` 로 동기화하므로 둘이 공존한다.
 
 ### Subagents — 격리 컨텍스트 전문 에이전트
 

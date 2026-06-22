@@ -115,12 +115,26 @@ actions:
     component: CMP-ORDER-LIST.table
     trigger: rowClick
     behavior: "주문 상세 화면으로 이동"
-    outcome: { type: navigate, target: SCR-ORDER-DETAIL }
+    outcome: { type: navigate, target: SCR-ORDER-DETAIL }  # 전체 페이지 이동
     type: behavior
     acceptance:
       - "Given 목록, When 행 클릭, Then 해당 주문의 상세 화면으로 이동"
     status: user_confirmed
     provenance: { intent: "행 클릭 → 상세 이동", prompts: [PRM-0006] }
+
+  - id: REQ-ORDER-LIST.003
+    component: CMP-ORDER-LIST.createBtn
+    trigger: click
+    behavior: "주문 생성 팝업 오픈"
+    outcome:
+      type: open                      # 오버레이 오픈 (전체 페이지 이동 아님)
+      target: SCR-ORDER-CREATE-POPUP  # template.page: DP-POPUP 인 화면만 허용
+                                      # spec-pack-guard.py 가 archetype mismatch 경고
+    type: behavior
+    acceptance:
+      - "Given 목록, When 생성 버튼 클릭, Then 주문 생성 팝업이 오버레이로 표시된다"
+    status: user_confirmed
+    provenance: { intent: "팝업으로 주문 생성 폼 표시", prompts: [PRM-0010] }
 
 # (3) notes  — 사용자 직접 기입 원문 (Stage 3, AI 미가공)
 notes:

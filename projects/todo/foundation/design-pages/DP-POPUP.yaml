@@ -1,0 +1,35 @@
+id: DP-POPUP
+version: 1
+archetype: popup
+description: 모달/팝업 골격 — Dialog 고정 + content/footer-actions 캔버스. Progress 팝업이 사용.
+canvas:
+  grid: { columns: 12, gap: space-4, max_width: 600 }
+  breakpoints:
+    - { name: lg, min: 1280, columns: 12 }
+    - { name: md, min: 768,  columns: 8 }
+    - { name: sm, min: 0,    columns: 4 }
+slots:
+  - { id: frame,          editable: false, locks: [Dialog] }
+  - { id: content,        editable: true,  grid_columns: 12, overflow: scroll-y }
+  - { id: footer-actions, editable: true,  grid_columns: 12 }
+components:
+  - ref: Dialog
+    slot: frame
+    order: 1
+    note: 팝업 컨테이너 (제목·닫기 버튼 포함)
+  - ref: Progress
+    slot: content
+    order: 1
+    note: 진행률 바 (0-100%) — Progress 팝업의 핵심 시각 요소
+  - ref: Select
+    slot: content
+    order: 2
+    note: 상태 선택 (Todo/In Progress/Done/Blocked)
+  - ref: Textarea
+    slot: content
+    order: 3
+    note: 진행 메모 입력
+  - ref: Button
+    slot: footer-actions
+    order: 1
+    note: 저장/취소 버튼

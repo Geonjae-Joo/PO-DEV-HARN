@@ -1,0 +1,11 @@
+{
+  "name": "ai-web-dev",
+  "description": "③ AI-WEB-DEV — speckit SDD+TDD 기반 개발 레이어. spec pack 단위로 app_repo에 구현.",
+  "version": "0.2.0",
+  "skills": "./skills",
+  "agents": [
+    "./agents/bl-analyst.md",
+    "./agents/test-author.md",
+    "./agents/code-reviewer.md"
+  ]
+}

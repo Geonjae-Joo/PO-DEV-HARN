@@ -1,0 +1,22 @@
+{
+  "name": "po-dev-harn",
+  "description": "PO Development Harness — 3-layer plugin marketplace (prerequisite · po-dev-chat · ai-web-dev)",
+  "owner": {
+    "name": "Samsung PO Dev Team",
+    "email": "geonjae.joo@samsung.com"
+  },
+  "plugins": [
+    {
+      "name": "prerequisite",
+      "source": "./packages/plugin-prerequisite",
+      "description": "① PREREQUISITE — DS 허용집합·design page·platform-baseline 준비",
+      "category": "development"
+    },
+    {
+      "name": "ai-web-dev",
+      "source": "./packages/plugin-ai-web-dev",
+      "description": "③ AI-WEB-DEV — speckit SDD+TDD 기반 개발 레이어",
+      "category": "development"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "prerequisite",
+  "description": "① PREREQUISITE — DS 허용집합·design page·platform-baseline 준비. 프로젝트 워크스페이스의 foundation/ 에 작업.",
+  "version": "0.2.0",
+  "skills": "./skills",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/ds-guide-validate.py\""
+          }
+        ]
+      }
+    ]
+  }
+}

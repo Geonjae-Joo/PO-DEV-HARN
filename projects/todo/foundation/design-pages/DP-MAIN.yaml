@@ -1,0 +1,40 @@
+id: DP-MAIN
+version: 1
+archetype: main
+description: 인증 후 전체 페이지 골격 — Header 고정 + content 캔버스. Todo 목록 화면이 사용.
+canvas:
+  grid: { columns: 12, gap: space-4, max_width: 1440 }
+  breakpoints:
+    - { name: lg, min: 1280, columns: 12 }
+    - { name: md, min: 768,  columns: 8 }
+    - { name: sm, min: 0,    columns: 4 }
+slots:
+  - { id: header,         editable: false, locks: [Header, Separator] }
+  - { id: header-actions, editable: true,  grid_columns: 12 }
+  - { id: content,        editable: true,  grid_columns: 12, overflow: scroll-y }
+  - { id: footer,         editable: false, locks: [Separator] }
+components:
+  - ref: Header
+    slot: header
+    order: 1
+    note: 앱 헤더 (브랜드 + 우측 Avatar/다크모드 토글)
+  - ref: Separator
+    slot: header
+    order: 2
+    note: 헤더 하단 구분선
+  - ref: Button
+    slot: header-actions
+    order: 1
+    note: 우측 상단 주요 액션 (예: 새 Todo 만들기)
+  - ref: FilterBar
+    slot: content
+    order: 1
+    note: 검색 + 상태 필터 + 우선순위 필터
+  - ref: DataTable
+    slot: content
+    order: 2
+    note: Todo 목록 (행 클릭 → Progress 팝업)
+  - ref: Separator
+    slot: footer
+    order: 1
+    note: 콘텐츠 하단 구분선

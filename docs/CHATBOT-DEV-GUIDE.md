@@ -112,8 +112,8 @@ agent가 screen-model patch 생성
 ## 6. system prompt 조립 (harness-core 재사용)
 
 agent의 system prompt = 다음을 빌드 시 결합:
-- `harness-core/rules/`의 constitution·spine-ids·ds-closure (전 레이어 공통 법)
-- `po-dev-chat/rules/`의 screen-model-schema-v2·data-contract-schema·journey-schema·state-machine·spec-readiness-checklist·prompt-log-policy (② 전용)
+- `harness-core/rules/`의 constitution·spine-ids·ds-closure·**screen-model-schema-v2**(R1 이후 단일 출처, ①②③ 공통 계약)
+- `plugin-po-define/rules/`의 data-contract-schema·journey-schema·state-machine·spec-readiness-checklist·prompt-log-policy (② 전용)
 
 → Claude Code가 `.claude/rules/`를 읽던 것과 **동일 내용을 system prompt로 주입**. rules 단일 출처(harness-core) 유지로 ①③와 강제가 일치.
 

@@ -1,7 +1,7 @@
 # ADR-002 — Screen Model의 결정론적·반응형 렌더링, DS 카탈로그, Design Page 인스턴스화
 
 - 상태: **채택** (2026-06-21, rev.5) — 전 결정(D1~D7·§6) 구현 완료. **골든 PNG는 결정 4에 따라 의도적 미도입**, **챗봇 카탈로그 패널은 ② 챗봇 앱 빌드(ADR-001 후속)에 의존**해 보류.
-- 관련: `docs/ADR-001-3runtime-architecture.md`, `packages/po-dev-chat/rules/screen-model-schema-v2.md`, `packages/po-dev-chat/rules/state-machine.md`, `packages/po-dev-chat/skills/layout-recommend/SKILL.md`, `packages/plugin-prerequisite/skills/design-page-builder/SKILL.md`, `packages/harness-core/rules/spine-ids.md`, `packages/po-dev-chat/skills/spec-generator/spec-pack-schema.md`
+- 관련: `docs/ADR-001-3runtime-architecture.md`, `packages/harness-core/rules/screen-model-schema-v2.md`(R1 이후 단일 출처), `packages/plugin-po-define/rules/state-machine.md`, `packages/plugin-po-define/skills/layout-recommend/SKILL.md`, `packages/plugin-prerequisite/skills/design-page-builder/SKILL.md`, `packages/harness-core/rules/spine-ids.md`, `packages/plugin-po-define/skills/spec-generator/spec-pack-schema.md`
 - 한 줄 요약: screen model(YAML)을 **순수 Python 엔진**으로 HTML 렌더해 위치를 결정론적으로 확정하되 **여러 창 크기에서 동작하는 반응형**을 유지한다. ① design page·DS 자산을 같은 엔진으로 렌더해 **DS 카탈로그(대시보드)** 를 만들고, ② PO는 이를 보며 AI에게 디자인을 지시한다. PO가 design page를 고르면 그 **screen model을 인스턴스화(복사)** 해 새 화면(이름·SCR- ID)을 시작하며, DP의 고정 구성은 잠기고 **빈 캔버스 안에서만, 경계를 넘지 않게** 작업한다.
 
 > rev.5 변경: 남은 결정 전부 구현 — D4 DS 카탈로그(`render_catalog.py`, DS-불가지론 토큰 추출), D5 해시 핀 배선(② spec-generator 계산·기록 + ③ Phase α 해시 가드), D6 렌더 환경 동결(token-only 치수·행/텍스트 최소 높이·시스템 폰트 스택), §9 미결정(컴포넌트 상태 필드 형식) 확정. 상세 §11.

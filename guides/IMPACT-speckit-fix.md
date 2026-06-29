@@ -43,7 +43,7 @@
 |---|---|
 | `README.md`(루트) | ③ 자산·§7·§8 에 install-speckit/speckit-sync, 메커니즘/상태 경계 반영 |
 | `packages/plugin-ai-web-dev/README.md` | Commands/Hooks 표에 신규 추가 + "speckit 메커니즘/상태" 절 |
-| `packages/po-dev-chat/skills/spec-generator/spec-pack-schema.md` | **권위 정합**: screen model=내용 권위, pack=묶음+ref 로 명문화 |
+| `packages/plugin-po-define/skills/spec-generator/spec-pack-schema.md` | **권위 정합**: screen model=내용 권위, pack=묶음+ref 로 명문화 |
 | `guides/SPECKIT-HARNESS-INTEGRATION.md` | §6 에 step 0(install-speckit), 메커니즘/상태·레이어 경계 절 |
 | `guides/GUIDE-speckit-usage.md` | step 0 을 install-speckit 로 갱신, 레이어 경계(Q2/Q3) 추가 |
 | `guides/PROPOSAL-speckit-correct-usage.md` | C1 을 "메커니즘 vendoring + sync" 로 정련, 상태 표기 |

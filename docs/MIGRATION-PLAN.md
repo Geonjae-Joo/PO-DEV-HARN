@@ -44,8 +44,9 @@ PO-DEV-Harn/
 ├── packages/
 │   ├── harness-core/            # 불변 rules + ds_closure lint 라이브러리 + SKILL 원본
 │   ├── plugin-prerequisite/     # ① → Claude Code 플러그인
+│   ├── plugin-po-define/        # ② 능력 플러그인 (skills·hooks·rules) ← 마켓플레이스 등록
 │   ├── plugin-ai-web-dev/       # ③ → Claude Code 플러그인
-│   └── po-dev-chat/             # ② → Agent SDK 챗봇 (소스; 빌드는 별도)
+│   └── po-def-chat/             # ② 챗봇 앱 (빌드 예정; plugin-po-define 소스를 로드)
 ```
 
 ### 2.3 프로젝트 워크스페이스 (Tier 2+3, 데이터)
@@ -114,7 +115,7 @@ projects/<customer-id>/
 | `.specify/*` | 🔧 | tech-stack 경로 등 갱신 |
 | `design-system-usage·coding-style·baseline-guides·complex-bl` | ✅/🔧 | 대부분 그대로 |
 
-### po-dev-chat (② — 변경 최대, 빌드는 다음 작업)
+### plugin-po-define + po-def-chat (② — 변경 최대, 챗봇 빌드는 다음 작업)
 
 | 현재 | 처리 | 변경 |
 |---|---|---|
@@ -149,7 +150,7 @@ projects/<customer-id>/
 2. **harness-core 추출** — rules 3종 + `ds_closure` 라이브러리.
 3. **plugin-prerequisite** — ① 자산 이동 + 경로 파라미터화.
 4. **plugin-ai-web-dev** — ③ 자산 이동 + 경로 파라미터화.
-5. **po-dev-chat 소스 보존** — ② 자산 이동(빌드는 별도 작업; 방법은 `CHATBOT-DEV-GUIDE.md`).
+5. **plugin-po-define 소스 보존** — ② 능력 플러그인 자산 이동(챗봇 `po-def-chat` 빌드는 별도 작업; 방법은 `CHATBOT-DEV-GUIDE.md`).
 6. **projects/example 데이터 이전** — 현재 output + `VERSION` 부여 + `.claude/settings.json`.
 7. **README/ADR 정리 + 전체 검수**.
 

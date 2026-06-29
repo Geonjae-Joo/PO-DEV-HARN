@@ -48,7 +48,7 @@ speckit의 모든 스크립트는 cwd에서 위로 올라가며 `.specify/` 를 
 
 ### G3 — 입력 계약 불일치: `spec-pack.yaml` 이 스키마를 안 따른다 🟡
 
-- 근거(스키마): `packages/po-dev-chat/skills/spec-generator/spec-pack-schema.md` 는 `meta`, `actions[].acceptance`(Gherkin 원문), `notes`(verbatim·complexity), `open_items`, `pinned_contract`(version·hash·layout_hash·render_hash·git_ref) 를 요구한다.
+- 근거(스키마): `packages/plugin-po-define/skills/spec-generator/spec-pack-schema.md` 는 `meta`, `actions[].acceptance`(Gherkin 원문), `notes`(verbatim·complexity), `open_items`, `pinned_contract`(version·hash·layout_hash·render_hash·git_ref) 를 요구한다.
 - 근거(실제): `projects/todo/model_repo/specs/PACK-TODO/spec-pack.yaml` 은 축약형이다 — `meta`·`actions`·`acceptance`·`notes`·`open_items`·`pinned_contract` 가 전부 없다. 진짜 acceptance/notes 는 `model_repo/screens/SCR-TODO-LIST.yaml` 에 들어 있다.
 
 **효과:** specify가 "pack에서 파생"하려 해도 pack에 파생할 권위 원천(acceptance/notes/pinned_contract)이 없다. 입력 경계가 pack과 screen으로 쪼개져 있어, pack만 보면 specify를 건너뛸 명분이 생긴다.
@@ -103,7 +103,7 @@ specify의 "파생"을 산문에서 **기계 단계**로 승격한다. (구현: 
 입력 권위의 위치를 한 곳으로 고정한다. 두 안 중 택1.
 **채택(이번):** 현 파이프라인 실태(최소형 pack + screen model 권위)에 맞춰 **안 B 를 문서로 명문화**했다 — `spec-pack-schema.md` 에 "권위 경계: screen model=내용, pack=묶음+ref" 와 최소형 예시를 추가. 가드 코드 강화(안 A)는 셸 미실행으로 보류(후속).
 
-- **안 A (권장)** — pack을 스키마대로 풍부화. `packages/po-dev-chat/skills/spec-generator/scripts/spec-pack-guard.py` 를 강화해 `meta`·`actions[].acceptance`·`notes`·`pinned_contract` 필수 필드를 검증, 축약형 pack을 거부. `spec-generator` 가 screen model에서 이 필드들을 채워 발행하도록 한다. (추적성·`pinned_contract` freeze 때문에 권장)
+- **안 A (권장)** — pack을 스키마대로 풍부화. `packages/plugin-po-define/skills/spec-generator/scripts/spec-pack-guard.py` 를 강화해 `meta`·`actions[].acceptance`·`notes`·`pinned_contract` 필수 필드를 검증, 축약형 pack을 거부. `spec-generator` 가 screen model에서 이 필드들을 채워 발행하도록 한다. (추적성·`pinned_contract` freeze 때문에 권장)
 - **안 B** — 입력 권위를 screen model로 일원화하고 pack은 "묶음 + ref" 만 담당하도록 `spec-pack-schema.md` 를 개정(현 todo가 사실상 이 형태). 단 `pinned_contract`·acceptance verbatim 의 단일 소스는 screen으로 명문화해야 함.
 
 ### C4 — plan/tasks 커밋 게이트를 "산출물 존재"로 강화 🔴 ✅구현 (단락 차단의 핵심)
@@ -154,5 +154,5 @@ specify의 "파생"을 산문에서 **기계 단계**로 승격한다. (구현: 
 - `packages/plugin-ai-web-dev/.specify/extensions/git/{git-config.yml,scripts/bash/create-new-feature.sh,initialize-repo.sh}`, `.specify/extensions.yml`
 - `packages/plugin-ai-web-dev/skills/speckit-specify/SKILL.md`, `.specify/workflows/speckit/workflow.yml`
 - `packages/plugin-ai-web-dev/hooks/commit-spine-id.py`
-- `packages/po-dev-chat/skills/spec-generator/spec-pack-schema.md`
+- `packages/plugin-po-define/skills/spec-generator/spec-pack-schema.md`
 - `projects/todo/model_repo/specs/PACK-TODO/spec-pack.yaml`, `projects/todo/model_repo/screens/SCR-TODO-LIST.yaml`, `entities/ENT-TODO.yaml`

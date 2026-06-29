@@ -3,7 +3,7 @@
 
 DS 폐쇄(closure) 검증 공용 라이브러리 — 전 런타임 공유의 단일 출처.
 - ① plugin-prerequisite: design-page-lint.py
-- ② po-dev-chat: screen model L1 validator (구 on-save-lint-L1-L4.py)
+- ② po-define: screen model L1 validator (구 on-save-lint-L1-L4.py)
 - ③ plugin-ai-web-dev: code-reviewer 참조
 
 ds-allowlist.md 파싱 + 허용 컴포넌트/슬롯/props 검사 로직을 한 곳에 둔다.

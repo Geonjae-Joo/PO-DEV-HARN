@@ -11,7 +11,7 @@
 | 역할 | 담당 레이어 | 도구 | 작업 위치 |
 |---|---|---|---|
 | **개발 리드/운영자** | ① PREREQUISITE | Claude Code (IDE) + `prerequisite` 플러그인 | `projects/<id>/foundation/` |
-| **PO (도메인 전문가)** | ② PO-DEV-CHAT | Agent SDK 챗봇(빌드 예정) / 현재는 Claude Code + po-dev-chat 스킬 | `projects/<id>/model_repo/` |
+| **PO (도메인 전문가)** | ② PO-DEFINE | 챗봇 po-def-chat(빌드 예정) / 현재는 Claude Code + `po-define` 플러그인 스킬 | `projects/<id>/model_repo/` |
 | **개발자** | ③ AI-WEB-DEV | Claude Code (IDE) + `ai-web-dev` 플러그인 | `projects/<id>/app_repo/` |
 
 세 역할은 **같은 `projects/<id>/` 워크스페이스를 참조**한다(복사 아님). `foundation/VERSION`으로 핀해 재현성을 보장한다.
@@ -40,8 +40,10 @@
 
 목표: PO가 백지에서 시작하지 않도록 **디자인 자산·규칙·골격**을 못 박는다.
 
-1. **DS 투입** — 기존 디자인 시스템(컴포넌트 + `:root` CSS 토큰)을 `foundation/design-system/ds-source/`에 그대로 저장한다. 새로 만들지 않는다.
-2. **허용집합 작성** — `foundation/design-system/ds-allowlist.md`에 컴포넌트 목록(이름·props·용도·states)을 적는다. 저장 시 `ds-guide-validate` 훅이 형식을 검증한다. → 이후 ②의 모든 화면은 이 목록 안에서만 컴포넌트를 쓴다(DS 폐쇄).
+1~2. **DS 투입 + 허용집합 작성** — 두 진입 경로 중 하나를 고른다. 결과는 같다: `ds-source/` + `ds-allowlist.md`.
+   - **[경로 A — 수동]** 기존 사내/맞춤 DS가 있을 때. 디자인 시스템(컴포넌트 + `:root` CSS 토큰)을 `foundation/design-system/ds-source/`에 그대로 저장하고(새로 만들지 않음), `foundation/design-system/ds-allowlist.md`에 컴포넌트 목록(이름·props·용도·states)을 손으로 적는다.
+   - **[경로 B — 자동, `ds-bootstrap` 스킬]** 오픈소스 DS를 이름으로 도입할 때. *"Vuetify로 ds-source 세팅해줘"* 처럼 DS 이름만 주면 — 웹서치로 설치법·컴포넌트·토큰 API를 조사해 `ds-source/`에 설치하고, `src/tokens.css`(CSS 변수 단일 소스)와 `ds-allowlist.md`(≥25개 컴포넌트)를 자동 생성하며 plugin↔allowlist 일치까지 맞춘다. 실행 앱 파일(main/App/index.html)은 만들지 않는다(참조 라이브러리만).
+   - 어느 경로든 `ds-allowlist.md` 저장 시 `ds-guide-validate` 훅이 형식을 검증한다. → 이후 ②의 모든 화면은 이 목록 안에서만 컴포넌트를 쓴다(DS 폐쇄).
 3. **design page 생성** — `design-page-builder` 스킬로 페이지 템플릿(DP-MAIN, DP-POPUP 등)을 만든다. 각 DP는 **캔버스 모델**(고정 영역 `locked` + 편집 캔버스 `editable` + grid·breakpoints)을 가진다. 스킬이 생성 직후 `design-page-lint`로 DS 폐쇄·캔버스 모델을 검증한다.
 4. **DS 카탈로그 렌더** — 렌더 엔진이 `foundation/design-system/catalog/index.html`을 생성한다(색상 스와치·타이포·컴포넌트 갤러리). **PO가 "이 컴포넌트를 여기에"라고 이름으로 지시하는 근거**가 된다.
 5. **결정·명세 확정** —
@@ -74,7 +76,7 @@
 - ①이 준 DS·design page 밖으로 나갈 수 없다(컴포넌트 발명 금지, 고정 영역 침범 금지). 새 컴포넌트가 꼭 필요하면 ①에 요청한다.
 - 막히면 AI가 HITL로 다시 묻는다. **충분히 답해야** Gate A를 통과한다 — 여기서 모은 정보가 곧 개발 품질이다.
 
-(상세: [po-dev-chat README](packages/po-dev-chat/README.md))
+(상세: [po-define README](packages/plugin-po-define/README.md))
 
 ---
 

@@ -19,7 +19,10 @@ ADR-002 L5 canvas-bounds (D3, 결정 6) — OPTIONAL, 하위호환:
   - DP 캔버스 정보를 읽을 수 없으면 L5 조용히 건너뜀(거짓 에러 방지).
 """
 
+from __future__ import annotations
+
 import sys
+import json
 import yaml
 import re
 from pathlib import Path
@@ -440,11 +443,44 @@ def preload_label_registry(screens_dir: Path, target_paths: set):
         register_labels(doc.get("layout", []), doc.get("screen", {}).get("id", f.stem), emit_error=False)
 
 
+def _is_scr_target(p: Path) -> bool:
+    """SCR-*.yaml 만 lint 대상 (무관 파일 편집은 통과)."""
+    return p.suffix == ".yaml" and p.stem.startswith("SCR-")
+
+
+def resolve_targets() -> list[Path] | None:
+    """lint 대상 결정 (dp-render.py·schema-validate와 동일 규약).
+    [] = 훅인데 SCR 아님(스킵), None = 수동 CLI(glob 폴백), 리스트 = 대상 SCR.
+    """
+    # 1) 훅 stdin payload
+    if not sys.stdin.isatty():
+        try:
+            raw = sys.stdin.read()
+        except Exception:
+            raw = ""
+        if raw.strip():
+            try:
+                payload = json.loads(raw)
+                fp = (payload.get("tool_input") or {}).get("file_path")
+            except Exception:
+                fp = None
+            if fp:
+                p = Path(fp)
+                return [p] if _is_scr_target(p) else []
+    # 2) argv 폴백
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    if args:
+        return [Path(a) for a in args if _is_scr_target(Path(a))]
+    # 3) 수동 CLI 모드 — glob
+    return None
+
+
 def main():
-    if len(sys.argv) < 2:
+    targets = resolve_targets()
+    if targets == []:
+        sys.exit(0)   # 훅 컨텍스트지만 SCR 파일 아님 — 통과
+    if targets is None:
         targets = list(Path(".").glob("model_repo/screens/SCR-*.yaml"))
-    else:
-        targets = [Path(p) for p in sys.argv[1:]]
 
     if not targets:
         print("[lint-L1-L4] 검증할 파일 없음", file=sys.stderr)

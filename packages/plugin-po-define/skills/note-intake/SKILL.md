@@ -6,7 +6,7 @@ description: >
   Stage 2 완료 후, 또는 PO가 "추가 설명", "비즈니스 규칙", "특이사항"을 언급할 때 사용.
 when_to_use: '"추가 설명", "비즈니스 규칙", "특이사항", "노트 추가", "예외 케이스" 언급 시.'
 allowed-tools: Read Write Edit
-layer: 02-PO-DEV-CHAT
+layer: ② PO-DEV-CHAT
 stage: Stage 3
 version: 1.0.0
 owner: PO (도메인 전문가)

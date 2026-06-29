@@ -6,7 +6,7 @@ description: >
   복수 화면이 confirmed된 뒤, 또는 PO가 "전체 흐름", "화면 이동", "사용자 시나리오", "E2E"를 언급할 때 사용.
 when_to_use: '"전체 화면 흐름", "처음부터 끝까지 시나리오", "E2E", "화면 흐름도", confirmed 화면이 여러 개 쌓였을 때.'
 allowed-tools: Read Write Edit
-layer: 02-PO-DEV-CHAT
+layer: ② PO-DEV-CHAT
 stage: Stage 후반 (복수 SCR confirmed 후)
 version: 1.0.0
 owner: PO (도메인 전문가)

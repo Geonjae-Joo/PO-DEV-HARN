@@ -1,10 +1,10 @@
-# ② PO-DEV-CHAT — PO 화면·요구사항 정의 레이어
+# ② PO-DEFINE — PO 화면·요구사항 정의 플러그인
 
 > 화면마다 반복. 주체: PO(도메인 전문가).
 > 화면·요구사항을 **screen model(YAML)**로 정의·확정한다. 앱 코드는 절대 쓰지 않는다 — **계약만 산출**.
 > 목표: **개발자가 screen model 하나만 보고 spec을 만들 수 있을 만큼** 정보 수집.
 
-> 🤖 **런타임:** ②는 **Claude Agent SDK 챗봇**으로 빌드 예정이다(ADR-001 D2). 이 패키지(`packages/po-dev-chat/`)는 그 챗봇이 코드로 로드할 **소스**(skill·hook·rule)를 보존한다 — ①③처럼 마켓플레이스 플러그인으로 등록하지 않는다. 빌드 방법은 [`docs/CHATBOT-DEV-GUIDE.md`](../../docs/CHATBOT-DEV-GUIDE.md), 신구조 매핑은 [`docs/MIGRATION-PLAN.md`](../../docs/MIGRATION-PLAN.md). 불변 규칙·렌더 엔진·spine_ledger는 `packages/harness-core/`를 단일 출처로 공유한다.
+> 🤖 **런타임(R2 개정, ADR-001 D2):** 이 패키지는 ②의 **능력 플러그인**(`po-define`)이다 — `.claude-plugin/plugin.json`로 마켓플레이스에 등록돼 Cowork/Claude Code에서 직접 사용한다(①·③과 동일). ②의 **챗봇**은 별도 패키지 `po-def-chat`(`../po-def-chat/`)으로 빌드 예정이며, 이 플러그인의 skill·hook·rule 소스를 코드로 로드한다. 빌드 방법은 [`docs/CHATBOT-DEV-GUIDE.md`](../../docs/CHATBOT-DEV-GUIDE.md), 신구조 매핑은 [`docs/MIGRATION-PLAN.md`](../../docs/MIGRATION-PLAN.md). 불변 규칙·교차 계약(screen-model-schema-v2)·렌더 엔진·spine_ledger는 `packages/harness-core/`를 단일 출처로 공유한다.
 
 ---
 
@@ -128,11 +128,11 @@ journey-map  (복수 화면 confirmed 후, 횡단)
 
 ### Rules (공유)
 
-여러 스킬이 참조하는 규칙은 `rules/`에 둔다. 단일 스킬 전용 파일은 해당 스킬 폴더에 공존. 불변 하드룰(constitution·spine-ids·ds-closure)은 `harness-core/rules/`가 단일 원본.
+여러 스킬이 참조하는 규칙은 `rules/`에 둔다. 단일 스킬 전용 파일은 해당 스킬 폴더에 공존. 불변 하드룰(constitution·spine-ids·ds-closure)과 **교차 계약 `screen-model-schema-v2`(R1)** 는 `harness-core/rules/`가 단일 원본.
 
 | 파일 | 참조하는 스킬 | 설명 |
 |---|---|---|
-| `rules/screen-model-schema-v2.md` | 전체 | YAML 6부 구성 스키마 + 반응형 position·`from_template`. (0)meta (1)layout (2)actions (3)notes (4)prompt_log (5)intake |
+| `harness-core/rules/screen-model-schema-v2.md` | 전체 (①②) | YAML 6부 구성 스키마 + 반응형 position·`from_template`. (0)meta (1)layout (2)actions (3)notes (4)prompt_log (5)intake. **R1(ADR-001 D2-a)에서 harness-core로 이동** — ①의 DP와 ②의 SCR이 공유하는 교차 계약. `rules/screen-model-schema-v2.md`는 redirect stub. |
 | `rules/state-machine.md` | gate-a-check, layout-recommend | 인스턴스화 진입·상태 전환·optimistic locking·Gate A 규칙·L1~L5·엔진 렌더 |
 | `rules/spec-readiness-checklist.md` | sufficiency-check | 충분성 기준. error/warn 항목별 Gate A 영향 |
 | `rules/prompt-log-policy.md` | action-interview, note-intake | 하이브리드 적재: prompt_log 원문 + provenance.intent 요약 |
@@ -156,7 +156,7 @@ journey-map  (복수 화면 confirmed 후, 횡단)
 ## 폴더 트리
 
 ```
-packages/po-dev-chat/                # ② Agent SDK 챗봇 소스
+packages/plugin-po-define/           # ② 능력 플러그인 (skills·hooks·rules)
 ├── README.md
 ├── settings.json.legacy             # 구 Claude Code 훅 정의 (챗봇 빌드 시 validator 코드로 대체)
 ├── skills/
@@ -182,7 +182,7 @@ packages/po-dev-chat/                # ② Agent SDK 챗봇 소스
 │   ├── on-save-schema-validate.py            # PreToolUse: schema v2 + 반응형 검증
 │   └── on-save-lint-L1-L4.py                 # PostToolUse: L1~L5 lint
 └── rules/                                    # 복수 스킬이 공유하는 supporting files
-    ├── screen-model-schema-v2.md             # 화면 YAML 스키마 (6부 + 반응형 position)
+    ├── screen-model-schema-v2.md             # → harness-core/rules/ 로 이동(R1). 이 파일은 redirect stub
     ├── data-contract-schema.md               # ENT-*.yaml·EXT-*.yaml 스키마
     ├── journey-schema.md                     # JRN-*.yaml 스키마
     ├── state-machine.md                      # 인스턴스화·상태 전환·lint·Gate 연동

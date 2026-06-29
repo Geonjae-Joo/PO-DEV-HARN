@@ -7,7 +7,7 @@ description: >
 when_to_use: PO가 화면 정의를 확정하고 개발로 넘기겠다고 명시적으로 요청할 때.
 disable-model-invocation: true
 allowed-tools: Bash Read Write
-layer: 02-PO-DEV-CHAT
+layer: ② PO-DEV-CHAT
 stage: Gate A
 version: 1.0.0
 owner: PO (도메인 전문가)

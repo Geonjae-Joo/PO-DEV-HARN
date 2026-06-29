@@ -10,12 +10,12 @@ when_to_use: >
   화면을 처음 그릴 때뿐 아니라 layout 수정 루프 전체를 담당한다.
 allowed-tools: Read Write Edit Bash
 paths: "model_repo/screens/SCR-*.yaml"
-layer: 02-PO-DEV-CHAT
+layer: ② PO-DEV-CHAT
 stage: Stage 1
 version: 1.0.0
 owner: PO (도메인 전문가)
 tags: [layout, ds-mapping, screen-model, html-render, ds-closure]
-supporting-files: [../../rules/screen-model-schema-v2.md, ../../rules/state-machine.md]
+supporting-files: [../../../harness-core/rules/screen-model-schema-v2.md, ../../rules/state-machine.md]
 spine-ids: [SCR-, CMP-, DP-]
 ---
 
@@ -28,8 +28,10 @@ spine-ids: [SCR-, CMP-, DP-]
 ## 0. DP 인스턴스화 — 새 화면 시작 (ADR-002 §6)
 
 PO가 카탈로그/DP 미리보기에서 **design page를 고르면** 그 DP를 인스턴스화해 화면을 시작한다.
-화면을 백지에서 새로 쓰지 않고, DP의 고정 구성(locked region)을 **참조 상속**하고
-**빈 editable 캔버스**만 새로 소유한다. **DP 원본 YAML은 절대 수정하지 않는다.**
+화면을 백지에서 쓰지 않고 **DP를 복사해서 시작**한다(스키마 통일 — DP와 SCR은 같은 `layout` 스키마):
+- DP의 고정 구성(**locked** 슬롯)은 복제하지 않고 **참조 상속**(단일 출처·드리프트 0).
+- DP의 **editable** 슬롯 아이템은 `SCR.layout`으로 **복사 시딩**되어 **첫 렌더가 DP와 동일**(이름·메타 제외).
+**DP 원본 YAML은 절대 수정하지 않는다.**
 
 ```bash
 python "${HARNESS_CORE}/render/instantiate_screen.py" \
@@ -37,8 +39,9 @@ python "${HARNESS_CORE}/render/instantiate_screen.py" \
   --name "상품 목록" --domain PRODUCT --type LIST
 ```
 - `spine_ledger.mint_scr_id`가 `SCR-{DOMAIN}-{TYPE}` 전역 유일 채번.
-- 산출: `status: draft`, `layout: []`(빈 캔버스), `screen.from_template: {page, version}` 핀.
-- `link-manifest.yaml`에 DP→SCR 엣지 기록. 이후 1·2 단계로 진행.
+- 산출: `status: draft`, `layout: [editable seed 복사분]`(CMP-<SCR>.* 재채번, `meta.seeded_from` provenance), `screen.from_template: {page, version}` 핀.
+- `link-manifest.yaml`에 DP→SCR 엣지 + seed CMP를 `components`/`next_seq.CMP`에 기록. 이후 1·2 단계에서 seed를 조정·추가.
+- (DP에 editable seed가 없으면 `layout: []` 빈 캔버스로 시작 — 기존 동작과 동일.)
 
 ---
 
@@ -67,7 +70,7 @@ python "${HARNESS_CORE}/render/instantiate_screen.py" \
 
 **출력:** `model_repo/screens/SCR-{ID}.yaml` + `model_repo/renders/SCR-{ID}.render.html`
 
-> 스키마 상세: [screen-model-schema-v2.md](../../rules/screen-model-schema-v2.md)
+> 스키마 상세: [screen-model-schema-v2.md](../../../harness-core/rules/screen-model-schema-v2.md)
 
 ---
 

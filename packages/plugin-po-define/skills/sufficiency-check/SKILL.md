@@ -8,7 +8,7 @@ when_to_use: >
   Stage 3 완료 후 sufficiency 판정 요청 시.
   "Gate A", "충분성 확인", "스펙 준비", "open question" 언급 시.
 allowed-tools: Read Write Edit Bash
-layer: 02-PO-DEV-CHAT
+layer: ② PO-DEV-CHAT
 stage: Stage 4
 version: 1.0.0
 owner: PO (도메인 전문가)

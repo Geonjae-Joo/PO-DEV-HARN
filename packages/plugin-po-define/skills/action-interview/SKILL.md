@@ -7,7 +7,7 @@ description: >
   status가 layout_confirmed인 화면이 있을 때 사용.
 when_to_use: action 인터뷰, 버튼·입력·링크 동작 정의, Gherkin acceptance 작성 요청 시.
 allowed-tools: Read Write Edit
-layer: 02-PO-DEV-CHAT
+layer: ② PO-DEV-CHAT
 stage: Stage 2
 version: 1.0.0
 owner: PO (도메인 전문가)

@@ -18,7 +18,10 @@ ADR-002 확장 (모두 OPTIONAL, 있을 때만 검증 — 하위호환 유지):
   - `screen.from_template: {page: DP-*, version: int}` 인스턴스화 출처 핀 (권장).
 """
 
+from __future__ import annotations
+
 import sys
+import json
 import yaml
 import re
 from pathlib import Path
@@ -352,12 +355,50 @@ def validate_file(file_path: Path):
     validate_intake(doc.get("intake", {}), p)
 
 
+def _is_scr_target(p: Path) -> bool:
+    """SCR-*.yaml 만 검증 대상 (무관 파일 편집은 통과)."""
+    return p.suffix == ".yaml" and p.stem.startswith("SCR-")
+
+
+def resolve_targets() -> list[Path] | None:
+    """검증 대상 결정 (dp-render.py 규약과 동일).
+    반환:
+      - 리스트(>=1) : 검증할 SCR 파일들
+      - []          : 훅 컨텍스트인데 대상이 SCR이 아님 → 조용히 스킵 (저장 차단 안 함)
+      - None        : 수동 CLI 모드 (인자·stdin 없음) → glob 폴백
+    """
+    # 1) Claude Code/Cowork 훅 stdin payload: {"tool_input": {"file_path": "..."}}
+    if not sys.stdin.isatty():
+        try:
+            raw = sys.stdin.read()
+        except Exception:
+            raw = ""
+        if raw.strip():
+            try:
+                payload = json.loads(raw)
+                fp = (payload.get("tool_input") or {}).get("file_path")
+            except Exception:
+                fp = None
+            if fp:
+                p = Path(fp)
+                return [p] if _is_scr_target(p) else []
+
+    # 2) argv 폴백 (챗봇 validator / 명시 호출)
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    if args:
+        return [Path(a) for a in args if _is_scr_target(Path(a))]
+
+    # 3) 수동 CLI 모드 — glob
+    return None
+
+
 def main():
-    if len(sys.argv) < 2:
-        # Claude Code가 파일 경로를 stdin JSON으로 줄 수도 있으므로 glob 대안
+    targets = resolve_targets()
+    if targets == []:
+        # 훅 컨텍스트지만 SCR 파일이 아님 — 저장 차단 없이 통과
+        sys.exit(0)
+    if targets is None:
         targets = list(Path(".").glob("model_repo/screens/SCR-*.yaml"))
-    else:
-        targets = [Path(p) for p in sys.argv[1:]]
 
     if not targets:
         print("[schema-validate] 검증할 파일 없음", file=sys.stderr)

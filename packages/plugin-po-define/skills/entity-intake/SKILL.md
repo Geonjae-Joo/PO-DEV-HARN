@@ -6,7 +6,7 @@ description: >
   action-interview에서 outcome.target으로 ENT-가 등장하거나, PO가 "데이터", "엔티티", "테이블 항목"을 언급할 때 사용.
 when_to_use: '"이 데이터는 무엇무엇으로 구성", "주문 항목", "회원 정보 필드", outcome.target에 미정의 ENT- 참조 발생 시.'
 allowed-tools: Read Write Edit
-layer: 02-PO-DEV-CHAT
+layer: ② PO-DEV-CHAT
 stage: Stage 2.5 (action-interview 중/후, 데이터 출처 식별 시)
 version: 1.0.0
 owner: PO (도메인 전문가)

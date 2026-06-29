@@ -7,7 +7,7 @@ description: >
 when_to_use: Gate A 통과 후 spec 팩 발행, "PACK-", "speckit", "개발자 인계" 요청 시.
 disable-model-invocation: true
 allowed-tools: Read Write Edit Bash
-layer: 02-PO-DEV-CHAT
+layer: ② PO-DEV-CHAT
 stage: Gate A 후 (핸드오프 ② → ③)
 version: 1.0.0
 owner: PO (도메인 전문가)

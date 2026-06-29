@@ -6,7 +6,7 @@ description: >
   결제·SSO·알림·외부 LLM(Fabrix) 등 외부 시스템 연동이 action에 등장할 때 사용.
 when_to_use: '"결제 시스템 연동", "외부 API", "SSO", "문자/메일 발송", outcome.target에 미정의 EXT- 참조 발생 시.'
 allowed-tools: Read Write Edit
-layer: 02-PO-DEV-CHAT
+layer: ② PO-DEV-CHAT
 stage: Stage 2.5 (action-interview 중/후, 외부 의존 식별 시)
 version: 1.0.0
 owner: PO (도메인 전문가)

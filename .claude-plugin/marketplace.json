@@ -1,6 +1,6 @@
 {
   "name": "po-dev-harn",
-  "description": "PO Development Harness — 3-layer plugin marketplace (prerequisite · po-dev-chat · ai-web-dev)",
+  "description": "PO Development Harness — 3-layer plugin marketplace (prerequisite · po-define · ai-web-dev)",
   "owner": {
     "name": "Samsung PO Dev Team",
     "email": "geonjae.joo@samsung.com"
@@ -10,6 +10,12 @@
       "name": "prerequisite",
       "source": "./packages/plugin-prerequisite",
       "description": "① PREREQUISITE — DS 허용집합·design page·platform-baseline 준비",
+      "category": "development"
+    },
+    {
+      "name": "po-define",
+      "source": "./packages/plugin-po-define",
+      "description": "② PO-DEFINE — 화면·요구사항을 screen model(YAML) 계약으로 정의. Cowork/Claude Code 플러그인. (챗봇 po-def-chat이 이 플러그인을 로드)",
       "category": "development"
     },
     {

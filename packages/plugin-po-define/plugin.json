@@ -1,0 +1,8 @@
+{
+  "name": "po-define",
+  "version": "0.1.0",
+  "description": "② PO-DEFINE — PO 화면·요구사항 정의 레이어. model_repo/ 에 screen model(SCR-*)·ENT-/EXT-/JRN- 계약을 작성. 코드는 쓰지 않고 계약만 산출.",
+  "components": { "skills": "skills/", "hooks": "hooks/", "rules": "rules/" },
+  "shared": "../harness-core",
+  "_note": "ADR-001 R2: 능력=플러그인 / 제품=챗봇 분리. Claude Code/Cowork 플러그인 매니페스트는 .claude-plugin/plugin.json. 같은 skill·hook·rule 소스를 챗봇 po-def-chat이 코드로 로드한다. 훅은 stdin payload(tool_input.file_path)를 읽어 SCR-*.yaml만 대상으로 한다(무관 파일 미차단)."
+}

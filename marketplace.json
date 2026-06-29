@@ -3,6 +3,7 @@
   "description": "PO-DEV Harness 플러그인 마켓플레이스",
   "plugins": [
     { "name": "prerequisite", "source": "./packages/plugin-prerequisite", "description": "① 디자인 자산·규칙·골격 준비 (개발자/Claude Code)" },
+    { "name": "po-define",    "source": "./packages/plugin-po-define",    "description": "② 화면·요구사항 screen model 계약 정의 (Cowork/Claude Code 플러그인; 챗봇 po-def-chat이 로드)" },
     { "name": "ai-web-dev",   "source": "./packages/plugin-ai-web-dev",   "description": "③ SDD+TDD app_repo 구현 (개발자/Claude Code)" }
   ]
 }

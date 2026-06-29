@@ -1,0 +1,30 @@
+{
+  "name": "po-define",
+  "description": "② PO-DEFINE — 화면·요구사항 screen model 정의 플러그인. model_repo/ 에 screen model(SCR-*)·ENT-/EXT-/JRN- 계약을 작성. 저장 시 schema v2 검증 + L1~L5 lint. (ADR-001 R2: 능력=플러그인 / 챗봇 po-def-chat이 이 소스를 로드.)",
+  "version": "0.1.0",
+  "skills": "./skills",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/on-save-schema-validate.py\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/on-save-lint-L1-L4.py\""
+          }
+        ]
+      }
+    ]
+  }
+}

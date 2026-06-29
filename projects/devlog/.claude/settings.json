@@ -1,0 +1,4 @@
+{
+  "env": { "PROJECT_ROOT": "." },
+  "enabledPlugins": ["prerequisite", "po-define", "ai-web-dev"]
+}

@@ -1,8 +1,10 @@
+schema_version: 2
 id: DP-POPUP
-version: 1
+version: 2
 archetype: popup
-description: 모달/팝업(생성·수정·확인) 화면이 공통으로 사용하는 골격 (ADR-002 캔버스 모델)
+description: 모달/팝업(생성·수정·확인) 화면이 공통으로 사용하는 골격 (ADR-002 캔버스 모델 + ②와 통일된 layout)
 # 팝업은 Dialog 프레임을 locked로 고정하고, 본문(content)·액션(footer-actions)을 editable 캔버스로 둔다.
+# 인스턴스화: frame(locked) → DP 참조 상속, content/footer-actions(editable) → SCR로 복사 시딩.
 canvas:
   grid: { columns: 12, gap: space-4, max_width: 720 }
   breakpoints:
@@ -13,8 +15,16 @@ slots:
   - { id: frame,          editable: false, locks: [Dialog] }                # 팝업 컨테이너(고정)
   - { id: content,        editable: true,  grid_columns: 12, overflow: scroll-y }  # 입력 폼 캔버스
   - { id: footer-actions, editable: true,  grid_columns: 12 }              # 확인/취소 액션 자리
-components:
-  - ref: Dialog
-    slot: frame
-    order: 1
-    note: 팝업 컨테이너 (제목·본문 영역 프레임)
+layout:
+  - id: DPC-POPUP.frame
+    source: { kind: ds, ref: Dialog }
+    position: { slot: frame, base: { col_start: 1, col_span: full, row: 1 } }
+    meta: { label: 팝업 컨테이너 (제목·본문 영역 프레임) }
+  - id: DPC-POPUP.input
+    source: { kind: ds, ref: Input }
+    position: { slot: content, base: { col_start: 1, col_span: full, row: 1 } }
+    meta: { label: 입력 필드 자리 }
+  - id: DPC-POPUP.confirmBtn
+    source: { kind: ds, ref: Button }
+    position: { slot: footer-actions, base: { col_start: 1, col_span: full, row: 1 } }
+    meta: { label: 확인/취소 버튼 자리 }

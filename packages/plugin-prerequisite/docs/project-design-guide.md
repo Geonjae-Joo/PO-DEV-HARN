@@ -35,7 +35,7 @@
 ## 1. 큰 그림 — 이 하니스에서 DS가 흐르는 경로
 
 ```
-[① 01-PREREQUISITE]  ← 여기서 세팅
+[① PREREQUISITE]  ← 여기서 세팅
   foundation/design-system/ds-source/                   (A) DS 원본(shadcn 소스)을 담는다
         │  (이 문서의 절차로 가져온다)
         ▼
@@ -44,10 +44,10 @@
         ▼
   foundation/design-pages/DP-*.yaml              (C) 빈 페이지 골격(템플릿)
 
-[② 02-PO-DEV-CHAT]
+[② PO-DEV-CHAT]
   화면 모델(SCR-*.yaml) 작성. layout 의 ref 는 (B) 목록 안에 있어야만 통과.
 
-[③ 03-AI-WEB-DEV]
+[③ AI-WEB-DEV]
   app_repo/frontend 에서 실제 구현. 같은 shadcn 컴포넌트 사용.
   code-reviewer 가 "DS 밖 컴포넌트 / 임의 스타일"을 다시 검사.
 ```

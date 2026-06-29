@@ -87,9 +87,9 @@ DP를 만들려면 두 단어만 이해하면 됩니다.
 
 1. **`id` 필수** — `DP-` 로 시작하는 대문자 ID (예: `DP-MAIN`). 형식: `DP-` + 영대문자/숫자, 하이픈으로 단어 연결.
 2. **`slots` 명시** — 슬롯 목록이 있어야 함 (없으면 경고).
-3. **`ref` 는 닫힌 집합 안에서만** — 모든 컴포넌트의 `ref` 가 ds-allowlist.md의 29개 이름 중 하나여야 함. 밖이면 **DS 폐쇄 위반 ERROR**.
-4. **raw HTML 금지** — `<div>`, `<span>` 같은 태그를 직접 쓰면 ERROR. 부품은 오직 DS 컴포넌트 `ref` 로만.
-5. **데이터·이벤트 없음** — 빈 골격 유지.
+3. **`source.ref` 는 닫힌 집합 안에서만** — `layout[]` 모든 아이템의 `source.ref` 가 ds-allowlist.md의 29개 이름 중 하나여야 함. 밖이면 **DS 폐쇄 위반 ERROR**. (`position.slot` 도 위에서 선언한 슬롯 id 중 하나여야 함.)
+4. **raw HTML 금지** — `<div>`, `<span>` 같은 태그를 직접 쓰면 ERROR. 부품은 오직 DS 컴포넌트 `source.ref` 로만.
+5. **데이터·이벤트 없음** — 빈 골격 유지(editable 슬롯의 시작 디자인도 컴포넌트 배치까지만, 실데이터·동작은 ②에서).
 
 > 사용 가능한 ref 목록(우리 ds-allowlist.md 기준, 29개): `Button`, `Input`, `Select`, `Table`, `Dialog`, `Card`, `Badge`, `Tabs`, `Checkbox`, `DropdownMenu`, `Form`, `Label`, `Sonner`, `Calendar`, `Popover`, `DataTable`, `FilterBar`, `DatePicker`, `Header`, `NavMenu`, `Avatar`, `Separator`, `Tooltip`, `Skeleton`, `Switch`, `Textarea`, `Alert`, `Breadcrumb`, `Sheet`
 
@@ -117,37 +117,41 @@ foundation/design-pages/DP-MAIN.yaml
 내용:
 
 ```yaml
+schema_version: 2
 id: DP-MAIN
+version: 1
 archetype: main
 description: 목록·상세·폼 화면이 공통으로 사용하는 전체 페이지 기본 골격
 slots:
-  - header
-  - header-actions
-  - content
-  - footer
-components:
-  - ref: Button
-    slot: header-actions
-    order: 1
-    note: 우측 상단 주요 액션 자리 (구체 동작은 ②에서 정의)
-  - ref: FilterBar
-    slot: content
-    order: 1
-    note: 목록 검색/필터 영역
-  - ref: DataTable
-    slot: content
-    order: 2
-    note: 메인 데이터 표
+  - { id: header,         editable: false, locks: [Header] }   # 고정 → 참조 상속
+  - { id: header-actions, editable: true,  grid_columns: 12 }  # 시작 디자인 → 복사 시딩
+  - { id: content,        editable: true,  grid_columns: 12 }
+  - { id: footer,         editable: false, locks: [Separator] }
+layout:                                                         # ②의 화면 모델과 같은 layout 스키마
+  - id: DPC-MAIN.actionBtn
+    source: { kind: ds, ref: Button }
+    position: { slot: header-actions, base: { col_start: 1, col_span: full, row: 1 } }
+    meta: { label: 우측 상단 주요 액션 자리 }
+  - id: DPC-MAIN.filterbar
+    source: { kind: ds, ref: FilterBar }
+    position: { slot: content, base: { col_start: 1, col_span: full, row: 1 } }
+    meta: { label: 목록 검색/필터 영역 }
+  - id: DPC-MAIN.table
+    source: { kind: ds, ref: DataTable }
+    position: { slot: content, base: { col_start: 1, col_span: full, row: 2 } }
+    meta: { label: 메인 데이터 표 }
 ```
 
 ### 각 줄이 무슨 뜻인지
 
+- `schema_version: 2` — ②의 화면 모델과 **같은 스키마**임을 표시(복사해서 시작하므로 통일).
 - `id: DP-MAIN` — 이 페이지의 고유 ID(스파인 ID). ②에서 이 이름으로 페이지를 가리킵니다.
 - `archetype: main` — 전체 페이지 유형.
-- `slots:` — 이 페이지가 가진 영역 목록. ②의 `slots_used` 가 여기서 골라 씁니다.
-- `components:` — 각 슬롯에 배치할 부품. `ref` 는 반드시 허용 목록 안의 이름.
-- `order` — 같은 슬롯 안에서의 배치 순서.
-- `note` — 사람이 읽는 메모(선택). 검증과 무관하지만, 다음 단계 작업자에게 의도를 전달합니다.
+- `slots:` — 영역 목록. 각 슬롯은 `editable: false`(고정→참조 상속) 또는 `editable: true`(시작 디자인→복사 시딩)로 구분.
+- `layout:` — 각 슬롯에 배치할 부품(②의 `layout`과 동일 형태). `source.ref` 는 반드시 허용 목록 안의 이름, `position.slot` 은 위 슬롯 id 중 하나.
+- `meta.label` — 사람이 읽는 메모(선택). 다음 단계 작업자에게 의도를 전달합니다.
+
+> 💡 **왜 layout 형태인가:** ②가 화면을 시작할 때 이 DP를 **복사**합니다. editable 슬롯의 `actionBtn`·`filterbar`·`table`은 새 화면의 `CMP-<SCR>.*`로 복사되어 **첫 화면이 이 DP와 똑같이** 보이고, locked 슬롯(`header`)은 DP를 참조만 합니다. 그래서 DP와 SCR이 같은 스키마를 써야 합니다.
 
 ---
 
@@ -196,26 +200,28 @@ python packages/plugin-prerequisite/skills/design-page-builder/scripts/design-pa
 `foundation/design-pages/DP-POPUP.yaml`:
 
 ```yaml
+schema_version: 2
 id: DP-POPUP
+version: 1
 archetype: popup
 description: 확인·간단 입력용 모달 팝업 기본 골격
 slots:
-  - dialog-header
-  - dialog-body
-  - dialog-footer
-components:
-  - ref: Dialog
-    slot: dialog-body
-    order: 1
-    note: 모달 컨테이너
-  - ref: Input
-    slot: dialog-body
-    order: 2
-    note: 입력 필드 자리 (필요 시)
-  - ref: Button
-    slot: dialog-footer
-    order: 1
-    note: 확인/취소 버튼 자리
+  - { id: dialog-frame,  editable: false, locks: [Dialog] }   # 팝업 컨테이너(고정)
+  - { id: dialog-body,   editable: true,  grid_columns: 12 }  # 입력 영역(시작 디자인)
+  - { id: dialog-footer, editable: true,  grid_columns: 12 }  # 확인/취소 버튼 자리
+layout:
+  - id: DPC-POPUP.frame
+    source: { kind: ds, ref: Dialog }
+    position: { slot: dialog-frame, base: { col_start: 1, col_span: full, row: 1 } }
+    meta: { label: 모달 컨테이너 }
+  - id: DPC-POPUP.input
+    source: { kind: ds, ref: Input }
+    position: { slot: dialog-body, base: { col_start: 1, col_span: full, row: 1 } }
+    meta: { label: 입력 필드 자리 }
+  - id: DPC-POPUP.confirmBtn
+    source: { kind: ds, ref: Button }
+    position: { slot: dialog-footer, base: { col_start: 1, col_span: full, row: 1 } }
+    meta: { label: 확인/취소 버튼 자리 }
 ```
 
 저장 후 다시 린터를 돌리면 두 페이지를 함께 검사합니다.
@@ -233,7 +239,7 @@ python packages/plugin-prerequisite/skills/design-page-builder/scripts/design-pa
 
 만든 DP가 다음 단계에서 어떻게 쓰이는지 알아두면 "왜 이렇게 만드는지"가 분명해집니다.
 
-②(02-PO-DEV-CHAT)에서 실제 화면 모델(`SCR-*.yaml`)을 만들 때, 화면은 **어떤 DP 위에 세워질지**를 명시합니다.
+②(PO-DEV-CHAT)에서 실제 화면 모델(`SCR-*.yaml`)을 만들 때, 화면은 **어떤 DP 위에 세워질지**를 명시합니다.
 
 ```yaml
 screen:
@@ -249,6 +255,8 @@ layout:
 ```
 
 즉, ②의 화면은 (1) **우리 DP의 슬롯**에 (2) **우리 ds-allowlist.md의 부품**을 배치합니다. 두 가지 모두 ①에서 우리가 정한 범위 안에서만 가능하고, 벗어나면 ②의 저장 단계 lint에서 막힙니다. **그래서 ①을 잘 만들면 그 뒤가 자동으로 규칙을 지키게 됩니다.**
+
+게다가 ②는 화면을 **백지에서 쓰지 않고 이 DP를 복사해서 시작**합니다. editable 슬롯에 둔 부품(FilterBar·DataTable 등)은 새 화면의 `CMP-<SCR>.*`로 그대로 복사되고, locked 슬롯(header)은 DP를 참조만 합니다. **첫 화면이 이 DP와 똑같이 보이는 것**이 목표이므로, editable 슬롯에 "비어 보이지 않을 표준 시작 디자인"을 담아 두는 게 좋습니다. (자세한 동작: `screen-model-schema-v2.md` §7.)
 
 ---
 
@@ -271,5 +279,5 @@ layout:
 - 디자인 페이지 스킬: `packages/plugin-prerequisite/skills/design-page-builder/SKILL.md`
 - 검증기: `packages/plugin-prerequisite/skills/design-page-builder/scripts/design-page-lint.py`
 - DS 폐쇄 규칙: `packages/harness-core/rules/ds-closure.md`
-- 화면 모델 스키마(②에서 DP를 어떻게 쓰는지): `packages/po-dev-chat/rules/screen-model-schema-v2.md`
+- 화면 모델 스키마(②에서 DP를 어떻게 쓰는지): `packages/harness-core/rules/screen-model-schema-v2.md`
 - 허용 컴포넌트 목록: `foundation/design-system/ds-allowlist.md`

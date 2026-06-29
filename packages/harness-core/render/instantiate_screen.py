@@ -47,7 +47,82 @@ def dp_version(dp: dict) -> int:
     return int(v) if isinstance(v, int) else 1
 
 
-def build_scr(scr_id: str, name: str, archetype: str, dp_id: str, dp_ver: int) -> dict:
+def editable_slot_map(dp: dict) -> dict:
+    """DP slots → {slot_id: editable(bool)}. 레거시 평면 슬롯(문자열)은 editable=True."""
+    result: dict = {}
+    for s in (dp.get("slots") or []):
+        if isinstance(s, dict):
+            result[s.get("id")] = bool(s.get("editable", True))
+        elif isinstance(s, str):
+            result[s] = True
+    return result
+
+
+def dp_layout_items(dp: dict) -> list:
+    """DP의 디자인 아이템을 screen-model-schema-v2 의 layout 형태로 반환.
+
+    우선순위: v2 `layout:`(스키마 통일) → 없으면 레거시 `components:`를 동치 변환.
+    """
+    if dp.get("layout"):
+        return [it for it in dp["layout"] if isinstance(it, dict)]
+    items = []
+    for c in (dp.get("components") or []):
+        items.append({
+            "id": None,
+            "source": {"kind": "ds", "ref": c.get("ref")},
+            "position": {"slot": c.get("slot"), "order": c.get("order", 1)},
+            "props": c.get("props") or {},
+            "meta": {"label": c.get("note")} if c.get("note") else {},
+        })
+    return items
+
+
+def _seed_suffix(it: dict, used: set) -> str:
+    """seed CMP id 접미사: DP 아이템 id의 '.'뒤 토큰 우선, 없으면 ref 소문자. 중복 시 숫자 부여."""
+    raw_id = it.get("id")
+    if raw_id and "." in raw_id:
+        base = raw_id.split(".", 1)[1]
+    else:
+        base = ((it.get("source") or {}).get("ref", "") or "cmp").lower()
+    cand, n = base, 2
+    while cand in used:
+        cand, n = f"{base}{n}", n + 1
+    used.add(cand)
+    return cand
+
+
+def seed_layout(dp: dict, scr_id: str) -> list:
+    """DP의 **editable 슬롯** 아이템을 SCR.layout 시작 디자인으로 복사 시딩.
+
+    - locked 슬롯 아이템은 복사하지 않는다 — DP 단일 출처를 유지하고 렌더 시 참조 상속한다
+      (드리프트 0; ADR-001 "복사 대신 참조").
+    - editable 슬롯 아이템은 그대로 복사하여 **첫 화면 렌더가 DP와 동일**해지게 한다(요구사항).
+      CMP-* ID로 재채번하고 source/position/props 를 보존, provenance(seeded_from)를 남긴다.
+    """
+    ed = editable_slot_map(dp)
+    cmp_prefix = scr_id.replace("SCR-", "CMP-", 1)
+    seeds, used = [], set()
+    for it in dp_layout_items(dp):
+        slot = (it.get("position") or {}).get("slot")
+        if not ed.get(slot, True):
+            continue  # locked → 참조 상속(복사 안 함)
+        cmp_id = f"{cmp_prefix}.{_seed_suffix(it, used)}"
+        item: dict = {
+            "id": cmp_id,
+            "source": it.get("source") or {"kind": "ds", "ref": None},
+            "position": it.get("position") or {"slot": slot, "order": 1},
+        }
+        if it.get("props"):
+            item["props"] = it["props"]
+        meta = dict(it.get("meta") or {})
+        meta.pop("locked", None)
+        meta["seeded_from"] = it.get("id") or f"{(it.get('source') or {}).get('ref', '')}@{slot}"
+        item["meta"] = meta
+        seeds.append(item)
+    return seeds
+
+
+def build_scr(scr_id: str, name: str, archetype: str, dp_id: str, dp_ver: int, dp: dict) -> dict:
     return {
         "schema_version": 2,
         "screen": {
@@ -60,7 +135,8 @@ def build_scr(scr_id: str, name: str, archetype: str, dp_id: str, dp_ver: int) -
             "template": {"page": dp_id, "version": dp_ver},
             "from_template": {"page": dp_id, "version": dp_ver},
         },
-        "layout": [],   # 빈 editable 캔버스 — 고정 구성은 DP 참조 상속(SCR에 복제 안 함)
+        # editable 캔버스는 DP에서 복사 시딩(첫 렌더가 DP와 동일). locked 구성은 DP 참조 상속(복제 안 함).
+        "layout": seed_layout(dp, scr_id),
         "actions": [],
         "notes": [],
         "intake": {"open_questions": []},
@@ -68,14 +144,18 @@ def build_scr(scr_id: str, name: str, archetype: str, dp_id: str, dp_ver: int) -
 
 
 SCR_HEADER = (
-    "# 인스턴스화 산출(ADR-002 §6): DP의 locked region은 DP에서 참조 상속(편집 불가),\n"
-    "# layout(editable 캔버스)만 이 화면이 소유한다. DP 원본은 수정되지 않는다.\n"
+    "# 인스턴스화 산출(ADR-002 §6): DP의 locked region은 DP에서 참조 상속(편집 불가).\n"
+    "# editable 캔버스(layout)는 DP에서 복사 시딩된 시작 디자인으로, 이 화면이 소유·편집한다.\n"
+    "# 첫 렌더는 DP와 동일(이름·메타 제외). DP 원본은 수정되지 않는다.\n"
 )
 
 
-def update_manifest(manifest_path: Path, scr_id: str, dp_id: str, dp_ver: int) -> None:
+def update_manifest(manifest_path: Path, scr_id: str, dp_id: str, dp_ver: int,
+                    seeded: list | None = None) -> None:
     if not manifest_path.exists():
         return
+    seeded = seeded or []
+    seed_ids = [s.get("id") for s in seeded if isinstance(s, dict) and s.get("id")]
     manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8")) or {}
     screens = manifest.setdefault("screens", [])
     if not any(isinstance(s, dict) and s.get("id") == scr_id for s in screens):
@@ -85,8 +165,9 @@ def update_manifest(manifest_path: Path, scr_id: str, dp_id: str, dp_ver: int) -
             "version": 1,
             "template": dp_id,
             "from_template": f"{dp_id}@v{dp_ver}",
-            "next_seq": {"CMP": 1, "REQ": 1, "NOTE": 1, "NFR": 1},
-            "components": [],
+            # editable seed 복사분만큼 CMP 카운터를 진행시켜 다음 채번이 충돌하지 않게 한다.
+            "next_seq": {"CMP": len(seed_ids) + 1, "REQ": 1, "NOTE": 1, "NFR": 1},
+            "components": seed_ids,
             "requirements": [],
             "notes": [],
         })
@@ -123,7 +204,8 @@ def main(argv: list) -> int:
         return 1
 
     archetype = args.archetype or ARCHETYPE_BY_TYPE.get(args.screen_type.upper(), "list")
-    scr = build_scr(scr_id, args.name, archetype, args.template, dp_ver)
+    scr = build_scr(scr_id, args.name, archetype, args.template, dp_ver, dp)
+    seeded = scr["layout"]
 
     screens_dir = model_repo / "screens"
     screens_dir.mkdir(parents=True, exist_ok=True)
@@ -131,11 +213,15 @@ def main(argv: list) -> int:
     body = yaml.dump(scr, allow_unicode=True, sort_keys=False, default_flow_style=False)
     out_path.write_text(SCR_HEADER + body, encoding="utf-8")
 
-    update_manifest(model_repo / "link-manifest.yaml", scr_id, args.template, dp_ver)
+    update_manifest(model_repo / "link-manifest.yaml", scr_id, args.template, dp_ver, seeded)
 
     print(f"[instantiate] ✅ {scr_id} 생성 (from {args.template}@v{dp_ver})")
     print(f"    → {out_path.as_posix()}")
-    print(f"    layout=[] (빈 캔버스). 다음: layout-recommend 로 컴포넌트 배치 → render_screen.")
+    if seeded:
+        print(f"    layout: editable seed {len(seeded)}개 복사(첫 렌더=DP 동일). locked는 DP 참조 상속.")
+        print(f"    다음: layout-recommend 로 seed 조정/추가 → render_screen.")
+    else:
+        print(f"    layout=[] (DP에 editable seed 없음 — 빈 캔버스). 다음: layout-recommend → render_screen.")
     return 0
 
 

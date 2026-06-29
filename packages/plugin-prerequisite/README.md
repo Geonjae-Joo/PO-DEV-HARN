@@ -11,17 +11,26 @@
 ## Workflow
 
 ```
-1. 기존 design component를 projects/<id>/foundation/design-system/ds-source/ 에 직접 저장
-   (새로 만들지 않음 — 기존 DS 그대로 투입, design token(:root CSS 변수) 포함)
-     └ hook: ds-guide-validate.py 자동 실행 (목록·필수 필드 검증)
+1~2. DS 투입 + 허용집합 작성 — 두 진입 경로 중 하나 (둘 다 같은 DoD: ds-source/ + ds-allowlist.md)
 
-2. ds-allowlist.md 작성 — DS 컴포넌트 목록(이름·props·용도·states) + 사용 가이드
-   (②의 layout-recommend skill과 lint가 이 목록을 허용 집합 원본으로 참조)
+   [경로 A — 수동] 기존 사내/맞춤 DS를 직접 투입할 때
+     · design component를 projects/<id>/foundation/design-system/ds-source/ 에 직접 저장
+       (새로 만들지 않음 — 기존 DS 그대로 투입, design token(:root CSS 변수) 포함)
+     · ds-allowlist.md를 손으로 작성 — DS 컴포넌트 목록(이름·props·용도·states) + 사용 가이드
+
+   [경로 B — 자동] 오픈소스 DS를 이름으로 도입할 때
+     · skill: ds-bootstrap 실행 — DS 이름(예: "Vuetify", "Ant Design Vue", "shadcn-vue")만 주면
+       웹서치로 설치법·컴포넌트·토큰 API를 조사 → ds-source/ 설치 + src/tokens.css(CSS 변수) 생성
+       + ds-allowlist.md(≥25개 컴포넌트) 자동 작성 + plugin↔allowlist sync. 실행 앱 파일은 만들지 않음.
+
+   → 두 경로 모두: ds-allowlist.md 저장 시 hook ds-guide-validate.py 자동 실행 (목록·필수 필드 검증)
+   → 이 ds-allowlist.md가 ②의 layout-recommend skill과 lint L1의 허용 집합 원본이 된다 (DS 폐쇄)
 
 3. skill: design-page-builder 실행
-   DS를 조합해 캔버스 모델(canvas·grid·breakpoints·slots[locked/editable])로 빈 페이지 템플릿 생성 (DP-MAIN, DP-POPUP 등)
-     └ 스킬이 생성 직후 scripts/design-page-lint.py 직접 호출 (DS 폐쇄 + 캔버스 모델 검증)
-     └ harness-core/render/render_designpage.py 로 DP 미리보기, render_catalog.py 로 DS 카탈로그 생성
+   DS를 조합해 캔버스 모델(canvas·grid·breakpoints·slots[locked/editable]) + layout(②와 통일된 screen-model-schema-v2 형태)으로 페이지 템플릿 생성 (DP-MAIN, DP-POPUP 등)
+     · ②가 화면을 DP **복사**로 시작하므로 DP와 SCR은 같은 layout 스키마를 쓴다. locked=참조 상속, editable=복사 시딩(첫 렌더=DP 동일).
+     └ 스킬이 생성 직후 scripts/design-page-lint.py 직접 호출 (DS 폐쇄 + 캔버스 모델 + layout 슬롯 참조 검증)
+     └ harness-core/render/render_designpage.py 로 DP 미리보기(editable seed도 실제 렌더), render_catalog.py 로 DS 카탈로그 생성
 
 4. rules(불변 규칙) 확정 + 프로젝트 결정 핀
    rules: harness-core/rules/{constitution,spine-ids,ds-closure}.md   (전 프로젝트 공통 — 단일 원본)
@@ -45,6 +54,7 @@
 
 | 파일 | 설명 |
 |---|---|
+| `skills/ds-bootstrap/SKILL.md` | **[경로 B 자동]** 오픈소스 DS 이름 하나로 ds-source/ 부트스트랩. 웹서치 조사 → 설치(`package.json`·`vite.config`)·`src/tokens.css`(CSS 변수 단일 소스, `tokens.py`가 소비)·`src/plugins/<ds>` 진입점 생성 + **`ds-allowlist.md` 자동 작성**(≥25개, lint L1 계약) + plugin↔allowlist sync 검증. 실행 앱 파일(main/App/index.html) 미생성. design-page-builder의 **선행 단계**(allowlist를 만들어 줌). |
 | `skills/design-page-builder/SKILL.md` | DS 컴포넌트를 조합해 캔버스 모델(canvas·grid·breakpoints·locked/editable slots) 기반 빈 페이지 템플릿(DP-MAIN, DP-POPUP 등)을 생성하는 방법. 허용 집합(ds-allowlist.md) 참조, DS 밖 컴포넌트 발명 금지. 각 템플릿에 스파인 ID(DP-*) 부여. DP 렌더·DS 카탈로그 산출 (ADR-002 D7). |
 | `skills/design-page-builder/scripts/design-page-lint.py` | **design-page-builder 전용.** 스킬이 템플릿 생성 직후 직접 호출하는 출력 검증기. 템플릿이 DS 허용 집합 안의 컴포넌트만 쓰는지 + 캔버스 모델(slots locked/editable·grid·breakpoints) 형식 + 스파인 ID(DP-*) 존재 검증. `harness-core/lib/ds_closure.py`를 import(실패 시 동치 폴백). |
 
@@ -96,6 +106,9 @@ packages/plugin-prerequisite/        # ① Claude Code 플러그인
 ├── plugin.json                      # 플러그인 매니페스트 (components·shared: ../harness-core)
 ├── settings.json                    # hook 이벤트 연결 (PostToolUse → ds-guide-validate.py)
 ├── skills/
+│   ├── ds-bootstrap/
+│   │   ├── SKILL.md                 # [경로 B] 오픈소스 DS 이름 → ds-source 설치 + tokens.css + ds-allowlist.md 자동 생성
+│   │   └── evals/                   #   산출물 검증 명세(evals.json) — Ant Design Vue·Bootstrap Vue·PrimeVue 등
 │   └── design-page-builder/
 │       ├── SKILL.md                 # DS 조합 → 캔버스 모델 페이지 템플릿 + DP 렌더 + 카탈로그
 │       └── scripts/

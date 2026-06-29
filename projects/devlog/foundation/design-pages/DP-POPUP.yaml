@@ -1,0 +1,46 @@
+schema_version: 2
+id: DP-POPUP
+version: 1
+archetype: popup
+description: DevLog 모달 팝업 공통 골격 — 타이틀바·닫기 버튼(고정)·본문 캔버스(편집)
+
+canvas:
+  grid:
+    columns: 12
+    gap: space-4
+    max_width: 640
+  breakpoints:
+    - { name: lg, min: 1280, columns: 12 }
+    - { name: md, min: 768,  columns: 8 }
+    - { name: sm, min: 0,    columns: 4 }
+
+slots:
+  - id: dialog-header
+    editable: false
+    locks: [Dialog, Button]
+  - id: dialog-body
+    editable: true
+    grid_columns: 12
+    overflow: scroll-y
+
+layout:
+  - id: DPC-POPUP.dialog-wrapper
+    source: { kind: ds, ref: Dialog }
+    position:
+      slot: dialog-header
+      base: { col_start: 1, col_span: 12, row: 1 }
+    meta: { label: 모달 컨테이너 (타이틀바 포함) }
+
+  - id: DPC-POPUP.close-btn
+    source: { kind: ds, ref: Button }
+    position:
+      slot: dialog-header
+      base: { col_start: 12, col_span: 1, row: 1 }
+    meta: { label: 닫기 버튼 }
+
+  - id: DPC-POPUP.body-card
+    source: { kind: ds, ref: Card }
+    position:
+      slot: dialog-body
+      base: { col_start: 1, col_span: 12, row: 1 }
+    meta: { label: 모달 본문 영역 }

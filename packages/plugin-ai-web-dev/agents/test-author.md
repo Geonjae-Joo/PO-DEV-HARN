@@ -5,7 +5,7 @@ description: >
   API 레벨과 화면 레벨 2계층으로 작성. speckit.implement 시작 시 각 T### 구현 전에 호출.
   구현 코드는 작성하지 않고 테스트만 만든다.
 tools: Read, Write, Edit
-layer: 03-AI-WEB-DEV
+layer: ③ AI-WEB-DEV
 phase: Phase β (speckit.implement)
 version: 1.0.0
 ---

@@ -122,11 +122,41 @@ def resolve_span(value, columns: int) -> int:
 
 # ── DP 캔버스 정규화 (신규 canvas 모델 + 레거시 평면 slots) ────────────────────────
 
+def components_from_layout(layout: list) -> list:
+    """v2 DP: layout[](source/position 형태) → components[](ref/slot/order/props/note).
+
+    DP를 screen-model-schema-v2 의 layout 형태로 작성하면(스키마 통일), 엔진은 이 함수로
+    레거시 components 와 동치인 표현을 파생한다. locked·editable 슬롯 아이템 모두 포함하며,
+    slot 의 editable 여부에 따라 렌더(참조 골격 vs seed)와 인스턴스화(복사 대상)가 갈린다.
+    """
+    out = []
+    for it in layout or []:
+        if not isinstance(it, dict):
+            continue
+        pos = it.get("position") or {}
+        base = pos.get("base") or {}
+        ref = (it.get("source") or {}).get("ref", "")
+        meta = it.get("meta") or {}
+        out.append({
+            "ref": ref,
+            "slot": pos.get("slot"),
+            "order": base.get("row", pos.get("order", 999)),
+            "props": it.get("props") or {},
+            "note": meta.get("label") or it.get("note"),
+        })
+    return out
+
+
 def normalize_canvas(dp: dict) -> dict:
-    """DP doc → {grid, breakpoints, slots:[{id,editable,grid_columns,overflow,locks}], components}."""
+    """DP doc → {grid, breakpoints, slots:[{id,editable,grid_columns,overflow,locks}], components}.
+
+    components 출처 우선순위: 레거시 `components:` → 없으면 v2 `layout:`(스키마 통일)에서 파생.
+    """
     canvas = dp.get("canvas")
     slots_raw = dp.get("slots") or []
     components = dp.get("components") or []
+    if not components and dp.get("layout"):
+        components = components_from_layout(dp.get("layout"))
     is_new = bool(canvas) and slots_raw and isinstance(slots_raw[0], dict)
 
     if is_new:
@@ -521,9 +551,18 @@ def render_designpage(dp: dict, timestamp: str = "") -> str:
                                             c.get("note") or c.get("ref", ""), indent=3))
         else:
             editable_slots.append(sid)
-            locks = ", ".join(slot.get("locks", [])) or "any (canvas)"
-            body.append(f'      <div class="canvas-hint">빈 캔버스 — '
-                        f'grid_columns={slot.get("grid_columns")} 허용: {_esc(locks)}</div>')
+            # v2 DP: editable 슬롯에 seed 컴포넌트(인스턴스화 시 SCR로 복사될 시작 디자인)가
+            # 있으면 실제 컴포넌트로 렌더 → DP 미리보기와 첫 화면 렌더가 동일해진다(요구사항).
+            # seed 가 없으면(빈 캔버스) 기존 그리드 오버레이 힌트를 표시한다.
+            seeds = comps_by_slot.get(sid, [])
+            if seeds:
+                for c in seeds:
+                    body.extend(_component_html(c.get("ref", ""), c.get("props") or {},
+                                                None, c.get("note") or c.get("ref", ""), indent=3))
+            else:
+                locks = ", ".join(slot.get("locks", [])) or "any (canvas)"
+                body.append(f'      <div class="canvas-hint">빈 캔버스 — '
+                            f'grid_columns={slot.get("grid_columns")} 허용: {_esc(locks)}</div>')
         body.append(f"    </{tag}>")
     body.append("  </div>")
 

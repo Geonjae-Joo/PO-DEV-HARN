@@ -5,7 +5,7 @@ description: >
   worked examples 로 정규화한다. speckit.plan 중, 복잡 BL 노트가 있을 때 호출.
   자연어 규칙을 구현 가능한 결정론적 구조로 바꾸는 것이 목적이며 코드는 작성하지 않는다.
 tools: Read, Write, Edit
-layer: 03-AI-WEB-DEV
+layer: ③ AI-WEB-DEV
 phase: Phase β (speckit.plan)
 version: 1.0.0
 ---

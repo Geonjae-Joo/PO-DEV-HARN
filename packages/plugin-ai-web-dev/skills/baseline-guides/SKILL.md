@@ -9,7 +9,7 @@ description: >
   "baseline 가이드", "모드 A", "권한 조건부 렌더 패턴", "감사 로그 삽입 패턴"을 다룰 때 사용.
 when_to_use: Phase 0에서 mode:A 기능 가이드 작성 시, Phase β에서 공통 기능 패턴을 도메인 코드에 적용 시.
 allowed-tools: Read Write Edit
-layer: 03-AI-WEB-DEV
+layer: ③ AI-WEB-DEV
 phase: [Phase 0, Phase β]
 delivery-mode: A
 runtime-location: app_repo/.claude/skills/baseline-guides/<feature>/SKILL.md

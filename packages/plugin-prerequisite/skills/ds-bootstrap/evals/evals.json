@@ -1,0 +1,146 @@
+{
+  "skill_name": "ds-bootstrap",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Ant Design Vue 써서 calculator 프로젝트 ds-source 구성해줘. projects/calculator/foundation/design-system/ds-source 에 설치해야 해.",
+      "expected_output": "웹서치 후 Ant Design Vue 설치. src/tokens.css (Ant Design 기본 primary #1677FF 기반 CSS 변수 30개+), src/plugins/antd.js (컴포넌트 defaults), ds-allowlist.md (25개+ 컴포넌트). main.js·App.vue·index.html 없음.",
+      "assertions": [
+        {
+          "id": "tokens_css_exists",
+          "description": "src/tokens.css 파일 생성됨",
+          "type": "file_exists",
+          "path": "src/tokens.css"
+        },
+        {
+          "id": "tokens_css_has_30_vars",
+          "description": "tokens.css CSS 변수 30개 이상",
+          "type": "file_content_regex_count",
+          "path": "src/tokens.css",
+          "pattern": "--[a-zA-Z0-9-]+\\s*:",
+          "min_count": 30
+        },
+        {
+          "id": "tokens_uses_antd_brand_color",
+          "description": "Ant Design 기본 primary 컬러(#1677FF) 사용",
+          "type": "file_content_contains",
+          "path": "src/tokens.css",
+          "expected": "#1677FF"
+        },
+        {
+          "id": "plugin_file_exists",
+          "description": "src/plugins/ 아래 DS 설정 파일 존재",
+          "type": "glob_exists",
+          "pattern": "src/plugins/*.js"
+        },
+        {
+          "id": "allowlist_exists",
+          "description": "ds-allowlist.md 생성됨",
+          "type": "file_exists",
+          "path": "../ds-allowlist.md"
+        },
+        {
+          "id": "allowlist_has_25_components",
+          "description": "ds-allowlist.md 컴포넌트 25개 이상",
+          "type": "file_content_regex_count",
+          "path": "../ds-allowlist.md",
+          "pattern": "^## \\w+",
+          "min_count": 25
+        },
+        {
+          "id": "no_boilerplate",
+          "description": "앱 보일러플레이트(main.js) 없음",
+          "type": "file_not_exists",
+          "path": "src/main.js"
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Bootstrap Vue 3 설치해서 ds-source 만들어줘.",
+      "expected_output": "Bootstrap Vue 3 웹서치 후 설치. Bootstrap 기본 컬러(#0d6efd) 기반 tokens.css, 컴포넌트 defaults, ds-allowlist.md. 앱 파일 없음.",
+      "assertions": [
+        {
+          "id": "tokens_css_has_30_vars",
+          "description": "tokens.css CSS 변수 30개 이상",
+          "type": "file_content_regex_count",
+          "path": "src/tokens.css",
+          "pattern": "--[a-zA-Z0-9-]+\\s*:",
+          "min_count": 30
+        },
+        {
+          "id": "tokens_uses_bootstrap_brand_color",
+          "description": "Bootstrap 기본 primary 컬러(#0d6efd) 사용",
+          "type": "file_content_contains",
+          "path": "src/tokens.css",
+          "expected": "#0d6efd"
+        },
+        {
+          "id": "allowlist_has_25_components",
+          "description": "ds-allowlist.md 컴포넌트 25개 이상",
+          "type": "file_content_regex_count",
+          "path": "../ds-allowlist.md",
+          "pattern": "^## \\w+",
+          "min_count": 25
+        },
+        {
+          "id": "allowlist_headings_valid",
+          "description": "ds-allowlist.md 헤딩이 파서 정규식 \\w+ 통과 (공백·하이픈 없음)",
+          "type": "file_content_no_regex",
+          "path": "../ds-allowlist.md",
+          "forbidden_pattern": "^## .*[- ].*\\n"
+        },
+        {
+          "id": "no_boilerplate",
+          "description": "index.html 없음",
+          "type": "file_not_exists",
+          "path": "index.html"
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "PrimeVue 4 로 디자인 시스템 설치해줘. ds-source 경로는 projects/calculator/foundation/design-system/ds-source.",
+      "expected_output": "PrimeVue 4 설치. PrimeVue 기본 브랜드 컬러 기반 tokens.css. Tailwind 기반인 경우 CSS-first 방식 처리. ds-allowlist.md 25개+.",
+      "assertions": [
+        {
+          "id": "tokens_css_exists",
+          "description": "src/tokens.css 파일 생성됨",
+          "type": "file_exists",
+          "path": "src/tokens.css"
+        },
+        {
+          "id": "tokens_css_has_30_vars",
+          "description": "tokens.css CSS 변수 30개 이상",
+          "type": "file_content_regex_count",
+          "path": "src/tokens.css",
+          "pattern": "--[a-zA-Z0-9-]+\\s*:",
+          "min_count": 30
+        },
+        {
+          "id": "allowlist_has_25_components",
+          "description": "ds-allowlist.md 컴포넌트 25개 이상",
+          "type": "file_content_regex_count",
+          "path": "../ds-allowlist.md",
+          "pattern": "^## \\w+",
+          "min_count": 25
+        },
+        {
+          "id": "no_main_js",
+          "description": "main.js 없음",
+          "type": "file_not_exists",
+          "path": "src/main.js"
+        },
+        {
+          "id": "no_app_vue",
+          "description": "App.vue 없음",
+          "type": "file_not_exists",
+          "path": "src/App.vue"
+        }
+      ],
+      "files": []
+    }
+  ]
+}

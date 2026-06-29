@@ -8,7 +8,7 @@ description: >
   "패키지 구조", "네이밍", "예외 처리"를 언급할 때 사용.
 when_to_use: backend·frontend 코드 작성/리뷰, 패키지 구조·네이밍·예외 처리 결정 시.
 allowed-tools: Read Write Edit
-layer: 03-AI-WEB-DEV
+layer: ③ AI-WEB-DEV
 phase: [Phase 0, Phase β, Phase γ]
 version: 1.0.0
 owner: 개발자 (VSCode + Claude Code)

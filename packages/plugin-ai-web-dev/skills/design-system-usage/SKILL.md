@@ -8,7 +8,7 @@ description: >
   wiring에서 DS 컴포넌트를 다루거나 "DS 컴포넌트", "design token", "shell 생성"을 언급할 때 사용.
 when_to_use: DS 컴포넌트를 프론트엔드 코드로 구현, design token 적용, shell/페이지 컴포넌트 생성 시.
 allowed-tools: Read Write Edit
-layer: 03-AI-WEB-DEV
+layer: ③ AI-WEB-DEV
 phase: [Phase α, Phase β]
 version: 1.0.0
 owner: 개발자 (VSCode + Claude Code)

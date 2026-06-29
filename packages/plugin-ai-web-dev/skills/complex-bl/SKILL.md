@@ -7,7 +7,7 @@ description: >
   "state machine", "bl-analyst 산출물"을 다룰 때 사용.
 when_to_use: complexity:high BL 구현, decision table·state machine 코드화, bl-analyst 산출물 적용 시.
 allowed-tools: Read Write Edit
-layer: 03-AI-WEB-DEV
+layer: ③ AI-WEB-DEV
 phase: [Phase β]
 version: 1.0.0
 owner: 개발자 (VSCode + Claude Code)

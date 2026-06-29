@@ -44,6 +44,10 @@ DESIGN_GUIDE_PATH = _ROOT / "foundation/design-system/ds-allowlist.md"
 DESIGN_PAGES_DIR = _ROOT / "foundation/design-pages"
 DP_ID_PATTERN = re.compile(r"^DP-[A-Z0-9]+(-[A-Z0-9]+)*$")
 
+# ── screen-model-schema-v2 §7 정합 (harness-core/rules 단일 출처, ADR-001 D2-a) ──
+SOURCE_KINDS      = {"ds", "page-region"}            # layout[].source.kind 허용값
+COLSPAN_SHORTHAND = {"full", "half", "third", "quarter"}
+
 ERRORS = []
 WARNINGS = []
 
@@ -125,6 +129,95 @@ def lint_slots_model(name: str, slots: list, allowed: set) -> None:
                 ERRORS.append(f"[{name}] slots[{i}].grid_columns: 양의 정수여야 합니다 (값: {s.get('grid_columns')!r}).")
 
 
+def _slot_id_set(slots: list) -> set:
+    """slots(신규 dict 모델/레거시 문자열) → 슬롯 id 집합."""
+    out = set()
+    for s in (slots or []):
+        if isinstance(s, dict) and s.get("id"):
+            out.add(s["id"])
+        elif isinstance(s, str):
+            out.add(s)
+    return out
+
+
+def _check_col_span(name: str, i: int, where: str, gp: dict) -> None:
+    """좌표 dict(base 또는 at.<bp>)의 col_span을 §7 규칙으로 검사한다.
+    허용: 양의 정수 또는 shorthand(full/half/third/quarter).
+    금지(error): 픽셀·단위 문자열("320px" 등), auto 흐름값, 기타 문자열/타입.
+    """
+    if not isinstance(gp, dict):
+        return
+    if "col_span" not in gp:
+        return
+    sp = gp.get("col_span")
+    if isinstance(sp, bool):  # bool은 int의 하위형 — 명시적으로 거부
+        ERRORS.append(f"[{name}] layout[{i}]: position.{where}.col_span 타입 오류 ({sp!r}). 정수 또는 {sorted(COLSPAN_SHORTHAND)} 사용")
+    elif isinstance(sp, int):
+        if sp <= 0:
+            ERRORS.append(f"[{name}] layout[{i}]: position.{where}.col_span은 양의 정수여야 합니다 (값: {sp!r}).")
+    elif isinstance(sp, str):
+        if sp not in COLSPAN_SHORTHAND:
+            ERRORS.append(
+                f"[{name}] layout[{i}]: position.{where}.col_span 픽셀/단위 좌표·auto 금지 ({sp!r}). "
+                f"정수 또는 {sorted(COLSPAN_SHORTHAND)} 사용"
+            )
+    else:
+        ERRORS.append(f"[{name}] layout[{i}]: position.{where}.col_span 타입 오류 ({sp!r}). 정수 또는 shorthand 사용")
+
+
+def lint_layout_v2(name: str, layout: list, slot_ids: set, allowed: set) -> None:
+    """v2 DP `layout`(screen-model-schema-v2 §7 형태) 검증 — 스키마 통일 산출물.
+
+    각 아이템: source.ref/kind(DS 폐쇄·종류)·position.slot(선언된 슬롯에 존재)·
+    position.base(좌표 정규형)·col_span(픽셀 금지)을 §7 규칙으로 확인한다.
+    (DS 폐쇄 자체는 §3 공통 루프도 잡지만, 여기서는 슬롯 참조·구조를 함께 본다.)
+    """
+    if not isinstance(layout, list):
+        ERRORS.append(f"[{name}] layout: 리스트여야 합니다.")
+        return
+    for i, it in enumerate(layout):
+        if not isinstance(it, dict):
+            ERRORS.append(f"[{name}] layout[{i}]: dict 타입이어야 합니다.")
+            continue
+        if not it.get("id"):
+            WARNINGS.append(f"[{name}] layout[{i}]: 'id' 권장 (예: DPC-{name.split('.')[0]}.header).")
+        src = it.get("source") or {}
+        ref = src.get("ref")
+        if not ref:
+            ERRORS.append(f"[{name}] layout[{i}]: source.ref 없음 — DS 컴포넌트 ref가 필요합니다.")
+        # §7: source.kind ∈ {ds, page-region}. 없으면 권장 경고(하위호환), 있으면 enum 강제.
+        kind = src.get("kind")
+        if kind is None:
+            WARNINGS.append(f"[{name}] layout[{i}]: source.kind 없음 — 'ds' 권장 (허용: {sorted(SOURCE_KINDS)}).")
+        elif kind not in SOURCE_KINDS:
+            ERRORS.append(
+                f"[{name}] layout[{i}]: source.kind는 'ds' 또는 'page-region'이어야 합니다 (값: {kind!r})."
+            )
+        pos = it.get("position") or {}
+        slot = pos.get("slot")
+        if not slot:
+            ERRORS.append(f"[{name}] layout[{i}]: position.slot 없음.")
+        elif slot_ids and slot not in slot_ids:
+            ERRORS.append(
+                f"[{name}] layout[{i}]: position.slot '{slot}'이 선언된 slots에 없습니다. "
+                f"선언: {sorted(slot_ids)}"
+            )
+        # §7: position.base 정규형 권장(없으면 레거시 {slot, order} — warn). 있으면 col_span 픽셀 금지.
+        base = pos.get("base")
+        if base is None:
+            if "order" not in pos:
+                WARNINGS.append(
+                    f"[{name}] layout[{i}]: position.base 없음 — base:{{col_start,col_span,row}} 정규형 권장 "
+                    f"(레거시 {{slot, order}}는 허용)."
+                )
+        else:
+            _check_col_span(name, i, "base", base)
+            at = pos.get("at")
+            if isinstance(at, dict):
+                for bp, gp in at.items():
+                    _check_col_span(name, i, f"at.{bp}", gp)
+
+
 def lint_page(page_path: Path, allowed: set[str]) -> None:
     try:
         data = yaml.safe_load(page_path.read_text(encoding="utf-8"))
@@ -143,6 +236,7 @@ def lint_page(page_path: Path, allowed: set[str]) -> None:
     slots = data.get("slots", [])
     if not slots:
         WARNINGS.append(f"[{page_path.name}] 'slots' 정의 없음. 슬롯 목록을 명시하세요.")
+    slot_ids = _slot_id_set(slots)
 
     # 2b. 신규 캔버스 모델 검증 (있을 때만 — 레거시 평면 slots는 통과)
     if "canvas" in data:
@@ -150,7 +244,11 @@ def lint_page(page_path: Path, allowed: set[str]) -> None:
     if isinstance(slots, list) and any(isinstance(s, dict) for s in slots):
         lint_slots_model(page_path.name, slots, allowed)
 
-    # 3. 컴포넌트 DS 폐쇄 검증
+    # 2c. v2 layout(스키마 통일) 검증 — 있을 때만. 슬롯 참조·source.ref 구조 확인.
+    if "layout" in data:
+        lint_layout_v2(page_path.name, data.get("layout"), slot_ids, allowed)
+
+    # 3. 컴포넌트 DS 폐쇄 검증 (레거시 components 또는 v2 layout 공통)
     components = data.get("components", []) or data.get("layout", [])
     for cmp in components:
         ref = cmp.get("ref") or cmp.get("source", {}).get("ref", "")

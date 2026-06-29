@@ -4,7 +4,7 @@ description: >
   팩 구현 완료 후, 또는 Phase γ에서 코드 전체를 검토한다. DS 준수·보안·코딩 스타일·
   TDD 충족·스파인 ID·Change Order blast radius 를 점검한다. 통과/수정요청 판정을 낸다.
 tools: Read, Grep, Glob, Bash
-layer: 03-AI-WEB-DEV
+layer: ③ AI-WEB-DEV
 phase: [Phase β, Phase γ]
 version: 1.0.0
 ---

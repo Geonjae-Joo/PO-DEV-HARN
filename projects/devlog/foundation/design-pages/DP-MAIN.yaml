@@ -1,0 +1,56 @@
+schema_version: 2
+id: DP-MAIN
+version: 1
+archetype: main
+description: DevLog 전체 페이지 공통 골격 — 헤더(고정)·콘텐츠 캔버스(편집)·구분선 풋터(고정)
+
+canvas:
+  grid:
+    columns: 12
+    gap: space-4
+    max_width: 1440
+  breakpoints:
+    - { name: lg, min: 1280, columns: 12 }
+    - { name: md, min: 768,  columns: 8 }
+    - { name: sm, min: 0,    columns: 4 }
+
+slots:
+  - id: header
+    editable: false
+    locks: [Header]
+  - id: content
+    editable: true
+    grid_columns: 12
+    overflow: scroll-y
+  - id: footer
+    editable: false
+    locks: [Separator]
+
+layout:
+  - id: DPC-MAIN.header
+    source: { kind: ds, ref: Header }
+    position:
+      slot: header
+      base: { col_start: 1, col_span: 12, row: 1 }
+    meta: { label: 앱 공통 헤더 }
+
+  - id: DPC-MAIN.filterbar
+    source: { kind: ds, ref: FilterBar }
+    position:
+      slot: content
+      base: { col_start: 1, col_span: 12, row: 1 }
+    meta: { label: 목록 필터 바 }
+
+  - id: DPC-MAIN.content-card
+    source: { kind: ds, ref: Card }
+    position:
+      slot: content
+      base: { col_start: 1, col_span: 12, row: 2 }
+    meta: { label: 콘텐츠 카드 영역 }
+
+  - id: DPC-MAIN.footer-sep
+    source: { kind: ds, ref: Separator }
+    position:
+      slot: footer
+      base: { col_start: 1, col_span: 12, row: 1 }
+    meta: { label: 페이지 하단 구분선 }

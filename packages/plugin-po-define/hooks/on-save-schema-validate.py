@@ -236,9 +236,10 @@ def validate_actions(actions: list, layout: list, path: str):
     ids_seen = set()
     for i, action in enumerate(actions):
         loc = f"{path}.actions[{i}]"
-        for field in ("id", "component", "trigger", "behavior", "outcome", "permission"):
+        for field in ("id", "component", "trigger", "behavior", "outcome"):
             if field not in action:
                 err(f"{loc}: 필수 필드 '{field}' 없음")
+        # permission 은 선택 — 없으면 'all'(제한 없음). 스키마 문서·sufficiency-check(기본 all)와 정합.
         if "id" in action:
             req_id = str(action["id"])
             if not REQ_RE.match(req_id):

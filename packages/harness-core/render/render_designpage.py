@@ -20,6 +20,15 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import engine  # noqa: E402
+import ds_assets as ds_assets_mod  # noqa: E402
+
+
+def find_project_root(dp_path: Path) -> Path | None:
+    """DP 파일에서 상위로 올라가며 foundation/design-system 을 가진 프로젝트 루트 탐색."""
+    for parent in dp_path.parents:
+        if (parent / "foundation" / "design-system").exists():
+            return parent
+    return None
 
 for _stream in (sys.stdout, sys.stderr):
     try:
@@ -35,7 +44,8 @@ def render_one(dp_path: Path) -> int:
     dp = yaml.safe_load(dp_path.read_text(encoding="utf-8")) or {}
     dp_id = dp.get("id", dp_path.stem)
     ts = datetime.now(timezone.utc).isoformat()
-    html = engine.render_designpage(dp, timestamp=ts)
+    assets = ds_assets_mod.load_ds_assets(find_project_root(dp_path))
+    html = engine.render_designpage(dp, timestamp=ts, ds_assets=assets)
 
     out_dir = dp_path.parent / "renders"
     out_dir.mkdir(parents=True, exist_ok=True)

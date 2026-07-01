@@ -1,9 +1,10 @@
 # ADR-002 — Screen Model의 결정론적·반응형 렌더링, DS 카탈로그, Design Page 인스턴스화
 
-- 상태: **채택** (2026-06-21, rev.5) — 전 결정(D1~D7·§6) 구현 완료. **골든 PNG는 결정 4에 따라 의도적 미도입**, **챗봇 카탈로그 패널은 ② 챗봇 앱 빌드(ADR-001 후속)에 의존**해 보류.
+- 상태: **채택** (2026-06-30, rev.6) — D8 **시각 충실도 레이어**(실제 DS 렌더) 추가. 전 결정(D1~D8·§6) 구현. **골든 PNG는 결정 4에 따라 의도적 미도입**, **챗봇 카탈로그 패널은 ② 챗봇 앱 빌드(ADR-001 후속)에 의존**해 보류.
 - 관련: `docs/ADR-001-3runtime-architecture.md`, `packages/harness-core/rules/screen-model-schema-v2.md`(R1 이후 단일 출처), `packages/plugin-po-define/rules/state-machine.md`, `packages/plugin-po-define/skills/layout-recommend/SKILL.md`, `packages/plugin-prerequisite/skills/design-page-builder/SKILL.md`, `packages/harness-core/rules/spine-ids.md`, `packages/plugin-po-define/skills/spec-generator/spec-pack-schema.md`
 - 한 줄 요약: screen model(YAML)을 **순수 Python 엔진**으로 HTML 렌더해 위치를 결정론적으로 확정하되 **여러 창 크기에서 동작하는 반응형**을 유지한다. ① design page·DS 자산을 같은 엔진으로 렌더해 **DS 카탈로그(대시보드)** 를 만들고, ② PO는 이를 보며 AI에게 디자인을 지시한다. PO가 design page를 고르면 그 **screen model을 인스턴스화(복사)** 해 새 화면(이름·SCR- ID)을 시작하며, DP의 고정 구성은 잠기고 **빈 캔버스 안에서만, 경계를 넘지 않게** 작업한다.
 
+> rev.6 변경(채택): **D8 시각 충실도 레이어** 추가 — 렌더 엔진이 프로젝트별 정적 자산 두 개(`ds-compiled.css`·`ds-fixtures.json`)를 읽어 **실제 DS 모양**으로 렌더(기존엔 라벨박스 와이어프레임뿐이라 디자인이 비어 보였음). 자산은 ① 준비단계(`build_ds_assets.mjs`, ds-bootstrap Phase 9)에서 **1회 컴파일·커밋**하고 엔진은 정적 파일만 읽으므로 결정성·프레임워크 무관 유지. **`layout_hash` 무영향**(좌표·구조 전용), `render_hash`만 재기준. 상세 §12.
 > rev.5 변경: 남은 결정 전부 구현 — D4 DS 카탈로그(`render_catalog.py`, DS-불가지론 토큰 추출), D5 해시 핀 배선(② spec-generator 계산·기록 + ③ Phase α 해시 가드), D6 렌더 환경 동결(token-only 치수·행/텍스트 최소 높이·시스템 폰트 스택), §9 미결정(컴포넌트 상태 필드 형식) 확정. 상세 §11.
 > rev.4 변경(채택): 키스톤 구현 완료(§10 구현 메모 참조). `from_template` 강제 수준을 §6.4에서 **권장(warn)** 으로 조정(레거시 화면 하위호환; 인스턴스화 산출엔 항상 포함). D4 카탈로그·골든PNG는 후속으로 명시 분리.
 > rev.3 변경: (A) 미해결 항목을 **결정된 기본값**으로 확정(§7), (B) **Design Page 인스턴스화(DP→SCR 복사) 시나리오**를 정식화하고 현재 구조의 갭을 메움(§6), (C) 캔버스 봉쇄를 "세로 스크롤 허용" 모델로 정리(D3), (D) 이해 어려웠던 용어(골든 PNG·sugar)를 쉬운 말로 풀어 결정에 포함(§7).
@@ -36,9 +37,11 @@ packages/harness-core/render/
   render_designpage.py # DP-*.yaml  → design-pages/renders/DP-*.html    (①)
   render_catalog.py    # tokens+ds-allowlist+component meta → catalog/  (①)
   instantiate_screen.py# DP-* + 이름 → 새 SCR-*.yaml (초기 골격)         (②)  ← 신규(P5)
+  ds_assets.py         # ds-compiled.css·ds-fixtures.json 로더 (D8 시각 충실도)  ← 신규(rev.6)
+  build_ds_assets.mjs  # ds-source → 두 자산 1회 컴파일 (①, Node)        ← 신규(rev.6)
 ```
 
-계약: **같은 입력 → 바이트 동일 HTML**(키 정렬·고정 들여쓰기·timestamp는 해시 제외·인라인 스타일 금지·외부 CDN/폰트 금지·token 컴파일 CSS 인라인). 결정성 CI 가드 `render×2 → diff 0`. `harness-core`에 둬 ①②③이 동일 엔진 공유(ADR-001 단일 출처).
+계약: **같은 입력 → 바이트 동일 HTML**(키 정렬·고정 들여쓰기·timestamp는 해시 제외·인라인 스타일 금지·외부 CDN/폰트 금지·token 컴파일 CSS 인라인). 결정성 CI 가드 `render×2 → diff 0`. `harness-core`에 둬 ①②③이 동일 엔진 공유(ADR-001 단일 출처). **엔진은 순수 Python**으로 Vue/React/Tailwind를 런타임에 import하지 않는다 — 실제 DS 모양은 D8의 정적 자산(`ds_assets`)에서 읽는다(자산이 없으면 라벨박스 와이어프레임으로 폴백, 바이트 동일).
 
 ### D2. 위치 모델: 절대 픽셀 금지, 반응형 그리드 + 정수 좌표 (P1·P3)
 
@@ -121,6 +124,23 @@ token-only 치수(magic number 금지), 웹폰트 repo 번들 + `@font-face` 임
 - **①**: `render_designpage.py`로 DP 렌더(locked=실제 컴포넌트, editable=그리드 오버레이+슬롯명+경계 점선). `render_catalog.py`로 DS 카탈로그.
 - **②**: PO가 DP 선택 → **인스턴스화**(§6) → DP 렌더를 바탕으로 깔고 editable 캔버스에만 작업. 저장 시 `on-save-schema-validate → lint L1~L5` 통과 후 `render_screen.py` 자동 실행. `--watch`로 모든 브레이크포인트 실시간 갱신. DS 카탈로그 패널 상시.
 
+### D8. 시각 충실도 레이어 — 실제 DS 모양으로 렌더 (rev.6, P2 보강)
+
+**문제.** rev.5까지 엔진은 컴포넌트를 제네릭 태그+라벨 텍스트(`<div data-ref="Header">앱 헤더</div>`)로만 그렸다. 위치 계약엔 충분하지만 **디자인이 비어 보여**(회색 박스), PO가 DP/카탈로그에서 실제 모양을 볼 수 없었다. 원인은 DS·스키마·프롬프트가 아니라 **렌더 엔진이 DS의 실제 마크업·CSS를 안 읽는다**는 것뿐이었다(DS 컴포넌트는 이미 완성돼 있음).
+
+**결정.** 엔진은 **범용으로 유지**하되, 실제 DS 모양은 **프로젝트 시작 시 그 DS 툴체인이 1회 생성한 정적 자산 두 개**를 읽어 채운다. 양자택일이 아니라 층 분리다.
+
+- `foundation/design-system/ds-compiled.css` — DS의 실제 CSS(토큰 + 컴파일된 유틸리티). class 문자열만으론 죽은 글자이므로 **반드시 컴파일된 CSS가 필요**하다(Tailwind v4 JIT).
+- `foundation/design-system/ds-fixtures.json` — `ref → 기본상태 정적 마크업`(컴포넌트별 1개). 엔진이 fixture가 있으면 그 마크업을 끼우고(`data-ref`/`data-cmp` 주입·`{label}` 치환), 없으면 기존 와이어프레임으로 폴백.
+
+**생성.** `build_ds_assets.mjs`(① 준비단계, ds-bootstrap Phase 9)가 `ds-source`에서 두 자산을 만든다 — CSS는 Tailwind 컴파일(비-Tailwind DS는 raw CSS 병합 폴백), fixtures는 Vue SSR(`@vue/server-renderer`). **컴파일은 렌더 시점이 아니라 여기서 1회** 하고 결과를 커밋한다 — 그래야 엔진이 정적 파일만 읽어 `render_hash`가 안정적이다. 프레임워크 특화 작업은 이 1회 빌드에 격리되고, 엔진/로더(`ds_assets.py`)는 프레임워크 중립이다(React DS는 같은 두 파일을 자기 툴체인으로 내면 동일 동작 — 현재 생성기는 Vue SSR 지원, React SSR은 후속).
+
+**결정성 계약과의 정합(중요).**
+- **`layout_hash` 무영향** — 좌표·구조만 해싱하므로 시각 자산과 독립. 디자인이 바뀌어도 위치 계약은 안 깨진다(③ Phase α `layout-hash-guard` 그대로 통과). *자산 해시는 layout_hash에 포함되지 않는다.*
+- **`render_hash` 재기준** — HTML 바이트가 바뀌므로 한 번 새 값으로 고정된다. `layout-hash-guard`에서 render_hash 불일치는 warn(비차단). `spec-pack-guard --verify`는 차단하므로 자산 변경 시 `--write-pins`로 재핀.
+- **"inline style 금지" 위배 아님** — 컴파일된 CSS는 `<style>` 블록에 inline(=`style=` 속성 아님), 외부 CDN/폰트 없음.
+- **D6 token-only 완화(문서화된 예외)** — 실제 DS CSS엔 `space-*` 외 값이 들어온다. 시각 충실도 레이어는 token-only 제약의 명시적 예외이며, 결정성은 *커밋된 자산*으로 보장한다(렌더 시 재컴파일 금지).
+
 ---
 
 ## 3. (불변) 결정론의 범위
@@ -133,6 +153,7 @@ token-only 치수(magic number 금지), 웹폰트 repo 번들 + `@font-face` 임
 | 캔버스 경계 준수 | 완전(강제) | lint L5 canvas-bounds |
 | 절대 px 폭/높이 | 구간 내 가변(의도) | fluid 그리드 — 비율 고정, px는 창 폭 함수 |
 | 텍스트 줄바꿈 높이 | 조건부 | 폰트 동결 + 명시 높이/scroll 격리 |
+| 시각 충실도(실제 DS 모양) | 완전(커밋된 자산) | D8: ds-compiled.css + ds-fixtures.json을 1회 컴파일·커밋 → 엔진은 읽기만 |
 | OS별 서브픽셀 폰트 | 불가(원천) | §7 결정 4 참조 |
 
 핵심: **레이아웃 계약(구조+상대 좌표+브레이크포인트 배치+캔버스 경계)** 은 100% 동결 가능. 절대 px는 의도적으로 창 폭의 함수(반응형).
@@ -246,13 +267,13 @@ token-only 치수(magic number 금지), 웹폰트 repo 번들 + `@font-face` 임
 - 스킬 — `layout-recommend/SKILL.md`(인스턴스화 0단계·엔진 위임 렌더), `design-page-builder/SKILL.md`(캔버스 모델 산출·DP 렌더).
 - 데이터(example만) — `DP-MAIN`·`DP-POPUP`을 캔버스 모델로 업그레이드, `SCR-PRODUCT-LIST`를 인스턴스화로 생성(반응형 레이아웃 시연), 렌더 산출·link-manifest DP→SCR 엣지.
 
-**하위호환(불변 원칙)**: 레거시 포맷(평면 `slots`, `position: {slot, order}`)은 전부 계속 파싱·렌더·통과. **`projects/todo`(confirmed)는 데이터·DP 무수정**(L1~L5·schema·dp-lint 회귀 0 확인). 신규/canvas 필드는 존재할 때만 검증.
+**하위호환(불변 원칙)**: 레거시 포맷(평면 `slots`, `position: {slot, order}`)은 전부 계속 파싱·렌더·통과. 신규/canvas 필드는 존재할 때만 검증. (rev.6 기준 현행 프로젝트: `projects/devlog`(Vue, D8 채택)·`projects/example`(React, 자산 미생성 → 와이어프레임 유지). 과거 `projects/todo`는 삭제됨.)
 
 **결정성 검증(실측)**: example 3개 화면 `render_screen.py --check` 통과(타임스탬프 무관 render_hash 동일). L5 음성 테스트로 가로 초과(col_start+col_span-1 > grid_columns)·locked 슬롯 침입 차단 확인.
 
 **자동 강등 구현 정밀화**: ADR 결정 2(자동 강등)는 "오버라이드 없는 항목을 순서대로 세로 스택"이다. 구현은 브레이크포인트마다 2-pass로 처리한다 — (1)명시 좌표(base/at)가 점유한 행을 수집, (2)자동 강등 항목을 **점유 행을 건너뛰며 연속 스택**한다. 순수 자동(오버라이드 0)이면 1,2,3… 연속이 되어 결정 2와 일치하고, 명시·자동이 섞여도 **겹침 0**을 보장한다(명시 항목이 자신의 행을 차지하고 자동 항목이 그 사이를 메운다).
 
-**레거시 confirmed 화면의 렌더 핀(주의)**: `projects/todo`처럼 **신규 엔진 이전에 생성된 confirmed 화면의 커밋된 `*.render.html`은 구 생성기 산출물**이라 신규 엔진의 `render_hash`와 일치하지 않을 수 있다(정상). todo는 데이터·DP·커밋된 렌더 모두 무수정으로 보존되며, 신규 엔진을 그 위에 재실행하지 않는다(D5 핀의 재현 검증은 신규/재인스턴스화 화면부터 적용). 또한 todo SCR은 `props`/`meta.label`/`props.columns`가 없는 레거시 데이터라 신규 엔진으로 렌더 시 라벨이 ref명으로 폴백된다 — 엔진 회귀가 아니라 레거시 데이터 한계이며, 재핀이 필요하면 인스턴스화·재작성 시 자연 해소된다.
+**레거시 confirmed 화면의 렌더 핀(주의)**: 신규 엔진(또는 D8 자산 도입) 이전에 생성된 confirmed 화면의 커밋된 `*.render.html`은 구 생성기 산출물이라 신규 엔진의 `render_hash`와 일치하지 않을 수 있다(정상). 그런 화면은 무수정 보존하고 신규 엔진을 그 위에 재실행하지 않으며, D5 핀 재현 검증은 신규/재인스턴스화 화면부터 적용한다. (과거 이 단락의 예시였던 `projects/todo`는 삭제됨. D8 도입으로 `render_hash`가 한 번 재기준되며 `layout_hash`는 불변이므로 위치 핀은 영향받지 않는다.)
 
 ---
 
@@ -268,4 +289,18 @@ token-only 치수(magic number 금지), 웹폰트 repo 번들 + `@font-face` 임
 
 **의도적 미구현.** 골든 PNG(결정 4: layout_hash로 충분, 보류) · 챗봇 카탈로그 읽기전용 패널(② 챗봇 앱 미빌드, ADR-001 후속) · locked re-pin 알림 UX(동일).
 
-**검증(실측).** 카탈로그 `--check` 결정성 OK(색상 10·컴포넌트 29) · ② `--write-pins`→재검증 통과·stale 차단(exit 1) · ③ 가드 layout_hash 일치 통과/불일치 빌드 실패 · ds-closure는 `states` 필드 무영향 · **todo 무수정**.
+**검증(실측).** 카탈로그 `--check` 결정성 OK(색상 10·컴포넌트 29) · ② `--write-pins`→재검증 통과·stale 차단(exit 1) · ③ 가드 layout_hash 일치 통과/불일치 빌드 실패 · ds-closure는 `states` 필드 무영향.
+
+---
+
+## 12. 구현 메모 (rev.6, 2026-06-30 — D8 시각 충실도 레이어)
+
+**신설 자산.**
+- `harness-core/render/build_ds_assets.mjs` — `--root projects/<id>`. `ds-source`에서 ① `ds-compiled.css`(Tailwind 컴파일: tokens.css + 스캔된 class 후보; 비-Tailwind DS는 raw CSS 병합 폴백) ② `ds-fixtures.json`(allowlist 컴포넌트를 Vue SSR로 기본상태 마크업 캡처; `{label}` 자리표시자; 프래그먼트 주석 제거; portal/클라이언트 전용·필수 props 누락 컴포넌트는 스킵). 결정적 출력(키 정렬). 프로젝트 `ds-source/node_modules`에서 toolchain resolve. 선택 `ds-fixtures.recipe.json`으로 컴포넌트별 props/slot/import 오버라이드.
+- `harness-core/render/ds_assets.py` — `load_ds_assets(project_root) → {css, fixtures}`. 파일 없으면 `{css:None, fixtures:{}}`(폴백).
+
+**엔진 변경(하위호환).** `_component_html`이 fixture 있으면 실제 마크업 주입(없으면 기존 TAG_MAP), `_document`가 compiled CSS를 `<style>` 선두에 inline(엔진 레이아웃 CSS가 뒤에서 우선). `render_designpage`/`render_screen`/`render_catalog`에 `ds_assets=None` 옵션 추가 — **None이면 바이트 동일**(기존 골든 불변, 실측 확인). `compute_layout_hash`는 미변경 → layout_hash 안정. 진입점(`render_*.py`)·`pins.py`가 `load_ds_assets`로 자산을 로드해 전달.
+
+**적용 범위.** `projects/devlog`(Vue/shadcn-vue): 자산 생성(fixtures 18/31, 나머지 폴백), DP-MAIN/DP-POPUP 렌더·카탈로그 재생성. `projects/example`(React, toolchain 미완): Vue SSR 불가 → 자산 미생성·와이어프레임 유지(렌더 불변). React fixtures 생성기는 후속(엔진/로더는 이미 프레임워크 중립).
+
+**검증(실측).** devlog DP 렌더 결정성 OK(timestamp만 다른 2회 render_hash 동일) · 자산 없을 때 엔진 출력 기존 골든과 바이트 동일 · 카탈로그 `--check` OK · Header/FilterBar/Card/Button 등 실제 모양 렌더 확인(스크린샷).

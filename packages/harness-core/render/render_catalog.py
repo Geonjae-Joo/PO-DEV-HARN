@@ -19,6 +19,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import engine   # noqa: E402
 import tokens as tokens_mod   # noqa: E402
+import ds_assets as ds_assets_mod   # noqa: E402
 
 for _stream in (sys.stdout, sys.stderr):
     try:
@@ -31,7 +32,8 @@ def build(project_root: Path, timestamp: str = "") -> str:
     toks = tokens_mod.load_tokens(project_root)
     allowlist = project_root / "foundation" / "design-system" / "ds-allowlist.md"
     comps = tokens_mod.load_allowlist_full(allowlist)
-    return engine.render_catalog(toks, comps, timestamp=timestamp)
+    assets = ds_assets_mod.load_ds_assets(project_root)
+    return engine.render_catalog(toks, comps, timestamp=timestamp, ds_assets=assets)
 
 
 def main(argv: list) -> int:

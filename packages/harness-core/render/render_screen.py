@@ -22,6 +22,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import engine  # noqa: E402
+import ds_assets as ds_assets_mod  # noqa: E402
 
 for _stream in (sys.stdout, sys.stderr):
     try:
@@ -60,8 +61,9 @@ def render_one(scr_path: Path, check: bool = False) -> int:
     if not dp:
         print(f"[render-screen] ⚠ DP '{dp_id}' 없음 — 빈 캔버스로 렌더", file=sys.stderr)
 
+    assets = ds_assets_mod.load_ds_assets(project_root)
     ts = datetime.now(timezone.utc).isoformat()
-    html, layout_hash, render_hash = engine.render_screen(scr, dp, timestamp=ts)
+    html, layout_hash, render_hash = engine.render_screen(scr, dp, timestamp=ts, ds_assets=assets)
 
     out_dir = project_root / "model_repo" / "renders"
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -76,7 +78,8 @@ def render_one(scr_path: Path, check: bool = False) -> int:
                       file=sys.stderr)
                 return 1
         # 한 번 더 렌더해 자기 자신과 바이트 동일한지(타임스탬프 제외)
-        html2, _, render_hash2 = engine.render_screen(scr, dp, timestamp="2000-01-01T00:00:00+00:00")
+        html2, _, render_hash2 = engine.render_screen(scr, dp, timestamp="2000-01-01T00:00:00+00:00",
+                                                       ds_assets=assets)
         if render_hash != render_hash2:
             print(f"[render-screen] ❌ {scr_id}: 비결정적 렌더 (동일 입력 2회 해시 불일치)",
                   file=sys.stderr)

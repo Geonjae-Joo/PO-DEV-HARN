@@ -7,6 +7,8 @@
 > 목표: **specify→plan→tasks→implement 를 빠짐없이** 거쳐, 커밋 추적(spine ID)이 끊기지 않게 한다.
 > 시스템 변경(왜 이렇게 고쳤는가)은 `guides/PROPOSAL-speckit-correct-usage.md` 참조.
 
+> ⚠️ **이력 안내(2026-06-30):** 아래 §3 레트로핏 runbook의 예시 프로젝트 `projects/todo`는 **삭제되었다.** 명령은 그대로 유효하되 경로는 현행 프로젝트(`projects/<id>`)로 바꿔 읽는다(현재: `projects/devlog`(Vue)·`projects/example`(React)). 이 runbook은 *레거시 데이터 레트로핏 절차의 일반 예시*로 보존한다 — 신규 프로젝트는 처음부터 정식 흐름을 따르므로 불필요하다.
+
 ---
 
 ## 1. 한눈에 보는 전체 흐름

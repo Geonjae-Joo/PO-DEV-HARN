@@ -1,0 +1,8 @@
+{
+  "env": { "PROJECT_ROOT": "." },
+  "enabledPlugins": {
+    "prerequisite@po-dev-harness": true,
+    "po-define@po-dev-harness": true,
+    "ai-web-dev@po-dev-harness": true
+  }
+}

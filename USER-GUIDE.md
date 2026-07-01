@@ -44,14 +44,15 @@
    - **[경로 A — 수동]** 기존 사내/맞춤 DS가 있을 때. 디자인 시스템(컴포넌트 + `:root` CSS 토큰)을 `foundation/design-system/ds-source/`에 그대로 저장하고(새로 만들지 않음), `foundation/design-system/ds-allowlist.md`에 컴포넌트 목록(이름·props·용도·states)을 손으로 적는다.
    - **[경로 B — 자동, `ds-bootstrap` 스킬]** 오픈소스 DS를 이름으로 도입할 때. *"Vuetify로 ds-source 세팅해줘"* 처럼 DS 이름만 주면 — 웹서치로 설치법·컴포넌트·토큰 API를 조사해 `ds-source/`에 설치하고, `src/tokens.css`(CSS 변수 단일 소스)와 `ds-allowlist.md`(≥25개 컴포넌트)를 자동 생성하며 plugin↔allowlist 일치까지 맞춘다. 실행 앱 파일(main/App/index.html)은 만들지 않는다(참조 라이브러리만).
    - 어느 경로든 `ds-allowlist.md` 저장 시 `ds-guide-validate` 훅이 형식을 검증한다. → 이후 ②의 모든 화면은 이 목록 안에서만 컴포넌트를 쓴다(DS 폐쇄).
+   - **[경로 B 이후] DS 자산 빌드** — `ds-bootstrap`이 Phase 9에서 `node harness-core/render/build_ds_assets.mjs --root projects/<id>`로 `ds-compiled.css`(DS 실제 CSS) + `ds-fixtures.json`(컴포넌트 마크업)을 1회 컴파일·커밋한다(ADR-002 D8). 이 둘이 있어야 카탈로그·DP·화면이 **실제 DS 모양**으로 렌더된다 — 없으면 라벨박스 와이어프레임. 경로 A(수동 DS)도 DS가 Vue/Tailwind면 같은 명령으로 생성한다.
 3. **design page 생성** — `design-page-builder` 스킬로 페이지 템플릿(DP-MAIN, DP-POPUP 등)을 만든다. 각 DP는 **캔버스 모델**(고정 영역 `locked` + 편집 캔버스 `editable` + grid·breakpoints)을 가진다. 스킬이 생성 직후 `design-page-lint`로 DS 폐쇄·캔버스 모델을 검증한다.
-4. **DS 카탈로그 렌더** — 렌더 엔진이 `foundation/design-system/catalog/index.html`을 생성한다(색상 스와치·타이포·컴포넌트 갤러리). **PO가 "이 컴포넌트를 여기에"라고 이름으로 지시하는 근거**가 된다.
+4. **DS 카탈로그 렌더** — 렌더 엔진이 `foundation/design-system/catalog/index.html`을 생성한다(색상 스와치·타이포·컴포넌트 갤러리 — D8 자산이 있으면 **실제 DS 모양**). **PO가 "이 컴포넌트를 여기에"라고 이름으로 지시하는 근거**가 된다.
 5. **결정·명세 확정** —
    - `foundation/decisions/tech-stack.md`(백엔드·프론트엔드 스택) · `ops-stack.md`(형상관리·CI/CD·배포·관측성)
    - `foundation/platform-baseline/SPEC-000.md`(공통 기능: 로그인/SSO/RBAC) · `SPEC-OPS-000.md`(운영) — **명세까지만, 코드는 ③ Phase 0.**
 6. **app_repo 골격 스캐폴드** + `foundation/VERSION` 핀.
 
-✅ **완료 기준(DoD)**: ds-allowlist 존재 / DP 최소 1세트 + 카탈로그 / SPEC-000·OPS 명세 / tech·ops-stack 결정 / VERSION 핀. (상세: [plugin-prerequisite README](packages/plugin-prerequisite/README.md))
+✅ **완료 기준(DoD)**: ds-allowlist 존재 / DS 자산(ds-compiled.css·ds-fixtures.json, D8) 생성 / DP 최소 1세트 + 카탈로그 / SPEC-000·OPS 명세 / tech·ops-stack 결정 / VERSION 핀. (상세: [plugin-prerequisite README](packages/plugin-prerequisite/README.md))
 
 ---
 

@@ -10,7 +10,7 @@ DS 집합 밖의 컴포넌트는 PO가 요청하더라도 layout-recommend skill
 | 단계 | 적용 |
 |---|---|
 | ① design page 생성 | design-page-builder 스킬이 생성 직후 design-page-lint.py를 Bash로 직접 호출(저장 이벤트 훅 아님) |
-| ② screen model 작성 | on-save-lint-L1.py가 저장 시 자동 검증 |
+| ② screen model 작성 | on-save-lint-L1-L4.py가 저장 시 자동 검증 |
 | ③ frontend 구현 | code-reviewer subagent가 PR 단계에서 검증 |
 
 ## PO가 DS 밖 컴포넌트를 요청하는 경우

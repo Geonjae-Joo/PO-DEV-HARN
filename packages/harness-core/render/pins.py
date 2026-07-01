@@ -24,6 +24,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import engine  # noqa: E402
+import ds_assets as ds_assets_mod  # noqa: E402
 
 for _stream in (sys.stdout, sys.stderr):
     try:
@@ -67,11 +68,16 @@ def load_screen_and_dp(scr_path: Path) -> tuple:
 
 
 def compute_pins(scr_path: Path) -> dict:
-    """SCR 경로 → {version, layout_hash, render_hash}. 핀의 단일 출처."""
+    """SCR 경로 → {version, layout_hash, render_hash}. 핀의 단일 출처.
+
+    render_hash 가 실제 렌더(render_screen.py)와 일치하도록 동일 ds_assets 를 로드해 넘긴다.
+    layout_hash 는 ds_assets 와 무관(좌표·구조 전용)이므로 자산 유무와 상관없이 안정적이다.
+    """
     scr, dp = load_screen_and_dp(scr_path)
     version = (scr.get("screen") or {}).get("version")
+    assets = ds_assets_mod.load_ds_assets(find_project_root(scr_path))
     # 고정 타임스탬프로 렌더(타임스탬프는 어차피 render_hash 에서 제외되지만 명시적으로 비움)
-    _, layout_hash, render_hash = engine.render_screen(scr, dp, timestamp="")
+    _, layout_hash, render_hash = engine.render_screen(scr, dp, timestamp="", ds_assets=assets)
     return {"version": version, "layout_hash": layout_hash, "render_hash": render_hash}
 
 

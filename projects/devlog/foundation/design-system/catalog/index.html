@@ -1,0 +1,2450 @@
+<!-- GENERATED DS CATALOG — source: ds-allowlist.md + design tokens — DO NOT EDIT -->
+<!-- rendered-by: harness-core/render/engine.py -->
+<!-- rendered-at: 2026-06-29T23:59:15.044191+00:00 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DS 카탈로그</title>
+  <style>
+    /* ds-compiled.css (ADR-002 §3 시각 충실도 레이어) */
+/*! tailwindcss v4.3.1 | MIT License | https://tailwindcss.com */
+@layer properties;
+@layer theme, base, components, utilities;
+@layer theme {
+  :root, :host {
+    --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+      "Courier New", monospace;
+    --color-emerald-400: oklch(76.5% 0.177 163.223);
+    --color-white: #fff;
+    --spacing: 0.25rem;
+    --container-6xl: 72rem;
+    --text-xs: 0.75rem;
+    --text-xs--line-height: calc(1 / 0.75);
+    --text-sm: 0.875rem;
+    --text-sm--line-height: calc(1.25 / 0.875);
+    --text-base: 1rem;
+    --text-base--line-height: calc(1.5 / 1);
+    --text-lg: 1.125rem;
+    --text-lg--line-height: calc(1.75 / 1.125);
+    --text-2xl: 1.5rem;
+    --text-2xl--line-height: calc(2 / 1.5);
+    --text-4xl: 2.25rem;
+    --text-4xl--line-height: calc(2.5 / 2.25);
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --tracking-widest: 0.1em;
+    --leading-snug: 1.375;
+    --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    --blur-sm: 8px;
+    --aspect-video: 16 / 9;
+    --default-transition-duration: 150ms;
+    --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    --default-font-family: var(--font-sans);
+    --default-mono-font-family: var(--font-mono);
+  }
+}
+@layer base {
+  *, ::after, ::before, ::backdrop, ::file-selector-button {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0 solid;
+  }
+  html, :host {
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    tab-size: 4;
+    font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");
+    font-feature-settings: var(--default-font-feature-settings, normal);
+    font-variation-settings: var(--default-font-variation-settings, normal);
+    -webkit-tap-highlight-color: transparent;
+  }
+  hr {
+    height: 0;
+    color: inherit;
+    border-top-width: 1px;
+  }
+  abbr:where([title]) {
+    -webkit-text-decoration: underline dotted;
+    text-decoration: underline dotted;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+  a {
+    color: inherit;
+    -webkit-text-decoration: inherit;
+    text-decoration: inherit;
+  }
+  b, strong {
+    font-weight: bolder;
+  }
+  code, kbd, samp, pre {
+    font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace);
+    font-feature-settings: var(--default-mono-font-feature-settings, normal);
+    font-variation-settings: var(--default-mono-font-variation-settings, normal);
+    font-size: 1em;
+  }
+  small {
+    font-size: 80%;
+  }
+  sub, sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+  }
+  sub {
+    bottom: -0.25em;
+  }
+  sup {
+    top: -0.5em;
+  }
+  table {
+    text-indent: 0;
+    border-color: inherit;
+    border-collapse: collapse;
+  }
+  :-moz-focusring {
+    outline: auto;
+  }
+  progress {
+    vertical-align: baseline;
+  }
+  summary {
+    display: list-item;
+  }
+  ol, ul, menu {
+    list-style: none;
+  }
+  img, svg, video, canvas, audio, iframe, embed, object {
+    display: block;
+    vertical-align: middle;
+  }
+  img, video {
+    max-width: 100%;
+    height: auto;
+  }
+  button, input, select, optgroup, textarea, ::file-selector-button {
+    font: inherit;
+    font-feature-settings: inherit;
+    font-variation-settings: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    border-radius: 0;
+    background-color: transparent;
+    opacity: 1;
+  }
+  :where(select:is([multiple], [size])) optgroup {
+    font-weight: bolder;
+  }
+  :where(select:is([multiple], [size])) optgroup option {
+    padding-inline-start: 20px;
+  }
+  ::file-selector-button {
+    margin-inline-end: 4px;
+  }
+  ::placeholder {
+    opacity: 1;
+  }
+  @supports (not (-webkit-appearance: -apple-pay-button))  or (contain-intrinsic-size: 1px) {
+    ::placeholder {
+      color: currentcolor;
+      @supports (color: color-mix(in lab, red, red)) {
+        color: color-mix(in oklab, currentcolor 50%, transparent);
+      }
+    }
+  }
+  textarea {
+    resize: vertical;
+  }
+  ::-webkit-search-decoration {
+    -webkit-appearance: none;
+  }
+  ::-webkit-date-and-time-value {
+    min-height: 1lh;
+    text-align: inherit;
+  }
+  ::-webkit-datetime-edit {
+    display: inline-flex;
+  }
+  ::-webkit-datetime-edit-fields-wrapper {
+    padding: 0;
+  }
+  ::-webkit-datetime-edit, ::-webkit-datetime-edit-year-field, ::-webkit-datetime-edit-month-field, ::-webkit-datetime-edit-day-field, ::-webkit-datetime-edit-hour-field, ::-webkit-datetime-edit-minute-field, ::-webkit-datetime-edit-second-field, ::-webkit-datetime-edit-millisecond-field, ::-webkit-datetime-edit-meridiem-field {
+    padding-block: 0;
+  }
+  ::-webkit-calendar-picker-indicator {
+    line-height: 1;
+  }
+  :-moz-ui-invalid {
+    box-shadow: none;
+  }
+  button, input:where([type="button"], [type="reset"], [type="submit"]), ::file-selector-button {
+    appearance: button;
+  }
+  ::-webkit-inner-spin-button, ::-webkit-outer-spin-button {
+    height: auto;
+  }
+  [hidden]:where(:not([hidden="until-found"])) {
+    display: none !important;
+  }
+}
+@layer utilities {
+  .\@container\/card-header {
+    container-type: inline-size;
+    container-name: card-header;
+  }
+  .pointer-events-none {
+    pointer-events: none;
+  }
+  .visible {
+    visibility: visible;
+  }
+  .absolute {
+    position: absolute;
+  }
+  .fixed {
+    position: fixed;
+  }
+  .relative {
+    position: relative;
+  }
+  .sticky {
+    position: sticky;
+  }
+  .inset-0 {
+    inset: 0;
+  }
+  .top-0 {
+    top: 0;
+  }
+  .top-1\/2 {
+    top: calc(1 / 2 * 100%);
+  }
+  .right-2 {
+    right: calc(var(--spacing) * 2);
+  }
+  .left-2 {
+    left: calc(var(--spacing) * 2);
+  }
+  .left-3 {
+    left: calc(var(--spacing) * 3);
+  }
+  .z-40 {
+    z-index: 40;
+  }
+  .z-50 {
+    z-index: 50;
+  }
+  .col-start-2 {
+    grid-column-start: 2;
+  }
+  .row-span-2 {
+    grid-row: span 2 / span 2;
+  }
+  .row-start-1 {
+    grid-row-start: 1;
+  }
+  .-mx-1 {
+    margin-inline: calc(var(--spacing) * -1);
+  }
+  .mx-1 {
+    margin-inline: var(--spacing);
+  }
+  .mx-auto {
+    margin-inline: auto;
+  }
+  .my-1 {
+    margin-block: var(--spacing);
+  }
+  .mt-1 {
+    margin-top: var(--spacing);
+  }
+  .mr-2 {
+    margin-right: calc(var(--spacing) * 2);
+  }
+  .mb-2 {
+    margin-bottom: calc(var(--spacing) * 2);
+  }
+  .ml-auto {
+    margin-left: auto;
+  }
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  .block {
+    display: block;
+  }
+  .flex {
+    display: flex;
+  }
+  .grid {
+    display: grid;
+  }
+  .hidden {
+    display: none;
+  }
+  .inline-flex {
+    display: inline-flex;
+  }
+  .field-sizing-content {
+    field-sizing: content;
+  }
+  .aspect-square {
+    aspect-ratio: 1 / 1;
+  }
+  .aspect-video {
+    aspect-ratio: var(--aspect-video);
+  }
+  .size-2 {
+    width: calc(var(--spacing) * 2);
+    height: calc(var(--spacing) * 2);
+  }
+  .size-3\.5 {
+    width: calc(var(--spacing) * 3.5);
+    height: calc(var(--spacing) * 3.5);
+  }
+  .size-4 {
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
+  }
+  .size-8 {
+    width: calc(var(--spacing) * 8);
+    height: calc(var(--spacing) * 8);
+  }
+  .size-9 {
+    width: calc(var(--spacing) * 9);
+    height: calc(var(--spacing) * 9);
+  }
+  .size-10 {
+    width: calc(var(--spacing) * 10);
+    height: calc(var(--spacing) * 10);
+  }
+  .size-full {
+    width: 100%;
+    height: 100%;
+  }
+  .h-5 {
+    height: calc(var(--spacing) * 5);
+  }
+  .h-7 {
+    height: calc(var(--spacing) * 7);
+  }
+  .h-8 {
+    height: calc(var(--spacing) * 8);
+  }
+  .h-9 {
+    height: calc(var(--spacing) * 9);
+  }
+  .h-10 {
+    height: calc(var(--spacing) * 10);
+  }
+  .h-14 {
+    height: calc(var(--spacing) * 14);
+  }
+  .h-\[1\.15rem\] {
+    height: 1.15rem;
+  }
+  .h-\[calc\(100\%-1px\)\] {
+    height: calc(100% - 1px);
+  }
+  .h-\[var\(--reka-select-trigger-height\)\] {
+    height: var(--reka-select-trigger-height);
+  }
+  .h-full {
+    height: 100%;
+  }
+  .h-px {
+    height: 1px;
+  }
+  .max-h-\(--reka-dropdown-menu-content-available-height\) {
+    max-height: var(--reka-dropdown-menu-content-available-height);
+  }
+  .max-h-\(--reka-select-content-available-height\) {
+    max-height: var(--reka-select-content-available-height);
+  }
+  .min-h-16 {
+    min-height: calc(var(--spacing) * 16);
+  }
+  .w-8 {
+    width: calc(var(--spacing) * 8);
+  }
+  .w-28 {
+    width: calc(var(--spacing) * 28);
+  }
+  .w-48 {
+    width: calc(var(--spacing) * 48);
+  }
+  .w-fit {
+    width: fit-content;
+  }
+  .w-full {
+    width: 100%;
+  }
+  .max-w-6xl {
+    max-width: var(--container-6xl);
+  }
+  .min-w-0 {
+    min-width: 0;
+  }
+  .min-w-\[8rem\] {
+    min-width: 8rem;
+  }
+  .min-w-\[var\(--reka-select-trigger-width\)\] {
+    min-width: var(--reka-select-trigger-width);
+  }
+  .flex-1 {
+    flex: 1;
+  }
+  .shrink-0 {
+    flex-shrink: 0;
+  }
+  .origin-\(--reka-dropdown-menu-content-transform-origin\) {
+    transform-origin: var(--reka-dropdown-menu-content-transform-origin);
+  }
+  .-translate-y-1\/2 {
+    --tw-translate-y: calc(calc(1 / 2 * 100%) * -1);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+  .-rotate-90 {
+    rotate: calc(90deg * -1);
+  }
+  .transform {
+    transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
+  }
+  .animate-pulse {
+    animation: var(--animate-pulse);
+  }
+  .cursor-default {
+    cursor: default;
+  }
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  .scroll-my-1 {
+    scroll-margin-block: var(--spacing);
+  }
+  .auto-rows-min {
+    grid-auto-rows: min-content;
+  }
+  .grid-rows-\[auto_auto\] {
+    grid-template-rows: auto auto;
+  }
+  .flex-col {
+    flex-direction: column;
+  }
+  .flex-row {
+    flex-direction: row;
+  }
+  .flex-wrap {
+    flex-wrap: wrap;
+  }
+  .items-center {
+    align-items: center;
+  }
+  .items-start {
+    align-items: flex-start;
+  }
+  .justify-between {
+    justify-content: space-between;
+  }
+  .justify-center {
+    justify-content: center;
+  }
+  .gap-0\.5 {
+    gap: calc(var(--spacing) * 0.5);
+  }
+  .gap-1 {
+    gap: var(--spacing);
+  }
+  .gap-1\.5 {
+    gap: calc(var(--spacing) * 1.5);
+  }
+  .gap-2 {
+    gap: calc(var(--spacing) * 2);
+  }
+  .gap-4 {
+    gap: calc(var(--spacing) * 4);
+  }
+  .gap-6 {
+    gap: calc(var(--spacing) * 6);
+  }
+  .gap-px {
+    gap: 1px;
+  }
+  .self-end {
+    align-self: flex-end;
+  }
+  .self-start {
+    align-self: flex-start;
+  }
+  .justify-self-end {
+    justify-self: flex-end;
+  }
+  .overflow-hidden {
+    overflow: hidden;
+  }
+  .overflow-x-hidden {
+    overflow-x: hidden;
+  }
+  .overflow-y-auto {
+    overflow-y: auto;
+  }
+  .rounded {
+    border-radius: 0.25rem;
+  }
+  .rounded-full {
+    border-radius: calc(infinity * 1px);
+  }
+  .rounded-lg {
+    border-radius: var(--radius);
+  }
+  .rounded-md {
+    border-radius: calc(var(--radius) - 2px);
+  }
+  .rounded-sm {
+    border-radius: calc(var(--radius) - 4px);
+  }
+  .rounded-xl {
+    border-radius: calc(var(--radius) + 4px);
+  }
+  .border {
+    border-style: var(--tw-border-style);
+    border-width: 1px;
+  }
+  .border-b {
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 1px;
+  }
+  .border-border {
+    border-color: hsl(var(--border));
+  }
+  .border-input {
+    border-color: hsl(var(--input));
+  }
+  .border-primary {
+    border-color: hsl(var(--primary));
+  }
+  .border-primary\/30 {
+    border-color: hsl(var(--primary));
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, hsl(var(--primary)) 30%, transparent);
+    }
+  }
+  .border-transparent {
+    border-color: transparent;
+  }
+  .bg-background {
+    background-color: hsl(var(--background));
+  }
+  .bg-background\/80 {
+    background-color: hsl(var(--background));
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, hsl(var(--background)) 80%, transparent);
+    }
+  }
+  .bg-border {
+    background-color: hsl(var(--border));
+  }
+  .bg-card {
+    background-color: hsl(var(--card));
+  }
+  .bg-destructive {
+    background-color: hsl(var(--destructive));
+  }
+  .bg-foreground {
+    background-color: hsl(var(--foreground));
+  }
+  .bg-muted {
+    background-color: hsl(var(--muted));
+  }
+  .bg-muted\/40 {
+    background-color: hsl(var(--muted));
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, hsl(var(--muted)) 40%, transparent);
+    }
+  }
+  .bg-popover {
+    background-color: hsl(var(--popover));
+  }
+  .bg-primary {
+    background-color: hsl(var(--primary));
+  }
+  .bg-primary\/5 {
+    background-color: hsl(var(--primary));
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, hsl(var(--primary)) 5%, transparent);
+    }
+  }
+  .bg-primary\/10 {
+    background-color: hsl(var(--primary));
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, hsl(var(--primary)) 10%, transparent);
+    }
+  }
+  .bg-primary\/20 {
+    background-color: hsl(var(--primary));
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, hsl(var(--primary)) 20%, transparent);
+    }
+  }
+  .bg-primary\/45 {
+    background-color: hsl(var(--primary));
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, hsl(var(--primary)) 45%, transparent);
+    }
+  }
+  .bg-primary\/70 {
+    background-color: hsl(var(--primary));
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, hsl(var(--primary)) 70%, transparent);
+    }
+  }
+  .bg-secondary {
+    background-color: hsl(var(--secondary));
+  }
+  .bg-transparent {
+    background-color: transparent;
+  }
+  .fill-current {
+    fill: currentcolor;
+  }
+  .stroke-muted {
+    stroke: hsl(var(--muted));
+  }
+  .stroke-primary {
+    stroke: hsl(var(--primary));
+  }
+  .object-cover {
+    object-fit: cover;
+  }
+  .p-0 {
+    padding: 0;
+  }
+  .p-0\.75 {
+    padding: calc(var(--spacing) * 0.75);
+  }
+  .p-1 {
+    padding: var(--spacing);
+  }
+  .px-2 {
+    padding-inline: calc(var(--spacing) * 2);
+  }
+  .px-3 {
+    padding-inline: calc(var(--spacing) * 3);
+  }
+  .px-4 {
+    padding-inline: calc(var(--spacing) * 4);
+  }
+  .px-6 {
+    padding-inline: calc(var(--spacing) * 6);
+  }
+  .py-0\.5 {
+    padding-block: calc(var(--spacing) * 0.5);
+  }
+  .py-1 {
+    padding-block: var(--spacing);
+  }
+  .py-1\.5 {
+    padding-block: calc(var(--spacing) * 1.5);
+  }
+  .py-2 {
+    padding-block: calc(var(--spacing) * 2);
+  }
+  .py-6 {
+    padding-block: calc(var(--spacing) * 6);
+  }
+  .pt-2 {
+    padding-top: calc(var(--spacing) * 2);
+  }
+  .pr-2 {
+    padding-right: calc(var(--spacing) * 2);
+  }
+  .pr-8 {
+    padding-right: calc(var(--spacing) * 8);
+  }
+  .pb-1 {
+    padding-bottom: var(--spacing);
+  }
+  .pb-2 {
+    padding-bottom: calc(var(--spacing) * 2);
+  }
+  .pl-2 {
+    padding-left: calc(var(--spacing) * 2);
+  }
+  .pl-8 {
+    padding-left: calc(var(--spacing) * 8);
+  }
+  .pl-9 {
+    padding-left: calc(var(--spacing) * 9);
+  }
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+  .text-2xl {
+    font-size: var(--text-2xl);
+    line-height: var(--tw-leading, var(--text-2xl--line-height));
+  }
+  .text-4xl {
+    font-size: var(--text-4xl);
+    line-height: var(--tw-leading, var(--text-4xl--line-height));
+  }
+  .text-base {
+    font-size: var(--text-base);
+    line-height: var(--tw-leading, var(--text-base--line-height));
+  }
+  .text-lg {
+    font-size: var(--text-lg);
+    line-height: var(--tw-leading, var(--text-lg--line-height));
+  }
+  .text-sm {
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+  }
+  .text-xs {
+    font-size: var(--text-xs);
+    line-height: var(--tw-leading, var(--text-xs--line-height));
+  }
+  .leading-none {
+    --tw-leading: 1;
+    line-height: 1;
+  }
+  .leading-snug {
+    --tw-leading: var(--leading-snug);
+    line-height: var(--leading-snug);
+  }
+  .font-bold {
+    --tw-font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-bold);
+  }
+  .font-medium {
+    --tw-font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-medium);
+  }
+  .font-semibold {
+    --tw-font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-semibold);
+  }
+  .tracking-widest {
+    --tw-tracking: var(--tracking-widest);
+    letter-spacing: var(--tracking-widest);
+  }
+  .whitespace-nowrap {
+    white-space: nowrap;
+  }
+  .text-background {
+    color: hsl(var(--background));
+  }
+  .text-card-foreground {
+    color: hsl(var(--card-foreground));
+  }
+  .text-destructive {
+    color: hsl(var(--destructive));
+  }
+  .text-emerald-400 {
+    color: var(--color-emerald-400);
+  }
+  .text-foreground {
+    color: hsl(var(--foreground));
+  }
+  .text-muted-foreground {
+    color: hsl(var(--muted-foreground));
+  }
+  .text-popover-foreground {
+    color: hsl(var(--popover-foreground));
+  }
+  .text-primary {
+    color: hsl(var(--primary));
+  }
+  .text-primary-foreground {
+    color: hsl(var(--primary-foreground));
+  }
+  .text-secondary-foreground {
+    color: hsl(var(--secondary-foreground));
+  }
+  .text-white {
+    color: var(--color-white);
+  }
+  .tabular-nums {
+    --tw-numeric-spacing: tabular-nums;
+    font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
+  }
+  .underline-offset-4 {
+    text-underline-offset: 4px;
+  }
+  .opacity-50 {
+    opacity: 50%;
+  }
+  .shadow {
+    --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .shadow-lg {
+    --tw-shadow: 0 10px 15px -3px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 4px 6px -4px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .shadow-md {
+    --tw-shadow: 0 4px 6px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 2px 4px -2px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .shadow-sm {
+    --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .shadow-xs {
+    --tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.05));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .ring-0 {
+    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .outline-hidden {
+    --tw-outline-style: none;
+    outline-style: none;
+    @media (forced-colors: active) {
+      outline: 2px solid transparent;
+      outline-offset: 2px;
+    }
+  }
+  .outline {
+    outline-style: var(--tw-outline-style);
+    outline-width: 1px;
+  }
+  .backdrop-blur-sm {
+    --tw-backdrop-blur: blur(var(--blur-sm));
+    -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+    backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+  }
+  .transition-\[color\,box-shadow\] {
+    transition-property: color,box-shadow;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+  }
+  .transition-all {
+    transition-property: all;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+  }
+  .transition-opacity {
+    transition-property: opacity;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+  }
+  .transition-shadow {
+    transition-property: box-shadow;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+  }
+  .transition-transform {
+    transition-property: transform, translate, scale, rotate;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+  }
+  .duration-1000 {
+    --tw-duration: 1000ms;
+    transition-duration: 1000ms;
+  }
+  .ease-linear {
+    --tw-ease: linear;
+    transition-timing-function: linear;
+  }
+  .outline-none {
+    --tw-outline-style: none;
+    outline-style: none;
+  }
+  .select-none {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .group-hover\:scale-105 {
+    &:is(:where(.group):hover *) {
+      @media (hover: hover) {
+        --tw-scale-x: 105%;
+        --tw-scale-y: 105%;
+        --tw-scale-z: 105%;
+        scale: var(--tw-scale-x) var(--tw-scale-y);
+      }
+    }
+  }
+  .group-data-\[disabled\=true\]\:pointer-events-none {
+    &:is(:where(.group)[data-disabled="true"] *) {
+      pointer-events: none;
+    }
+  }
+  .group-data-\[disabled\=true\]\:opacity-50 {
+    &:is(:where(.group)[data-disabled="true"] *) {
+      opacity: 50%;
+    }
+  }
+  .peer-disabled\:cursor-not-allowed {
+    &:is(:where(.peer):disabled ~ *) {
+      cursor: not-allowed;
+    }
+  }
+  .peer-disabled\:opacity-50 {
+    &:is(:where(.peer):disabled ~ *) {
+      opacity: 50%;
+    }
+  }
+  .selection\:bg-primary {
+    & *::selection {
+      background-color: hsl(var(--primary));
+    }
+    &::selection {
+      background-color: hsl(var(--primary));
+    }
+  }
+  .selection\:text-primary-foreground {
+    & *::selection {
+      color: hsl(var(--primary-foreground));
+    }
+    &::selection {
+      color: hsl(var(--primary-foreground));
+    }
+  }
+  .file\:inline-flex {
+    &::file-selector-button {
+      display: inline-flex;
+    }
+  }
+  .file\:h-7 {
+    &::file-selector-button {
+      height: calc(var(--spacing) * 7);
+    }
+  }
+  .file\:border-0 {
+    &::file-selector-button {
+      border-style: var(--tw-border-style);
+      border-width: 0px;
+    }
+  }
+  .file\:bg-transparent {
+    &::file-selector-button {
+      background-color: transparent;
+    }
+  }
+  .file\:text-sm {
+    &::file-selector-button {
+      font-size: var(--text-sm);
+      line-height: var(--tw-leading, var(--text-sm--line-height));
+    }
+  }
+  .file\:font-medium {
+    &::file-selector-button {
+      --tw-font-weight: var(--font-weight-medium);
+      font-weight: var(--font-weight-medium);
+    }
+  }
+  .file\:text-foreground {
+    &::file-selector-button {
+      color: hsl(var(--foreground));
+    }
+  }
+  .placeholder\:text-muted-foreground {
+    &::placeholder {
+      color: hsl(var(--muted-foreground));
+    }
+  }
+  .hover\:bg-accent {
+    &:hover {
+      @media (hover: hover) {
+        background-color: hsl(var(--accent));
+      }
+    }
+  }
+  .hover\:bg-destructive\/90 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: hsl(var(--destructive));
+        @supports (color: color-mix(in lab, red, red)) {
+          background-color: color-mix(in oklab, hsl(var(--destructive)) 90%, transparent);
+        }
+      }
+    }
+  }
+  .hover\:bg-primary\/90 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: hsl(var(--primary));
+        @supports (color: color-mix(in lab, red, red)) {
+          background-color: color-mix(in oklab, hsl(var(--primary)) 90%, transparent);
+        }
+      }
+    }
+  }
+  .hover\:bg-secondary\/80 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: hsl(var(--secondary));
+        @supports (color: color-mix(in lab, red, red)) {
+          background-color: color-mix(in oklab, hsl(var(--secondary)) 80%, transparent);
+        }
+      }
+    }
+  }
+  .hover\:text-accent-foreground {
+    &:hover {
+      @media (hover: hover) {
+        color: hsl(var(--accent-foreground));
+      }
+    }
+  }
+  .hover\:underline {
+    &:hover {
+      @media (hover: hover) {
+        text-decoration-line: underline;
+      }
+    }
+  }
+  .hover\:opacity-80 {
+    &:hover {
+      @media (hover: hover) {
+        opacity: 80%;
+      }
+    }
+  }
+  .hover\:shadow-md {
+    &:hover {
+      @media (hover: hover) {
+        --tw-shadow: 0 4px 6px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 2px 4px -2px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+        box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+      }
+    }
+  }
+  .focus\:bg-accent {
+    &:focus {
+      background-color: hsl(var(--accent));
+    }
+  }
+  .focus\:text-accent-foreground {
+    &:focus {
+      color: hsl(var(--accent-foreground));
+    }
+  }
+  .focus-visible\:border-ring {
+    &:focus-visible {
+      border-color: hsl(var(--ring));
+    }
+  }
+  .focus-visible\:ring-3 {
+    &:focus-visible {
+      --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+      box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    }
+  }
+  .focus-visible\:ring-destructive\/20 {
+    &:focus-visible {
+      --tw-ring-color: hsl(var(--destructive));
+      @supports (color: color-mix(in lab, red, red)) {
+        --tw-ring-color: color-mix(in oklab, hsl(var(--destructive)) 20%, transparent);
+      }
+    }
+  }
+  .focus-visible\:ring-ring\/50 {
+    &:focus-visible {
+      --tw-ring-color: hsl(var(--ring));
+      @supports (color: color-mix(in lab, red, red)) {
+        --tw-ring-color: color-mix(in oklab, hsl(var(--ring)) 50%, transparent);
+      }
+    }
+  }
+  .focus-visible\:outline-1 {
+    &:focus-visible {
+      outline-style: var(--tw-outline-style);
+      outline-width: 1px;
+    }
+  }
+  .focus-visible\:outline-ring {
+    &:focus-visible {
+      outline-color: hsl(var(--ring));
+    }
+  }
+  .disabled\:pointer-events-none {
+    &:disabled {
+      pointer-events: none;
+    }
+  }
+  .disabled\:cursor-not-allowed {
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+  .disabled\:opacity-50 {
+    &:disabled {
+      opacity: 50%;
+    }
+  }
+  .has-data-\[slot\=card-action\]\:grid-cols-\[1fr_auto\] {
+    &:has(*[data-slot="card-action"]) {
+      grid-template-columns: 1fr auto;
+    }
+  }
+  .has-\[\>svg\]\:px-2\.5 {
+    &:has(>svg) {
+      padding-inline: calc(var(--spacing) * 2.5);
+    }
+  }
+  .has-\[\>svg\]\:px-3 {
+    &:has(>svg) {
+      padding-inline: calc(var(--spacing) * 3);
+    }
+  }
+  .has-\[\>svg\]\:px-4 {
+    &:has(>svg) {
+      padding-inline: calc(var(--spacing) * 4);
+    }
+  }
+  .aria-invalid\:border-destructive {
+    &[aria-invalid="true"] {
+      border-color: hsl(var(--destructive));
+    }
+  }
+  .aria-invalid\:ring-destructive\/20 {
+    &[aria-invalid="true"] {
+      --tw-ring-color: hsl(var(--destructive));
+      @supports (color: color-mix(in lab, red, red)) {
+        --tw-ring-color: color-mix(in oklab, hsl(var(--destructive)) 20%, transparent);
+      }
+    }
+  }
+  .data-\[disabled\]\:pointer-events-none {
+    &[data-disabled] {
+      pointer-events: none;
+    }
+  }
+  .data-\[disabled\]\:opacity-50 {
+    &[data-disabled] {
+      opacity: 50%;
+    }
+  }
+  .data-\[error\=true\]\:text-destructive {
+    &[data-error="true"] {
+      color: hsl(var(--destructive));
+    }
+  }
+  .data-\[inset\]\:pl-8 {
+    &[data-inset] {
+      padding-left: calc(var(--spacing) * 8);
+    }
+  }
+  .data-\[orientation\=horizontal\]\:h-px {
+    &[data-orientation="horizontal"] {
+      height: 1px;
+    }
+  }
+  .data-\[orientation\=horizontal\]\:w-full {
+    &[data-orientation="horizontal"] {
+      width: 100%;
+    }
+  }
+  .data-\[orientation\=vertical\]\:h-full {
+    &[data-orientation="vertical"] {
+      height: 100%;
+    }
+  }
+  .data-\[orientation\=vertical\]\:w-px {
+    &[data-orientation="vertical"] {
+      width: 1px;
+    }
+  }
+  .data-\[placeholder\]\:text-muted-foreground {
+    &[data-placeholder] {
+      color: hsl(var(--muted-foreground));
+    }
+  }
+  .data-\[side\=bottom\]\:translate-y-1 {
+    &[data-side="bottom"] {
+      --tw-translate-y: var(--spacing);
+      translate: var(--tw-translate-x) var(--tw-translate-y);
+    }
+  }
+  .data-\[side\=left\]\:-translate-x-1 {
+    &[data-side="left"] {
+      --tw-translate-x: calc(var(--spacing) * -1);
+      translate: var(--tw-translate-x) var(--tw-translate-y);
+    }
+  }
+  .data-\[side\=right\]\:translate-x-1 {
+    &[data-side="right"] {
+      --tw-translate-x: var(--spacing);
+      translate: var(--tw-translate-x) var(--tw-translate-y);
+    }
+  }
+  .data-\[side\=top\]\:-translate-y-1 {
+    &[data-side="top"] {
+      --tw-translate-y: calc(var(--spacing) * -1);
+      translate: var(--tw-translate-x) var(--tw-translate-y);
+    }
+  }
+  .data-\[size\=default\]\:h-9 {
+    &[data-size="default"] {
+      height: calc(var(--spacing) * 9);
+    }
+  }
+  .data-\[size\=sm\]\:h-8 {
+    &[data-size="sm"] {
+      height: calc(var(--spacing) * 8);
+    }
+  }
+  .\*\:data-\[slot\=select-value\]\:line-clamp-1 {
+    :is(& > *) {
+      &[data-slot="select-value"] {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+      }
+    }
+  }
+  .\*\:data-\[slot\=select-value\]\:flex {
+    :is(& > *) {
+      &[data-slot="select-value"] {
+        display: flex;
+      }
+    }
+  }
+  .\*\:data-\[slot\=select-value\]\:items-center {
+    :is(& > *) {
+      &[data-slot="select-value"] {
+        align-items: center;
+      }
+    }
+  }
+  .\*\:data-\[slot\=select-value\]\:gap-2 {
+    :is(& > *) {
+      &[data-slot="select-value"] {
+        gap: calc(var(--spacing) * 2);
+      }
+    }
+  }
+  .data-\[state\=active\]\:bg-background {
+    &[data-state="active"] {
+      background-color: hsl(var(--background));
+    }
+  }
+  .data-\[state\=active\]\:shadow-sm {
+    &[data-state="active"] {
+      --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+      box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    }
+  }
+  .data-\[state\=checked\]\:translate-x-\[calc\(100\%-2px\)\] {
+    &[data-state="checked"] {
+      --tw-translate-x: calc(100% - 2px);
+      translate: var(--tw-translate-x) var(--tw-translate-y);
+    }
+  }
+  .data-\[state\=checked\]\:bg-primary {
+    &[data-state="checked"] {
+      background-color: hsl(var(--primary));
+    }
+  }
+  .data-\[state\=open\]\:bg-accent {
+    &[data-state="open"] {
+      background-color: hsl(var(--accent));
+    }
+  }
+  .data-\[state\=open\]\:text-accent-foreground {
+    &[data-state="open"] {
+      color: hsl(var(--accent-foreground));
+    }
+  }
+  .data-\[state\=unchecked\]\:translate-x-0 {
+    &[data-state="unchecked"] {
+      --tw-translate-x: 0;
+      translate: var(--tw-translate-x) var(--tw-translate-y);
+    }
+  }
+  .data-\[state\=unchecked\]\:bg-input {
+    &[data-state="unchecked"] {
+      background-color: hsl(var(--input));
+    }
+  }
+  .data-\[variant\=destructive\]\:text-destructive {
+    &[data-variant="destructive"] {
+      color: hsl(var(--destructive));
+    }
+  }
+  .data-\[variant\=destructive\]\:focus\:bg-destructive\/10 {
+    &[data-variant="destructive"] {
+      &:focus {
+        background-color: hsl(var(--destructive));
+        @supports (color: color-mix(in lab, red, red)) {
+          background-color: color-mix(in oklab, hsl(var(--destructive)) 10%, transparent);
+        }
+      }
+    }
+  }
+  .data-\[variant\=destructive\]\:focus\:text-destructive {
+    &[data-variant="destructive"] {
+      &:focus {
+        color: hsl(var(--destructive));
+      }
+    }
+  }
+  .sm\:flex-row {
+    @media (width >= 40rem) {
+      flex-direction: row;
+    }
+  }
+  .sm\:items-center {
+    @media (width >= 40rem) {
+      align-items: center;
+    }
+  }
+  .sm\:gap-3 {
+    @media (width >= 40rem) {
+      gap: calc(var(--spacing) * 3);
+    }
+  }
+  .md\:flex {
+    @media (width >= 48rem) {
+      display: flex;
+    }
+  }
+  .md\:hidden {
+    @media (width >= 48rem) {
+      display: none;
+    }
+  }
+  .md\:text-sm {
+    @media (width >= 48rem) {
+      font-size: var(--text-sm);
+      line-height: var(--tw-leading, var(--text-sm--line-height));
+    }
+  }
+  .dark\:border-input {
+    @media (prefers-color-scheme: dark) {
+      border-color: hsl(var(--input));
+    }
+  }
+  .dark\:bg-destructive\/60 {
+    @media (prefers-color-scheme: dark) {
+      background-color: hsl(var(--destructive));
+      @supports (color: color-mix(in lab, red, red)) {
+        background-color: color-mix(in oklab, hsl(var(--destructive)) 60%, transparent);
+      }
+    }
+  }
+  .dark\:bg-input\/30 {
+    @media (prefers-color-scheme: dark) {
+      background-color: hsl(var(--input));
+      @supports (color: color-mix(in lab, red, red)) {
+        background-color: color-mix(in oklab, hsl(var(--input)) 30%, transparent);
+      }
+    }
+  }
+  .dark\:text-muted-foreground {
+    @media (prefers-color-scheme: dark) {
+      color: hsl(var(--muted-foreground));
+    }
+  }
+  .dark\:hover\:bg-accent\/50 {
+    @media (prefers-color-scheme: dark) {
+      &:hover {
+        @media (hover: hover) {
+          background-color: hsl(var(--accent));
+          @supports (color: color-mix(in lab, red, red)) {
+            background-color: color-mix(in oklab, hsl(var(--accent)) 50%, transparent);
+          }
+        }
+      }
+    }
+  }
+  .dark\:hover\:bg-input\/50 {
+    @media (prefers-color-scheme: dark) {
+      &:hover {
+        @media (hover: hover) {
+          background-color: hsl(var(--input));
+          @supports (color: color-mix(in lab, red, red)) {
+            background-color: color-mix(in oklab, hsl(var(--input)) 50%, transparent);
+          }
+        }
+      }
+    }
+  }
+  .dark\:focus-visible\:ring-destructive\/40 {
+    @media (prefers-color-scheme: dark) {
+      &:focus-visible {
+        --tw-ring-color: hsl(var(--destructive));
+        @supports (color: color-mix(in lab, red, red)) {
+          --tw-ring-color: color-mix(in oklab, hsl(var(--destructive)) 40%, transparent);
+        }
+      }
+    }
+  }
+  .dark\:aria-invalid\:ring-destructive\/40 {
+    @media (prefers-color-scheme: dark) {
+      &[aria-invalid="true"] {
+        --tw-ring-color: hsl(var(--destructive));
+        @supports (color: color-mix(in lab, red, red)) {
+          --tw-ring-color: color-mix(in oklab, hsl(var(--destructive)) 40%, transparent);
+        }
+      }
+    }
+  }
+  .dark\:data-\[state\=active\]\:border-input {
+    @media (prefers-color-scheme: dark) {
+      &[data-state="active"] {
+        border-color: hsl(var(--input));
+      }
+    }
+  }
+  .dark\:data-\[state\=active\]\:bg-input\/30 {
+    @media (prefers-color-scheme: dark) {
+      &[data-state="active"] {
+        background-color: hsl(var(--input));
+        @supports (color: color-mix(in lab, red, red)) {
+          background-color: color-mix(in oklab, hsl(var(--input)) 30%, transparent);
+        }
+      }
+    }
+  }
+  .dark\:data-\[state\=active\]\:text-foreground {
+    @media (prefers-color-scheme: dark) {
+      &[data-state="active"] {
+        color: hsl(var(--foreground));
+      }
+    }
+  }
+  .dark\:data-\[state\=checked\]\:bg-primary-foreground {
+    @media (prefers-color-scheme: dark) {
+      &[data-state="checked"] {
+        background-color: hsl(var(--primary-foreground));
+      }
+    }
+  }
+  .dark\:data-\[state\=unchecked\]\:bg-foreground {
+    @media (prefers-color-scheme: dark) {
+      &[data-state="unchecked"] {
+        background-color: hsl(var(--foreground));
+      }
+    }
+  }
+  .dark\:data-\[state\=unchecked\]\:bg-input\/80 {
+    @media (prefers-color-scheme: dark) {
+      &[data-state="unchecked"] {
+        background-color: hsl(var(--input));
+        @supports (color: color-mix(in lab, red, red)) {
+          background-color: color-mix(in oklab, hsl(var(--input)) 80%, transparent);
+        }
+      }
+    }
+  }
+  .dark\:data-\[variant\=destructive\]\:focus\:bg-destructive\/20 {
+    @media (prefers-color-scheme: dark) {
+      &[data-variant="destructive"] {
+        &:focus {
+          background-color: hsl(var(--destructive));
+          @supports (color: color-mix(in lab, red, red)) {
+            background-color: color-mix(in oklab, hsl(var(--destructive)) 20%, transparent);
+          }
+        }
+      }
+    }
+  }
+  .\[\&_svg\]\:pointer-events-none {
+    & svg {
+      pointer-events: none;
+    }
+  }
+  .\[\&_svg\]\:shrink-0 {
+    & svg {
+      flex-shrink: 0;
+    }
+  }
+  .\[\&_svg\:not\(\[class\*\=\'size-\'\]\)\]\:size-4 {
+    & svg:not([class*='size-']) {
+      width: calc(var(--spacing) * 4);
+      height: calc(var(--spacing) * 4);
+    }
+  }
+  .\[\&_svg\:not\(\[class\*\=\\\'size-\\\'\]\)\]\:size-4 {
+    & svg:not([class*=\'size-\']) {
+      width: calc(var(--spacing) * 4);
+      height: calc(var(--spacing) * 4);
+    }
+  }
+  .\[\&_svg\:not\(\[class\*\=\\\'text-\\\'\]\)\]\:text-muted-foreground {
+    & svg:not([class*=\'text-\']) {
+      color: hsl(var(--muted-foreground));
+    }
+  }
+  .\[\.border-b\]\:pb-6 {
+    &:is(.border-b) {
+      padding-bottom: calc(var(--spacing) * 6);
+    }
+  }
+  .\[\.border-t\]\:pt-6 {
+    &:is(.border-t) {
+      padding-top: calc(var(--spacing) * 6);
+    }
+  }
+  .\*\:\[span\]\:last\:flex {
+    :is(& > *) {
+      &:is(span) {
+        &:last-child {
+          display: flex;
+        }
+      }
+    }
+  }
+  .\*\:\[span\]\:last\:items-center {
+    :is(& > *) {
+      &:is(span) {
+        &:last-child {
+          align-items: center;
+        }
+      }
+    }
+  }
+  .\*\:\[span\]\:last\:gap-2 {
+    :is(& > *) {
+      &:is(span) {
+        &:last-child {
+          gap: calc(var(--spacing) * 2);
+        }
+      }
+    }
+  }
+  .data-\[variant\=destructive\]\:\*\:\[svg\]\:\!text-destructive {
+    &[data-variant="destructive"] {
+      :is(& > *) {
+        &:is(svg) {
+          color: hsl(var(--destructive)) !important;
+        }
+      }
+    }
+  }
+  .\[\&\>svg\]\:pointer-events-none {
+    &>svg {
+      pointer-events: none;
+    }
+  }
+  .\[\&\>svg\]\:size-3 {
+    &>svg {
+      width: calc(var(--spacing) * 3);
+      height: calc(var(--spacing) * 3);
+    }
+  }
+  .\[a\&\]\:hover\:bg-accent {
+    a& {
+      &:hover {
+        @media (hover: hover) {
+          background-color: hsl(var(--accent));
+        }
+      }
+    }
+  }
+  .\[a\&\]\:hover\:bg-destructive\/90 {
+    a& {
+      &:hover {
+        @media (hover: hover) {
+          background-color: hsl(var(--destructive));
+          @supports (color: color-mix(in lab, red, red)) {
+            background-color: color-mix(in oklab, hsl(var(--destructive)) 90%, transparent);
+          }
+        }
+      }
+    }
+  }
+  .\[a\&\]\:hover\:bg-primary\/90 {
+    a& {
+      &:hover {
+        @media (hover: hover) {
+          background-color: hsl(var(--primary));
+          @supports (color: color-mix(in lab, red, red)) {
+            background-color: color-mix(in oklab, hsl(var(--primary)) 90%, transparent);
+          }
+        }
+      }
+    }
+  }
+  .\[a\&\]\:hover\:bg-secondary\/90 {
+    a& {
+      &:hover {
+        @media (hover: hover) {
+          background-color: hsl(var(--secondary));
+          @supports (color: color-mix(in lab, red, red)) {
+            background-color: color-mix(in oklab, hsl(var(--secondary)) 90%, transparent);
+          }
+        }
+      }
+    }
+  }
+  .\[a\&\]\:hover\:text-accent-foreground {
+    a& {
+      &:hover {
+        @media (hover: hover) {
+          color: hsl(var(--accent-foreground));
+        }
+      }
+    }
+  }
+}
+:root {
+  color-scheme: dark;
+  --background: 222 47%  6%;
+  --foreground: 210 40% 96%;
+  --card: 224 47%  9%;
+  --card-foreground: 210 40% 96%;
+  --popover: 224 47%  9%;
+  --popover-foreground: 210 40% 96%;
+  --primary: 189 100% 50%;
+  --primary-foreground: 222 47%  6%;
+  --secondary: 217 33% 17%;
+  --secondary-foreground: 210 40% 96%;
+  --muted: 217 33% 13%;
+  --muted-foreground: 215 20% 55%;
+  --accent: 189 100% 50%;
+  --accent-foreground: 222 47%  6%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 210 40% 96%;
+  --border: 217 33% 17%;
+  --input: 217 33% 17%;
+  --ring: 189 100% 50%;
+  --radius: 0.5rem;
+}
+@property --tw-translate-x {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-translate-y {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-translate-z {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-rotate-x {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-rotate-y {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-rotate-z {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-skew-x {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-skew-y {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-border-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
+@property --tw-leading {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-font-weight {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-tracking {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-ordinal {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-slashed-zero {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-numeric-figure {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-numeric-spacing {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-numeric-fraction {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-shadow-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-shadow-alpha {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+@property --tw-inset-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-inset-shadow-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-inset-shadow-alpha {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+@property --tw-ring-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-ring-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-inset-ring-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-inset-ring-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-ring-inset {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-ring-offset-width {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+@property --tw-ring-offset-color {
+  syntax: "*";
+  inherits: false;
+  initial-value: #fff;
+}
+@property --tw-ring-offset-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-outline-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
+@property --tw-backdrop-blur {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-brightness {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-contrast {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-grayscale {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-hue-rotate {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-invert {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-opacity {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-saturate {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-sepia {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-duration {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-ease {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-scale-x {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+@property --tw-scale-y {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+@property --tw-scale-z {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    *, ::before, ::after, ::backdrop {
+      --tw-translate-x: 0;
+      --tw-translate-y: 0;
+      --tw-translate-z: 0;
+      --tw-rotate-x: initial;
+      --tw-rotate-y: initial;
+      --tw-rotate-z: initial;
+      --tw-skew-x: initial;
+      --tw-skew-y: initial;
+      --tw-border-style: solid;
+      --tw-leading: initial;
+      --tw-font-weight: initial;
+      --tw-tracking: initial;
+      --tw-ordinal: initial;
+      --tw-slashed-zero: initial;
+      --tw-numeric-figure: initial;
+      --tw-numeric-spacing: initial;
+      --tw-numeric-fraction: initial;
+      --tw-shadow: 0 0 #0000;
+      --tw-shadow-color: initial;
+      --tw-shadow-alpha: 100%;
+      --tw-inset-shadow: 0 0 #0000;
+      --tw-inset-shadow-color: initial;
+      --tw-inset-shadow-alpha: 100%;
+      --tw-ring-color: initial;
+      --tw-ring-shadow: 0 0 #0000;
+      --tw-inset-ring-color: initial;
+      --tw-inset-ring-shadow: 0 0 #0000;
+      --tw-ring-inset: initial;
+      --tw-ring-offset-width: 0px;
+      --tw-ring-offset-color: #fff;
+      --tw-ring-offset-shadow: 0 0 #0000;
+      --tw-outline-style: solid;
+      --tw-backdrop-blur: initial;
+      --tw-backdrop-brightness: initial;
+      --tw-backdrop-contrast: initial;
+      --tw-backdrop-grayscale: initial;
+      --tw-backdrop-hue-rotate: initial;
+      --tw-backdrop-invert: initial;
+      --tw-backdrop-opacity: initial;
+      --tw-backdrop-saturate: initial;
+      --tw-backdrop-sepia: initial;
+      --tw-duration: initial;
+      --tw-ease: initial;
+      --tw-scale-x: 1;
+      --tw-scale-y: 1;
+      --tw-scale-z: 1;
+    }
+  }
+}
+
+    * { box-sizing: border-box; }
+    body{color:#1a1a1a;font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans KR", sans-serif;margin:0;padding:24px}
+    .catalog{margin:0 auto;max-width:1100px}
+    .lead{color:#555}
+    .toc{border-bottom:1px solid #eee;margin-bottom:24px;padding-bottom:12px}
+    section{margin-bottom:40px}
+    h2{border-bottom:2px solid #111;padding-bottom:4px}
+    .swatches{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+    .swatch{font-size:13px}
+    .chip{border:1px solid #ddd;border-radius:6px;height:48px;margin-bottom:4px;width:100%}
+    .swatch code{display:block;font-weight:600}
+    .swatch span{color:#777}
+    .type-row{align-items:center;display:flex;gap:16px;margin:8px 0}
+    .token-table{border-collapse:collapse;width:100%}
+    .token-table th, .token-table td{border:1px solid #eee;padding:6px 10px;text-align:left}
+    .space-row{align-items:center;display:flex;gap:12px;margin:6px 0}
+    .space-bar{background:#aa3bff;display:inline-block;height:12px}
+    .comp-card{border:1px solid #e5e5e5;border-radius:8px;margin-bottom:16px;padding:16px}
+    .comp-card .ref{color:#888;font-size:12px;font-weight:400}
+    .desc{color:#555;margin:4px 0}
+    .props code{background:#f4f3ec;font-size:12px;padding:2px 4px}
+    .states{display:flex;flex-wrap:wrap;gap:16px;margin-top:12px}
+    .state-cell{border:1px dashed #ccc;border-radius:6px;min-height:64px;min-width:120px;padding:8px}
+    .state-name{color:#999;display:block;font-size:11px;margin-bottom:6px;text-transform:uppercase}
+    .guide dt{font-weight:600;margin-top:8px}
+    .guide dd{color:#555;margin:0 0 4px 0}
+    .empty{color:#999;font-style:italic}
+    .sources{border-top:1px solid #eee;color:#999;font-size:12px;margin-top:32px;padding-top:12px}
+    [data-state="disabled"]{cursor:not-allowed;opacity:0.45}
+    [data-state="error"]{border-color:#d33;color:#d33}
+    [data-state="focus"]{outline:2px solid #aa3bff}
+    [data-state="selected"]{background:#aa3bff;color:#fff}
+    .space-bar[data-space="0"]{width:2px}
+    .space-bar[data-space="4"]{width:4px}
+    .space-bar[data-space="8"]{width:8px}
+    .space-bar[data-space="12"]{width:12px}
+    .space-bar[data-space="16"]{width:16px}
+    .space-bar[data-space="24"]{width:24px}
+    .space-bar[data-space="32"]{width:32px}
+    .space-bar[data-space="48"]{width:48px}
+  </style>
+</head>
+<body>
+  <div class="catalog">
+    <h1>DS 카탈로그</h1>
+    <p class="lead">PO는 이 카탈로그의 <b>이름</b>으로 AI에게 디자인을 지시한다. 각 이름은 screen model의 source.ref·토큰명과 동일.</p>
+    <nav class="toc"><a href="#colors">색상</a> · <a href="#type">타이포</a> · <a href="#space">치수</a> · <a href="#components">컴포넌트</a> · <a href="#guide">사용 가이드</a></nav>
+    <section id="colors"><h2>색상 토큰</h2>
+      <p class="empty">색상 토큰을 찾지 못함 (DS에 CSS 변수 미정의).</p>
+    </section>
+    <section id="type"><h2>타이포 토큰</h2>
+      <p class="empty">타이포 토큰 없음 — 시스템 폰트 스택 사용(렌더 동결).</p>
+    </section>
+    <section id="space"><h2>치수·스페이싱 토큰</h2>
+      <table class="token-table"><thead><tr><th>토큰</th><th>값</th><th>견본</th></tr></thead><tbody>
+        <tr><td><code>--radius</code></td><td>0.5rem</td><td></td></tr>
+        <tr><td><code>--radius-lg</code></td><td>var(--radius)</td><td></td></tr>
+        <tr><td><code>--radius-md</code></td><td>calc(var(--radius) - 2px)</td><td></td></tr>
+        <tr><td><code>--radius-sm</code></td><td>calc(var(--radius) - 4px)</td><td></td></tr>
+        <tr><td><code>--radius-xl</code></td><td>calc(var(--radius) + 4px)</td><td></td></tr>
+      </tbody></table>
+      <h3>엔진 기본 spacing (token-only 치수)</h3>
+      <div class="space-scale">
+        <div class="space-row"><code>space-0</code><span class="space-bar" data-space="0"></span><span>0px</span></div>
+        <div class="space-row"><code>space-1</code><span class="space-bar" data-space="4"></span><span>4px</span></div>
+        <div class="space-row"><code>space-2</code><span class="space-bar" data-space="8"></span><span>8px</span></div>
+        <div class="space-row"><code>space-3</code><span class="space-bar" data-space="12"></span><span>12px</span></div>
+        <div class="space-row"><code>space-4</code><span class="space-bar" data-space="16"></span><span>16px</span></div>
+        <div class="space-row"><code>space-5</code><span class="space-bar" data-space="24"></span><span>24px</span></div>
+        <div class="space-row"><code>space-6</code><span class="space-bar" data-space="32"></span><span>32px</span></div>
+        <div class="space-row"><code>space-8</code><span class="space-bar" data-space="48"></span><span>48px</span></div>
+      </div>
+    </section>
+    <section id="components"><h2>컴포넌트 갤러리</h2>
+      <article class="comp-card">
+        <h3>Accordion <code class="ref">source.ref: Accordion</code></h3>
+        <p class="desc">클릭 시 열리고 닫히는 확장 패널 목록</p>
+        <p class="props">props: <code>type, collapsible</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Accordion" data-state="default">Accordion</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Alert <code class="ref">source.ref: Alert</code></h3>
+        <p class="desc">인라인 알림 메시지 (성공/경고/오류/정보)</p>
+        <p class="props">props: <code>variant</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Alert" data-state="default">Alert</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Avatar <code class="ref">source.ref: Avatar</code></h3>
+        <p class="desc">사용자 프로필 이미지 또는 이니셜 표시</p>
+        <p class="props">props: <code>class</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <span data-ref="Avatar" data-slot="avatar" class="relative flex size-8 shrink-0 overflow-hidden rounded-full" data-state="default">Avatar</span>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Badge <code class="ref">source.ref: Badge</code></h3>
+        <p class="desc">상태·태그·수량 등을 나타내는 인라인 레이블</p>
+        <p class="props">props: <code>variant</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Badge" data-slot="badge" class="inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&amp;&gt;svg]:size-3 gap-1 [&amp;&gt;svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden border-transparent bg-primary text-primary-foreground [a&amp;]:hover:bg-primary/90" data-state="default">Badge</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Button <code class="ref">source.ref: Button</code></h3>
+        <p class="desc">사용자 액션을 실행하는 기본 버튼. variant로 시각적 계층 표현</p>
+        <p class="props">props: <code>variant, size, disabled, asChild</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <button data-ref="Button" data-slot="button" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 has-[&gt;svg]:px-3" data-state="default">Button</button>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">hover</span>
+            <button data-ref="Button" data-slot="button" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 has-[&gt;svg]:px-3" data-state="hover">Button</button>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">focus</span>
+            <button data-ref="Button" data-slot="button" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 has-[&gt;svg]:px-3" data-state="focus">Button</button>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">active</span>
+            <button data-ref="Button" data-slot="button" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 has-[&gt;svg]:px-3" data-state="active">Button</button>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">disabled</span>
+            <button data-ref="Button" data-slot="button" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 has-[&gt;svg]:px-3" data-state="disabled">Button</button>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">loading</span>
+            <button data-ref="Button" data-slot="button" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2 has-[&gt;svg]:px-3" data-state="loading">Button</button>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Card <code class="ref">source.ref: Card</code></h3>
+        <p class="desc">콘텐츠 컨테이너. CardHeader·CardContent·CardFooter 서브컴포넌트 포함</p>
+        <p class="props">props: <code>class</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Card" data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm" data-state="default">Card</div>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">hover</span>
+            <div data-ref="Card" data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm" data-state="hover">Card</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Checkbox <code class="ref">source.ref: Checkbox</code></h3>
+        <p class="desc">단일 항목 선택/해제 체크박스</p>
+        <p class="props">props: <code>modelValue, disabled, indeterminate</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <input data-ref="Checkbox" type="checkbox" data-state="default" />
+          </div>
+          <div class="state-cell">
+            <span class="state-name">disabled</span>
+            <input data-ref="Checkbox" type="checkbox" data-state="disabled" />
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>ContributionGraph <code class="ref">source.ref: ContributionGraph</code></h3>
+        <p class="desc">GitHub 스타일 26×7 잔디밭 그래프. 날짜별 활동량을 색 강도로 표현하며 hover 툴팁 제공</p>
+        <p class="props">props: <code>cells, levelOf</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="ContributionGraph" data-state="default">ContributionGraph</div>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">hover</span>
+            <div data-ref="ContributionGraph" data-state="hover">ContributionGraph</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Dialog <code class="ref">source.ref: Dialog</code></h3>
+        <p class="desc">페이지 위에 표시되는 모달 다이얼로그</p>
+        <p class="props">props: <code>open, modal</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Dialog" data-state="default">Dialog</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>DropdownMenu <code class="ref">source.ref: DropdownMenu</code></h3>
+        <p class="desc">트리거 요소에 연결된 컨텍스트 메뉴</p>
+        <p class="props">props: <code>open</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            DropdownMenu
+          </div>
+          <div class="state-cell">
+            <span class="state-name">disabled</span>
+            DropdownMenu
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>FilterBar <code class="ref">source.ref: FilterBar</code></h3>
+        <p class="desc">검색 Input + 태그 Button 그룹 + 정렬 Select를 묶은 필터 복합 컴포넌트</p>
+        <p class="props">props: <code>tags, sortOptions, modelValue</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="FilterBar" class="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3" data-state="default"><!-- 검색 --><div class="relative flex-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground pointer-events-none"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><input data-slot="input" class="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive pl-9" placeholder="검색..."></div><!-- 태그 필터 --><!-- 정렬 --><button data-slot="select-trigger" data-size="default" class="border-input data-[placeholder]:text-muted-foreground [&amp;_svg:not([class*=&#39;text-&#39;])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-3 disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 w-28 shrink-0" role="combobox" type="button" aria-controls="reka-select-content-v-0" aria-expanded="false" aria-required="false" aria-autocomplete="none" dir="ltr" data-state="closed"><span style="pointer-events:none;" data-placeholder data-slot="select-value"></span><svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" class="size-4 opacity-50"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.13523 6.15803C3.3241 5.95657 3.64052 5.94637 3.84197 6.13523L7.5 9.56464L11.158 6.13523C11.3595 5.94637 11.6759 5.95657 11.8648 6.15803C12.0536 6.35949 12.0434 6.67591 11.842 6.86477L7.84197 10.6148C7.64964 10.7951 7.35036 10.7951 7.15803 10.6148L3.15803 6.86477C2.95657 6.67591 2.94637 6.35949 3.13523 6.15803Z" fill="currentColor"></path></svg></button><!--v-if--><!--v-if--></div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Form <code class="ref">source.ref: Form</code></h3>
+        <p class="desc">vee-validate 기반 폼 유효성 검증 래퍼. FormItem·FormLabel·FormControl·FormMessage 포함</p>
+        <p class="props">props: <code>validationSchema</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <form data-ref="Form" novalidate data-state="default">Form</form>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">error</span>
+            <form data-ref="Form" novalidate data-state="error">Form</form>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Header <code class="ref">source.ref: Header</code></h3>
+        <p class="desc">브랜드 + 네비게이션 + 테마 토글 + 인증 액션을 포함한 앱 공통 헤더</p>
+        <p class="props">props: <code>brand, navItems, user, isDark</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <header data-ref="Header" class="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur-sm" data-state="default"><div class="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4"><!-- Brand --><span class="text-lg font-bold text-primary shrink-0">DevLog</span><!-- Nav Items --><div class="flex-1"></div><!-- Theme Toggle --><button data-slot="button" data-variant="ghost" data-size="icon" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 size-9"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon-icon size-4"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg></button><!-- Auth: logged in --><!-- Auth: guest --><button data-slot="button" data-size="sm" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground hover:bg-primary/90 h-8 rounded-md gap-1.5 px-3 has-[&gt;svg]:px-2.5">로그인</button><!-- Mobile menu slot --><button data-slot="button" data-variant="ghost" data-size="icon" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 size-9 md:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu-icon size-4"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button></div></header>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Input <code class="ref">source.ref: Input</code></h3>
+        <p class="desc">단일 줄 텍스트 입력 필드</p>
+        <p class="props">props: <code>modelValue, type, placeholder, disabled</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <input data-ref="Input" data-slot="input" class="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive" data-state="default">
+          </div>
+          <div class="state-cell">
+            <span class="state-name">focus</span>
+            <input data-ref="Input" data-slot="input" class="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive" data-state="focus">
+          </div>
+          <div class="state-cell">
+            <span class="state-name">disabled</span>
+            <input data-ref="Input" data-slot="input" class="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive" data-state="disabled">
+          </div>
+          <div class="state-cell">
+            <span class="state-name">error</span>
+            <input data-ref="Input" data-slot="input" class="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive" data-state="error">
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Label <code class="ref">source.ref: Label</code></h3>
+        <p class="desc">폼 입력 요소와 연결되는 접근성 레이블</p>
+        <p class="props">props: <code>for</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <label data-ref="Label" data-slot="label" class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50" data-state="default">Label</label>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">disabled</span>
+            <label data-ref="Label" data-slot="label" class="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50" data-state="disabled">Label</label>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Pagination <code class="ref">source.ref: Pagination</code></h3>
+        <p class="desc">페이지 번호 탐색 컴포넌트</p>
+        <p class="props">props: <code>page, totalPages, siblingCount</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Pagination" data-state="default">Pagination</div>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">active</span>
+            <div data-ref="Pagination" data-state="active">Pagination</div>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">disabled</span>
+            <div data-ref="Pagination" data-state="disabled">Pagination</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>PomodoroTimer <code class="ref">source.ref: PomodoroTimer</code></h3>
+        <p class="desc">원형 SVG 진행 게이지와 시작/정지/초기화 버튼을 포함한 뽀모도로 타이머</p>
+        <p class="props">props: <code>targetSeconds, status, elapsed</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">idle</span>
+            <div data-ref="PomodoroTimer" class="flex flex-col items-center gap-4" data-state="idle"><!-- SVG 원형 게이지 --><div class="relative"><svg width="176" height="176" viewBox="0 0 176 176" class="-rotate-90"><!-- 배경 트랙 --><circle cx="88" cy="88" r="80" fill="none" class="stroke-muted" stroke-width="8"></circle><!-- 진행 아크 --><circle cx="88" cy="88" r="80" fill="none" class="stroke-primary transition-all duration-1000 ease-linear" stroke-width="8" stroke-linecap="round" stroke-dasharray="502.6548245743669" stroke-dashoffset="502.6548245743669"></circle></svg><!-- 중앙 텍스트 --><div class="absolute inset-0 flex flex-col items-center justify-center"><span class="text-foreground text-4xl font-mono font-bold tabular-nums">25:00</span><span class="text-xs text-muted-foreground mt-1">준비</span></div></div><!-- 컨트롤 버튼 --><div class="flex items-center gap-2"><button data-slot="button" data-variant="default" data-size="icon" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground hover:bg-primary/90 size-9"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play-icon size-4"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg></button><button data-slot="button" data-variant="ghost" data-size="icon" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 size-9"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw-icon size-4"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></button></div></div>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">running</span>
+            <div data-ref="PomodoroTimer" class="flex flex-col items-center gap-4" data-state="running"><!-- SVG 원형 게이지 --><div class="relative"><svg width="176" height="176" viewBox="0 0 176 176" class="-rotate-90"><!-- 배경 트랙 --><circle cx="88" cy="88" r="80" fill="none" class="stroke-muted" stroke-width="8"></circle><!-- 진행 아크 --><circle cx="88" cy="88" r="80" fill="none" class="stroke-primary transition-all duration-1000 ease-linear" stroke-width="8" stroke-linecap="round" stroke-dasharray="502.6548245743669" stroke-dashoffset="502.6548245743669"></circle></svg><!-- 중앙 텍스트 --><div class="absolute inset-0 flex flex-col items-center justify-center"><span class="text-foreground text-4xl font-mono font-bold tabular-nums">25:00</span><span class="text-xs text-muted-foreground mt-1">준비</span></div></div><!-- 컨트롤 버튼 --><div class="flex items-center gap-2"><button data-slot="button" data-variant="default" data-size="icon" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground hover:bg-primary/90 size-9"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play-icon size-4"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg></button><button data-slot="button" data-variant="ghost" data-size="icon" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 size-9"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw-icon size-4"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></button></div></div>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">paused</span>
+            <div data-ref="PomodoroTimer" class="flex flex-col items-center gap-4" data-state="paused"><!-- SVG 원형 게이지 --><div class="relative"><svg width="176" height="176" viewBox="0 0 176 176" class="-rotate-90"><!-- 배경 트랙 --><circle cx="88" cy="88" r="80" fill="none" class="stroke-muted" stroke-width="8"></circle><!-- 진행 아크 --><circle cx="88" cy="88" r="80" fill="none" class="stroke-primary transition-all duration-1000 ease-linear" stroke-width="8" stroke-linecap="round" stroke-dasharray="502.6548245743669" stroke-dashoffset="502.6548245743669"></circle></svg><!-- 중앙 텍스트 --><div class="absolute inset-0 flex flex-col items-center justify-center"><span class="text-foreground text-4xl font-mono font-bold tabular-nums">25:00</span><span class="text-xs text-muted-foreground mt-1">준비</span></div></div><!-- 컨트롤 버튼 --><div class="flex items-center gap-2"><button data-slot="button" data-variant="default" data-size="icon" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground hover:bg-primary/90 size-9"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play-icon size-4"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg></button><button data-slot="button" data-variant="ghost" data-size="icon" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 size-9"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw-icon size-4"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></button></div></div>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">done</span>
+            <div data-ref="PomodoroTimer" class="flex flex-col items-center gap-4" data-state="done"><!-- SVG 원형 게이지 --><div class="relative"><svg width="176" height="176" viewBox="0 0 176 176" class="-rotate-90"><!-- 배경 트랙 --><circle cx="88" cy="88" r="80" fill="none" class="stroke-muted" stroke-width="8"></circle><!-- 진행 아크 --><circle cx="88" cy="88" r="80" fill="none" class="stroke-primary transition-all duration-1000 ease-linear" stroke-width="8" stroke-linecap="round" stroke-dasharray="502.6548245743669" stroke-dashoffset="502.6548245743669"></circle></svg><!-- 중앙 텍스트 --><div class="absolute inset-0 flex flex-col items-center justify-center"><span class="text-foreground text-4xl font-mono font-bold tabular-nums">25:00</span><span class="text-xs text-muted-foreground mt-1">준비</span></div></div><!-- 컨트롤 버튼 --><div class="flex items-center gap-2"><button data-slot="button" data-variant="default" data-size="icon" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground hover:bg-primary/90 size-9"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play-icon size-4"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg></button><button data-slot="button" data-variant="ghost" data-size="icon" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#39;size-&#39;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 size-9"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw-icon size-4"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg></button></div></div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Popover <code class="ref">source.ref: Popover</code></h3>
+        <p class="desc">트리거 요소 근처에 표시되는 자유형 팝업 패널</p>
+        <p class="props">props: <code>open</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Popover" data-state="default">Popover</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>PostCard <code class="ref">source.ref: PostCard</code></h3>
+        <p class="desc">게시글 썸네일·태그·제목·요약·좋아요를 포함한 카드형 게시글 미리보기</p>
+        <p class="props">props: <code>post, liked, likeCount</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="PostCard" data-state="default">PostCard</div>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">hover</span>
+            <div data-ref="PostCard" data-state="hover">PostCard</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Progress <code class="ref">source.ref: Progress</code></h3>
+        <p class="desc">작업 진행률을 표시하는 선형 프로그레스 바</p>
+        <p class="props">props: <code>modelValue, max</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Progress" data-state="default">Progress</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>RadioGroup <code class="ref">source.ref: RadioGroup</code></h3>
+        <p class="desc">상호 배타적 선택지 중 하나를 고르는 라디오 버튼 그룹</p>
+        <p class="props">props: <code>modelValue, disabled</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="RadioGroup" data-state="default">RadioGroup</div>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">disabled</span>
+            <div data-ref="RadioGroup" data-state="disabled">RadioGroup</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Select <code class="ref">source.ref: Select</code></h3>
+        <p class="desc">드롭다운 선택 컴포넌트 (Radix Vue 기반)</p>
+        <p class="props">props: <code>modelValue, disabled</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            Select<!--v-if-- data-state="default">
+          </div>
+          <div class="state-cell">
+            <span class="state-name">focus</span>
+            Select<!--v-if-- data-state="focus">
+          </div>
+          <div class="state-cell">
+            <span class="state-name">disabled</span>
+            Select<!--v-if-- data-state="disabled">
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Separator <code class="ref">source.ref: Separator</code></h3>
+        <p class="desc">콘텐츠 영역 구분선 (가로/세로)</p>
+        <p class="props">props: <code>orientation, decorative</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Separator" data-orientation="horizontal" role="none" data-slot="separator" class="bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px" data-state="default"></div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Sheet <code class="ref">source.ref: Sheet</code></h3>
+        <p class="desc">화면 가장자리에서 슬라이드인하는 패널 (모바일 서랍 메뉴)</p>
+        <p class="props">props: <code>open, side</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Sheet" data-state="default">Sheet</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Skeleton <code class="ref">source.ref: Skeleton</code></h3>
+        <p class="desc">콘텐츠 로딩 중 표시하는 플레이스홀더</p>
+        <p class="props">props: <code>class</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Skeleton" data-slot="skeleton" class="animate-pulse rounded-md bg-primary/10" data-state="default"></div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>StatCard <code class="ref">source.ref: StatCard</code></h3>
+        <p class="desc">Card 기반 단일 통계 수치 카드. 추세(trend) 배지·아이콘·설명 텍스트 포함</p>
+        <p class="props">props: <code>title, value, description, trend, icon, variant</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="StatCard" data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm" data-state="default"><div data-slot="card-header" class="@container/card-header auto-rows-min grid-rows-[auto_auto] gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 flex flex-row items-center justify-between pb-2"><h3 data-slot="card-title" class="text-sm font-medium text-muted-foreground"></h3></div><div data-slot="card-content" class="px-6"><div class="text-2xl font-bold"></div><div class="mt-1 flex items-center gap-1.5"><!-- Trend badge --></div></div></div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Switch <code class="ref">source.ref: Switch</code></h3>
+        <p class="desc">켜짐/꺼짐 토글 스위치</p>
+        <p class="props">props: <code>modelValue, disabled</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <button data-ref="Switch" role="switch" type="button" value="on" aria-checked="false" aria-required="false" data-state="unchecked" data-slot="switch" class="peer data-[state=checked]:bg-primary data-[state=unchecked]:bg-input focus-visible:border-ring focus-visible:ring-ring/50 dark:data-[state=unchecked]:bg-input/80 inline-flex h-[1.15rem] w-8 shrink-0 items-center rounded-full border border-transparent shadow-xs transition-all outline-none focus-visible:ring-3 disabled:cursor-not-allowed disabled:opacity-50" data-state="default"><span data-state="unchecked" data-slot="switch-thumb" class="bg-background dark:data-[state=unchecked]:bg-foreground dark:data-[state=checked]:bg-primary-foreground pointer-events-none block size-4 rounded-full ring-0 transition-transform data-[state=checked]:translate-x-[calc(100%-2px)] data-[state=unchecked]:translate-x-0"></span></button><!--v-if-->
+          </div>
+          <div class="state-cell">
+            <span class="state-name">disabled</span>
+            <button data-ref="Switch" role="switch" type="button" value="on" aria-checked="false" aria-required="false" data-state="unchecked" data-slot="switch" class="peer data-[state=checked]:bg-primary data-[state=unchecked]:bg-input focus-visible:border-ring focus-visible:ring-ring/50 dark:data-[state=unchecked]:bg-input/80 inline-flex h-[1.15rem] w-8 shrink-0 items-center rounded-full border border-transparent shadow-xs transition-all outline-none focus-visible:ring-3 disabled:cursor-not-allowed disabled:opacity-50" data-state="disabled"><span data-state="unchecked" data-slot="switch-thumb" class="bg-background dark:data-[state=unchecked]:bg-foreground dark:data-[state=checked]:bg-primary-foreground pointer-events-none block size-4 rounded-full ring-0 transition-transform data-[state=checked]:translate-x-[calc(100%-2px)] data-[state=unchecked]:translate-x-0"></span></button><!--v-if-->
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Tabs <code class="ref">source.ref: Tabs</code></h3>
+        <p class="desc">콘텐츠 영역을 탭으로 전환하는 컴포넌트</p>
+        <p class="props">props: <code>defaultValue, modelValue</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Tabs" dir="ltr" data-orientation="horizontal" data-slot="tabs" class="flex flex-col gap-2" data-state="default">Tabs</div>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">active</span>
+            <div data-ref="Tabs" dir="ltr" data-orientation="horizontal" data-slot="tabs" class="flex flex-col gap-2" data-state="active">Tabs</div>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">disabled</span>
+            <div data-ref="Tabs" dir="ltr" data-orientation="horizontal" data-slot="tabs" class="flex flex-col gap-2" data-state="disabled">Tabs</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Textarea <code class="ref">source.ref: Textarea</code></h3>
+        <p class="desc">여러 줄 텍스트 입력 필드</p>
+        <p class="props">props: <code>modelValue, placeholder, rows, disabled</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <textarea data-ref="Textarea" data-slot="textarea" class="border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 flex field-sizing-content min-h-16 w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-3 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" data-state="default"></textarea>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">focus</span>
+            <textarea data-ref="Textarea" data-slot="textarea" class="border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 flex field-sizing-content min-h-16 w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-3 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" data-state="focus"></textarea>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">disabled</span>
+            <textarea data-ref="Textarea" data-slot="textarea" class="border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 flex field-sizing-content min-h-16 w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-3 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" data-state="disabled"></textarea>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">error</span>
+            <textarea data-ref="Textarea" data-slot="textarea" class="border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 flex field-sizing-content min-h-16 w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-3 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" data-state="error"></textarea>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>Tooltip <code class="ref">source.ref: Tooltip</code></h3>
+        <p class="desc">요소에 마우스를 올렸을 때 보조 설명을 표시하는 작은 팝업</p>
+        <p class="props">props: <code>content, side, delay</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="Tooltip" data-state="default">Tooltip</div>
+          </div>
+        </div>
+      </article>
+      <article class="comp-card">
+        <h3>WeeklyChart <code class="ref">source.ref: WeeklyChart</code></h3>
+        <p class="desc">Chart.js(vue-chartjs) 기반 주간 활동 막대 차트 래퍼</p>
+        <p class="props">props: <code>data, title, color, height, yLabel</code></p>
+        <div class="states">
+          <div class="state-cell">
+            <span class="state-name">default</span>
+            <div data-ref="WeeklyChart" data-state="default">WeeklyChart</div>
+          </div>
+          <div class="state-cell">
+            <span class="state-name">empty</span>
+            <div data-ref="WeeklyChart" data-state="empty">WeeklyChart</div>
+          </div>
+        </div>
+      </article>
+    </section>
+    <section id="guide"><h2>사용 가이드</h2><dl class="guide">
+      <dt>Accordion</dt><dd>FAQ, 설정 그룹, 필터 카테고리</dd>
+      <dt>Alert</dt><dd>폼 오류 요약, 시스템 알림, 빈 상태 안내</dd>
+      <dt>Avatar</dt><dd>헤더 유저 아이콘, 게시글 작성자, 댓글 작성자</dd>
+      <dt>Badge</dt><dd>태그, 상태 표시, 카운트 뱃지</dd>
+      <dt>Button</dt><dd>폼 제출, 액션 트리거, 다이얼로그 확인/취소, 아이콘 버튼</dd>
+      <dt>Card</dt><dd>게시글 카드, 통계 카드, 설정 섹션</dd>
+      <dt>Checkbox</dt><dd>약관 동의, 목록 다중 선택</dd>
+      <dt>ContributionGraph</dt><dd>대시보드 기여도, 학습 기록, 연속 달성 표시</dd>
+      <dt>Dialog</dt><dd>삭제 확인, 상세 보기, 수정 폼</dd>
+      <dt>DropdownMenu</dt><dd>사용자 메뉴, 게시글 더보기, 설정 옵션</dd>
+      <dt>FilterBar</dt><dd>게시글 목록 필터링, 검색 결과 정렬</dd>
+      <dt>Form</dt><dd>로그인, 회원가입, 게시글 작성 폼</dd>
+      <dt>Header</dt><dd>모든 페이지 최상단 고정 헤더</dd>
+      <dt>Input</dt><dd>검색, 폼 필드, 필터 입력</dd>
+      <dt>Label</dt><dd>모든 폼 필드 레이블</dd>
+      <dt>Pagination</dt><dd>게시글 목록 페이지네이션</dd>
+      <dt>PomodoroTimer</dt><dd>집중 타이머 위젯, 대시보드 사이드 패널</dd>
+      <dt>Popover</dt><dd>날짜 피커, 색상 선택, 복잡한 필터 UI</dd>
+      <dt>PostCard</dt><dd>게시글 목록, 관련 게시글, 인기 게시글</dd>
+      <dt>Progress</dt><dd>목표 달성률, 파일 업로드, 레벨 게이지</dd>
+      <dt>RadioGroup</dt><dd>뽀모도로 세션 유형, 설정 옵션 선택</dd>
+      <dt>Select</dt><dd>정렬 선택, 카테고리 필터, 폼 선택 필드</dd>
+      <dt>Separator</dt><dd>메뉴 구분, 섹션 구분</dd>
+      <dt>Sheet</dt><dd>모바일 네비게이션, 설정 패널</dd>
+      <dt>Skeleton</dt><dd>게시글 목록, 프로필, 통계 카드 로딩 상태</dd>
+      <dt>StatCard</dt><dd>대시보드 KPI, 총 게시글 수, 총 좋아요, 연속 학습일</dd>
+      <dt>Switch</dt><dd>설정 토글, 알림 on/off</dd>
+      <dt>Tabs</dt><dd>페이지 섹션 전환, 필터 뷰</dd>
+      <dt>Textarea</dt><dd>글 본문, 댓글, 긴 설명 입력</dd>
+      <dt>Tooltip</dt><dd>아이콘 버튼 설명, 축약 텍스트 전체 보기</dd>
+      <dt>WeeklyChart</dt><dd>주간 학습량, 주간 글쓰기, 포모도로 완료 통계</dd>
+    </dl></section>
+    <footer class="sources">토큰 출처: foundation/design-system/ds-source/src/assets/tokens.css</footer>
+  </div>
+</body>
+</html>

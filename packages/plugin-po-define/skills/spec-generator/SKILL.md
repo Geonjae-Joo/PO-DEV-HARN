@@ -95,6 +95,11 @@ PACK-ORDER-ADMIN:  admin 전용 (SCR-ADMIN-ORDER-LIST, SCR-ADMIN-ORDER-CANCEL)
 > python skills/spec-generator/scripts/spec-pack-guard.py --write-pins model_repo/specs/PACK-<...>/spec-pack.yaml
 > ```
 > 발행 전 검증 시 같은 가드가 `compute_pins` 로 재계산해 대조한다 — 핀 불일치(stale)면 error로 차단, placeholder/누락이면 `--write-pins` 안내 warn.
+> `compute_pins`는 ② 실제 렌더와 같은 **시각 충실도 자산**(`ds-compiled.css`·`ds-fixtures.json`, ADR-002 D8)을 로드해 `render_hash`를 계산한다. `layout_hash`는 좌표·구조 전용이라 자산과 무관(불변) — DS 자산을 바꾸면 `render_hash`만 stale이 되므로 `--write-pins`로 재핀한다.
+>
+> **Gate A 이후 재핀(중요).** `gate-a-check`가 화면을 `confirmed` 처리하면 `screen.version`을 올린다(+`confirmed_at` 기록). 이때 이미 발행된 팩의 `pinned_contract.version`이 어긋나므로, **Gate A 통과 직후 해당 팩에 `--write-pins`를 다시 실행**해 version·해시를 동기화한다. (`layout_hash`는 좌표 불변이라 그대로지만 version·`render_hash`가 갱신될 수 있다.)
+>
+> **경로 규약.** spec-pack 의 `screens[].yaml_ref`·`render_ref`는 **프로젝트 루트(`projects/<id>/`) 기준 상대경로**다(`model_repo/...`). 가드는 spec-pack 위치(`model_repo/specs/PACK-*/`)에서 프로젝트 루트를 역추적해 결합하므로, 어느 cwd에서 실행해도 동작한다.
 - `scope`: 이 팩에 속하는 REQ-/CMP- ID 목록
 - `entities[]`: scope actions의 `outcome.target` 중 ENT- 를 모아 ref(`model_repo/entities/ENT-*.yaml`)로 등록 (복사 아님)
 - `externals[]`: outcome.target / EXT 참조 중 EXT- 를 ref(`model_repo/externals/EXT-*.yaml`)로 등록

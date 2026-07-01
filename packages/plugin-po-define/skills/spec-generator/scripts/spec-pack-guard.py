@@ -161,9 +161,21 @@ def screens_referenced_by_journeys(screen_ids: set[str]) -> set[str]:
     return covered
 
 
+def _pack_project_root(fp: Path) -> Path:
+    """yaml_ref(프로젝트 루트 상대) 결합용 프로젝트 루트 해석.
+    layout-hash-guard.py 의 project_root_for 와 동일 방식: 경로를 거슬러 model_repo 를
+    가진 디렉터리를 찾고, 못 찾으면 specs/PACK-*/spec-pack.yaml(=4단계) 가정으로 폴백.
+    (구 구현 fp.parent.parent.parent 는 model_repo 까지만 올라가 yaml_ref 해석이 깨졌음.)"""
+    fp = fp.resolve()
+    for parent in fp.parents:
+        if (parent / "model_repo").is_dir():
+            return parent
+    return fp.parents[3] if len(fp.parents) >= 4 else fp.parent
+
+
 def check_pack(fp: Path, write_pins: bool = False) -> None:
     """spec-pack.yaml 핀 검증 또는 기록."""
-    pack_root = fp.parent.parent.parent  # specs/PACK-*/spec-pack.yaml → project root
+    pack_root = _pack_project_root(fp)  # model_repo/specs/PACK-*/spec-pack.yaml → project root
     doc = load(fp)
     if not isinstance(doc, dict):
         return

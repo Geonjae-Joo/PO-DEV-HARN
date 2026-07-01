@@ -68,14 +68,14 @@ def check_lint(targets: list[str]) -> bool:
         block(f"L1 lint error {len(l1_errors)}건 — DS 폐쇄 위반:\n" +
               "\n".join(f"    {e}" for e in l1_errors))
         return False
-    # L2/L3/L4 에러도 Gate A 차단
+    # L2/L3/L4/L5 에러도 Gate A 차단
     gate_errors = [line for line in result.stderr.splitlines()
-                   if any(tag in line for tag in ("[L2 ERROR]", "[L3 ERROR]", "[L4 ERROR]"))]
+                   if any(tag in line for tag in ("[L2 ERROR]", "[L3 ERROR]", "[L4 ERROR]", "[L5 ERROR]"))]
     if gate_errors:
-        block(f"L2/L3/L4 error {len(gate_errors)}건 — 완전성/일관성/커버리지 위반:\n" +
+        block(f"L2/L3/L4/L5 error {len(gate_errors)}건 — 완전성/일관성/커버리지/캔버스경계 위반:\n" +
               "\n".join(f"    {e}" for e in gate_errors))
         return False
-    ok("lint L1~L4 pass")
+    ok("lint L1~L5 pass")
     return True
 
 
@@ -227,7 +227,7 @@ def main():
         except Exception as e:
             block(f"{fp.name}: YAML 파싱 실패 — {e}")
 
-    # 5가지 조건 검사
+    # 6가지 조건 검사
     c1 = check_lint(file_args)
     c2 = check_sufficiency(file_args)
     c3 = check_actions_confirmed(docs)

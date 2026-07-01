@@ -85,14 +85,17 @@ python "${HARNESS_CORE}/render/render_screen.py" model_repo/screens/SCR-*.yaml
 ```
 
 **계약(엔진이 보장):** 같은 입력 → **바이트 동일** HTML(rendered-at 주석 제외). 인라인 style 금지,
-외부 CDN/폰트 금지, 토큰 컴파일 CSS만 `<style>`에. `layout_hash`(전 브레이크포인트 좌표)·
-`render_hash`(HTML) 산출 → `pinned_contract`에 동결, ③ Phase α가 재렌더로 위치 계약 재현 검증.
+외부 CDN/폰트 금지, 토큰/DS 컴파일 CSS만 `<style>`에. 여기서 "입력"은 screen model + DP +
+**커밋된 시각 충실도 자산**(`foundation/design-system/ds-compiled.css`·`ds-fixtures.json`, ADR-002 D8)을
+포함한다 — 자산이 있으면 실제 DS 모양으로, 없으면 와이어프레임으로 렌더. `layout_hash`(전 브레이크포인트
+좌표)는 **자산과 무관**(좌표·구조 전용), `render_hash`(HTML)만 자산에 영향받는다 → `pinned_contract`에
+동결, ③ Phase α가 재렌더로 위치 계약 재현 검증(render_hash 불일치는 warn).
 
 **엔진 동작:**
 - `screen.template.page`가 지정한 DP의 canvas(grid·breakpoints·slots locked/editable)를 골격으로 사용
 - `position.base`/`at`를 슬롯 grid_columns에 맞춰 정수 좌표로 resolve → CSS 그리드 배치(반응형)
 - 오버라이드 미지정 브레이크포인트는 결정론적 자동 강등(full-width 세로 스택)
-- `props` 반영, locked 슬롯은 DP 실제 컴포넌트로 그려 맥락 제공
+- `props` 반영, locked 슬롯은 DP 컴포넌트로 그려 맥락 제공(D8 자산 있으면 실제 DS 마크업, 없으면 라벨박스)
 - `meta.interactive`는 시각 구분만 (실제 동작 구현 아님)
 
 **파일 생성 규칙:**
@@ -110,7 +113,7 @@ model_repo/
 <!-- Rendered by layout-recommend skill at {timestamp} -->
 ```
 
-**렌더에 포함:** 컴포넌트 위치·배치·크기(span), DS design token 스타일, props, interactive 컴포넌트 시각 구분, 화면 ID·버전 워터마크
+**렌더에 포함:** 컴포넌트 위치·배치·크기(span), DS design token 스타일 + 실제 컴포넌트 마크업(D8 자산 있을 때), props, interactive 컴포넌트 시각 구분, 화면 ID·버전 워터마크
 
 **렌더에 미포함:** 실제 API 연동, 실데이터, action 동작 구현
 

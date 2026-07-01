@@ -99,7 +99,7 @@ actions:
       type: export          # navigate | query | mutate | export | open | validate | noop
       target: ENT-ORDER     # SCR-(이동) | ENT-(데이터) | EXT-(외부)
     type: behavior          # behavior | validation | permission | data
-    permission: admin       # 역할 제한 (없으면 all). screen.permission보다 좁을 수 없음 (sufficiency L3 체크)
+    permission: admin       # (선택) 역할 제한 — 생략 시 'all'(제한 없음). screen.permission보다 좁을 수 없음 (sufficiency L3 체크). validator도 선택으로 취급(생략 허용).
     error_behavior:         # 실패 케이스별 UX — action-interview Step 3에서 수집
       default: "토스트 에러 메시지 표시"
       network_fail: "재시도 버튼 표시, 3회 후 고객센터 안내"
@@ -235,7 +235,7 @@ checkpoints:
 
 ## screen.status 전환
 `draft → layout_confirmed → actions_in_progress → review → confirmed`
-상세: `.claude/rules/state-machine.md`
+상세: `packages/plugin-po-define/rules/state-machine.md`
 
 ---
 

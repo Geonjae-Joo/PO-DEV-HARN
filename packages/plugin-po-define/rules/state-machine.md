@@ -56,6 +56,8 @@ confirmed 후 변경: Change Order 프로세스 (③ change-order-policy.md)
 
 5. 결정론적 렌더 (lint 통과 시에만)
    └ harness-core/render/render_screen.py (결정론적 엔진)가 수행 — 스킬 ad-hoc 아님
+   └ 실제 DS 모양은 ① 준비단계가 커밋한 정적 자산(ds-compiled.css·ds-fixtures.json, ADR-002 D8)에서 읽는다.
+     결정성은 "렌더 시 재컴파일 금지, 커밋된 자산만 읽음"으로 보장 — layout_hash는 자산과 무관(불변), render_hash만 반영.
    └ renders/SCR-*.render.html 갱신 (같은 입력 → 바이트 동일 HTML)
 ```
 

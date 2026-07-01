@@ -311,8 +311,34 @@ def _esc(s: str) -> str:
             .replace(">", "&gt;").replace('"', "&quot;"))
 
 
-def _component_html(ref: str, props: dict, cmp_id: str | None, label: str, indent: int) -> list:
-    """DS 컴포넌트 1개 → HTML 라인 목록(시각 뷰, 실제 동작 아님)."""
+def _fixture_html(ref: str, fixtures: dict | None, props: dict,
+                  cmp_id: str | None, label: str, indent: int) -> list | None:
+    """fixtures 에 ref 의 실제 마크업이 있으면 그걸로 1줄 렌더(없으면 None → 와이어프레임 폴백).
+
+    build_ds_assets.mjs 가 SSR 로 뽑은 정적 마크업을 사용한다. data-ref·data-cmp(그리드 배치
+    셀렉터)를 첫 태그에 주입하고, '{label}' 자리표시자를 실제 라벨로 치환한다. 입력이 고정이면
+    출력도 고정(결정적)."""
+    fx = (fixtures or {}).get(ref)
+    if not (isinstance(fx, dict) and isinstance(fx.get("html"), str)):
+        return None
+    pad = "  " * indent
+    text = label or (props.get("label") if isinstance(props, dict) else None) or ref
+    html = fx["html"].replace("{label}", _esc(str(text)))
+    inject = f' data-ref="{_esc(ref)}"'
+    if cmp_id:
+        inject += f' data-cmp="{_esc(cmp_id)}"'
+    m = re.search(r"<([a-zA-Z][\w-]*)", html)  # 첫 여는 태그 뒤에 식별 속성 삽입
+    if m:
+        html = html[:m.end()] + inject + html[m.end():]
+    return [f"{pad}{html}"]
+
+
+def _component_html(ref: str, props: dict, cmp_id: str | None, label: str, indent: int,
+                    fixtures: dict | None = None) -> list:
+    """DS 컴포넌트 1개 → HTML 라인 목록. fixtures 있으면 실제 마크업, 없으면 시각 뷰(폴백)."""
+    fixed = _fixture_html(ref, fixtures, props, cmp_id, label, indent)
+    if fixed is not None:
+        return fixed
     pad = "  " * indent
     tag, void = TAG_MAP.get(ref, ("div", False))
     attrs = {"data-ref": ref}
@@ -432,7 +458,8 @@ def _build_css(canvas: dict, resolved: dict, editable_slot_ids: list) -> list:
 
 # ── 공개 렌더 함수 ──────────────────────────────────────────────────────────────
 
-def _document(title: str, head_comment: list, css_lines: list, body_lines: list) -> str:
+def _document(title: str, head_comment: list, css_lines: list, body_lines: list,
+              extra_css: str = "") -> str:
     out = []
     out.extend(head_comment)
     out.append("<!DOCTYPE html>")
@@ -442,6 +469,11 @@ def _document(title: str, head_comment: list, css_lines: list, body_lines: list)
     out.append('  <meta name="viewport" content="width=device-width, initial-scale=1" />')
     out.append(f"  <title>{_esc(title)}</title>")
     out.append("  <style>")
+    if extra_css:
+        # 실제 DS CSS(사전 컴파일·커밋된 정적 자산)를 먼저 inline → 엔진 레이아웃 CSS 가 뒤에서 우선.
+        # 외부 CDN/폰트 없음, <style> 안의 CSS 만(인라인 style 속성 아님). 자산이 고정이면 출력도 고정.
+        out.append("    /* ds-compiled.css (ADR-002 §3 시각 충실도 레이어) */")
+        out.append(extra_css)
     for ln in css_lines:
         out.append(f"    {ln}")
     out.append("  </style>")
@@ -453,7 +485,8 @@ def _document(title: str, head_comment: list, css_lines: list, body_lines: list)
     return "\n".join(out) + "\n"
 
 
-def _render_slots_body(scr: dict, canvas: dict, resolved: dict, dp_id: str) -> tuple:
+def _render_slots_body(scr: dict, canvas: dict, resolved: dict, dp_id: str,
+                       fixtures: dict | None = None) -> tuple:
     """body 라인 목록 + editable 슬롯 id 목록 반환."""
     components = canvas["components"]
     comps_by_slot = defaultdict(list)
@@ -483,14 +516,16 @@ def _render_slots_body(scr: dict, canvas: dict, resolved: dict, dp_id: str) -> t
             # locked region → DP 실제 컴포넌트
             for c in comps_by_slot.get(sid, []):
                 body.extend(_component_html(c.get("ref", ""), {}, None,
-                                            c.get("note") or c.get("ref", ""), indent=3))
+                                            c.get("note") or c.get("ref", ""), indent=3,
+                                            fixtures=fixtures))
         else:
             editable_slot_ids.append(sid)
             if items:
                 placed = sorted(items, key=_order_key)
                 for it in placed:
                     body.extend(_component_html(item_ref(it), it.get("props") or {},
-                                                it.get("id"), _label_of(it), indent=3))
+                                                it.get("id"), _label_of(it), indent=3,
+                                                fixtures=fixtures))
             else:
                 # 레거시/빈 캔버스: DP 컴포넌트가 있으면 맥락 표시
                 for c in comps_by_slot.get(sid, []):
@@ -501,18 +536,24 @@ def _render_slots_body(scr: dict, canvas: dict, resolved: dict, dp_id: str) -> t
     return body, editable_slot_ids
 
 
-def render_screen(scr: dict, dp: dict, timestamp: str = "") -> tuple:
+def render_screen(scr: dict, dp: dict, timestamp: str = "", ds_assets: dict | None = None) -> tuple:
     """
     SCR doc + DP doc → (html, layout_hash, render_hash).
     timestamp 는 rendered-at 주석에만 들어가며 render_hash 에서 제외된다.
+    ds_assets({"css","fixtures"})가 주어지면 실제 DS 모양으로 렌더한다(없으면 와이어프레임 폴백).
+    layout_hash 는 ds_assets 와 무관(좌표·구조 전용) — render_hash 만 영향받는다.
     """
+    ds_assets = ds_assets or {}
+    fixtures = ds_assets.get("fixtures") or {}
+    extra_css = ds_assets.get("css") or ""
     canvas = normalize_canvas(dp)
     resolved = resolve_positions(scr, dp)
     screen = scr.get("screen", {})
     scr_id = screen.get("id", "SCR-UNKNOWN")
     title = f'{screen.get("name", scr_id)} ({scr_id})'
 
-    body, editable_slots = _render_slots_body(scr, canvas, resolved, dp.get("id", ""))
+    body, editable_slots = _render_slots_body(scr, canvas, resolved, dp.get("id", ""),
+                                              fixtures=fixtures)
     css = _build_css(canvas, resolved, editable_slots)
     head_comment = [
         f"<!-- GENERATED VIEW — source: {scr_id}.yaml v{screen.get('version','?')} — DO NOT EDIT -->",
@@ -521,12 +562,17 @@ def render_screen(scr: dict, dp: dict, timestamp: str = "") -> tuple:
     if timestamp:
         head_comment.append(f"<!-- rendered-at: {timestamp} -->")
 
-    html = _document(title, head_comment, css, body)
+    html = _document(title, head_comment, css, body, extra_css=extra_css)
     return html, compute_layout_hash(scr, dp), compute_render_hash(html)
 
 
-def render_designpage(dp: dict, timestamp: str = "") -> str:
-    """DP doc → HTML. locked=실제 컴포넌트, editable=그리드 오버레이+슬롯명+경계."""
+def render_designpage(dp: dict, timestamp: str = "", ds_assets: dict | None = None) -> str:
+    """DP doc → HTML. ds_assets 있으면 실제 DS 마크업, 없으면 와이어프레임(폴백).
+
+    fixture 가 있는 컴포넌트는 실제 모양으로, 없는 컴포넌트는 기존 라벨박스/그리드 힌트로 그린다."""
+    ds_assets = ds_assets or {}
+    fixtures = ds_assets.get("fixtures") or {}
+    extra_css = ds_assets.get("css") or ""
     canvas = normalize_canvas(dp)
     dp_id = dp.get("id", "DP-UNKNOWN")
     comps_by_slot = defaultdict(list)
@@ -548,7 +594,8 @@ def render_designpage(dp: dict, timestamp: str = "") -> str:
         if locked:
             for c in comps_by_slot.get(sid, []):
                 body.extend(_component_html(c.get("ref", ""), {}, None,
-                                            c.get("note") or c.get("ref", ""), indent=3))
+                                            c.get("note") or c.get("ref", ""), indent=3,
+                                            fixtures=fixtures))
         else:
             editable_slots.append(sid)
             # v2 DP: editable 슬롯에 seed 컴포넌트(인스턴스화 시 SCR로 복사될 시작 디자인)가
@@ -558,7 +605,8 @@ def render_designpage(dp: dict, timestamp: str = "") -> str:
             if seeds:
                 for c in seeds:
                     body.extend(_component_html(c.get("ref", ""), c.get("props") or {},
-                                                None, c.get("note") or c.get("ref", ""), indent=3))
+                                                None, c.get("note") or c.get("ref", ""), indent=3,
+                                                fixtures=fixtures))
             else:
                 locks = ", ".join(slot.get("locks", [])) or "any (canvas)"
                 body.append(f'      <div class="canvas-hint">빈 캔버스 — '
@@ -587,7 +635,7 @@ def render_designpage(dp: dict, timestamp: str = "") -> str:
     ]
     if timestamp:
         head_comment.append(f"<!-- rendered-at: {timestamp} -->")
-    return _document(f"{dp_id} (design page)", head_comment, css, body)
+    return _document(f"{dp_id} (design page)", head_comment, css, body, extra_css=extra_css)
 
 
 # ── DS 카탈로그 (D4) ────────────────────────────────────────────────────────────
@@ -600,12 +648,12 @@ def applicable_states(comp: dict) -> list:
     return STATES_BY_REF.get(comp.get("name", ""), ["default"])
 
 
-def _state_chip(ref: str, state: str, indent: int) -> list:
+def _state_chip(ref: str, state: str, indent: int, fixtures: dict | None = None) -> list:
     """컴포넌트 1개를 특정 상태로 시각 렌더(카탈로그 갤러리 셀)."""
     pad = "  " * indent
     lines = [f'{pad}<div class="state-cell">']
     lines.append(f'{pad}  <span class="state-name">{_esc(state)}</span>')
-    body = _component_html(ref, {}, None, ref, indent + 1)
+    body = _component_html(ref, {}, None, ref, indent + 1, fixtures=fixtures)
     # 상태를 data-state 로 표기(시각 구분용; 실제 상호작용 아님)
     if body:
         first = body[0]
@@ -619,11 +667,16 @@ def _state_chip(ref: str, state: str, indent: int) -> list:
     return lines
 
 
-def render_catalog(tokens: dict, components: list, timestamp: str = "") -> str:
+def render_catalog(tokens: dict, components: list, timestamp: str = "",
+                   ds_assets: dict | None = None) -> str:
     """
     토큰 + ds-allowlist 컴포넌트 메타 → DS 카탈로그(대시보드) HTML.
     PO가 이름으로 디자인을 지시할 근거(P2 "백지 캔버스" 제거). 결정론적.
+    ds_assets 있으면 컴포넌트 갤러리를 실제 DS 마크업으로(fixture), 없으면 와이어프레임으로 그린다.
     """
+    ds_assets = ds_assets or {}
+    fixtures = ds_assets.get("fixtures") or {}
+    extra_css = ds_assets.get("css") or ""
     body = ['  <div class="catalog">']
     body.append("    <h1>DS 카탈로그</h1>")
     body.append('    <p class="lead">PO는 이 카탈로그의 <b>이름</b>으로 AI에게 디자인을 지시한다. '
@@ -685,7 +738,7 @@ def render_catalog(tokens: dict, components: list, timestamp: str = "") -> str:
             body.append(f'        <p class="props">props: <code>{_esc(", ".join(comp["props"]))}</code></p>')
         body.append('        <div class="states">')
         for state in applicable_states(comp):
-            body.extend(_state_chip(ref, state, indent=5))
+            body.extend(_state_chip(ref, state, indent=5, fixtures=fixtures))
         body.append("        </div>")
         body.append("      </article>")
     body.append("    </section>")
@@ -762,4 +815,4 @@ def render_catalog(tokens: dict, components: list, timestamp: str = "") -> str:
     ]
     if timestamp:
         head_comment.append(f"<!-- rendered-at: {timestamp} -->")
-    return _document("DS 카탈로그", head_comment, css, body)
+    return _document("DS 카탈로그", head_comment, css, body, extra_css=extra_css)

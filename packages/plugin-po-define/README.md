@@ -207,11 +207,11 @@ projects/<id>/model_repo/            # ② 산출물 (Tier 3 데이터)
 |---|---|
 | 엔진 | `harness-core/render/render_screen.py` (순수 Python, 결정론적 — 같은 입력 → 바이트 동일 HTML) |
 | 트리거 | screen model YAML 저장 후 L1·L5 lint 통과 시 자동 실행 |
-| 스타일 소스 | design token — DS 컴포넌트 토큰 그대로 참조(인라인 style·외부 CDN/폰트 금지), 재작성 금지 |
+| 스타일 소스 | ① 준비단계가 커밋한 `foundation/design-system/ds-compiled.css`(DS 실제 CSS) + `ds-fixtures.json`(컴포넌트 마크업) — ADR-002 D8. 인라인 style·외부 CDN/폰트 금지, 재작성 금지. 자산 없으면 와이어프레임 폴백 |
 | 출력 | `renders/SCR-{ID}.render.html` (브레이크포인트별 반응형 CSS) |
 | 직접 편집 | 금지. 다음 렌더링 시 덮어씌워짐. |
 | 파일 헤더 | `<!-- GENERATED VIEW — source: SCR-ID.yaml v{ver} — DO NOT EDIT -->` |
-| 핀 | `pinned_contract.layout_hash`(전 브레이크포인트 좌표)·`render_hash`(HTML). ③ Phase α가 재현 검증 |
+| 핀 | `pinned_contract.layout_hash`(전 브레이크포인트 좌표, **D8 자산과 무관**)·`render_hash`(HTML, 자산 반영). ③ Phase α가 재현 검증(render_hash 불일치는 warn) |
 | 역할 | PO 확인용 시각 프로토타입 + 개발자 참조용 레이아웃 스펙 |
 
 ---

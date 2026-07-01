@@ -31,6 +31,8 @@ outputs:
   - foundation/design-system/ds-source/src/plugins/<ds>.<ext>
   - foundation/design-system/ds-source/src/styles/settings.scss  (DS가 SCSS 지원 시)
   - foundation/design-system/ds-allowlist.md
+  - foundation/design-system/ds-compiled.css   # Phase 9 (D8 시각 충실도) — 렌더 엔진이 소비
+  - foundation/design-system/ds-fixtures.json   # Phase 9 (D8 시각 충실도) — 렌더 엔진이 소비
 spine-ids: []
 ---
 
@@ -46,7 +48,7 @@ ds-source/ 가 생산해야 하는 두 가지 핵심 산출물:
 | 산출물 | 소비자 | 역할 |
 |---|---|---|
 | `src/tokens.css` | `harness-core/render/tokens.py` | CSS 변수 스캔 → 카탈로그·렌더 엔진 토큰 주입 |
-| `../ds-allowlist.md` | PO-DEV-CHAT lint L1 | DS 폐쇄 계약 — 허용 집합 밖 컴포넌트 차단 |
+| `../ds-allowlist.md` | ② po-define lint L1 (on-save-lint-L1-L4.py) | DS 폐쇄 계약 — 허용 집합 밖 컴포넌트 차단 |
 
 나머지 파일(`plugins/`, `styles/`)은 **프론트엔드(③)가 DS를 소비하기 위한 진입점**이다.
 
@@ -431,6 +433,24 @@ C 케이스(서브컴포넌트)는 잔여 항목으로 남아도 정상이다.
 
 ---
 
+### Phase 9 — DS 자산 빌드 (시각 충실도 — ADR-002 D8)
+
+렌더 엔진이 **실제 DS 모양**으로 그리려면 두 정적 자산이 필요하다. ds-source가 완성된 직후 1회 생성·커밋한다.
+
+```bash
+node "${HARNESS_CORE}/render/build_ds_assets.mjs" --root projects/<id>
+# 출력: foundation/design-system/ds-compiled.css   (DS 실제 CSS: 토큰 + 컴파일된 유틸리티)
+#       foundation/design-system/ds-fixtures.json  (allowlist 컴포넌트 기본상태 마크업)
+```
+
+- **왜 필요한가**: class 문자열(`bg-primary`)은 그 자체로 죽은 글자다 — 컴파일된 CSS가 있어야 색·크기가 나온다. fixture는 컴포넌트의 실제 마크업이다. 이 둘이 없으면 엔진은 라벨박스 와이어프레임으로 폴백한다(디자인이 비어 보임).
+- **결정성**: 컴파일은 렌더 시점이 아니라 **여기서 1회** 하고 커밋한다 — 그래야 `render_hash`가 안정적이다. DS를 바꾸면 재실행.
+- **동작**: CSS는 Tailwind 컴파일(비-Tailwind DS는 raw CSS 병합 폴백), fixtures는 Vue SSR(`@vue/server-renderer`). portal/클라이언트 전용·필수 props가 있는 컴포넌트는 스킵되고 와이어프레임으로 폴백한다.
+- **오버라이드(선택)**: `foundation/design-system/ds-fixtures.recipe.json`에 컴포넌트별 `{import, export, props, slot}`을 주면 props가 필요한 합성 컴포넌트(PostCard 등)도 캡처할 수 있다.
+- **프레임워크**: 현재 생성기는 Vue SSR을 지원한다. React 등 다른 프레임워크는 같은 두 파일을 자기 툴체인으로 내면 엔진이 그대로 동작한다(엔진·로더는 프레임워크 중립; React SSR 생성기는 후속).
+
+---
+
 ## 검증 체크리스트
 
 ```
@@ -441,6 +461,7 @@ C 케이스(서브컴포넌트)는 잔여 항목으로 남아도 정상이다.
 [ ] npm install  오류 없음
 [ ] ds-allowlist.md 헤딩이 정규식 \w+ 통과 (공백·하이픈 없음)
 [ ] Sync 확인: plugin 독립 컴포넌트 ↔ allowlist 헤딩 A·B 케이스 0건
+[ ] DS 자산 빌드(Phase 9): ds-compiled.css + ds-fixtures.json 생성·커밋 (D8 시각 충실도)
 ```
 
 ---

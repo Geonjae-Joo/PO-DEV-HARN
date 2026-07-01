@@ -1,0 +1,87 @@
+# link-manifest.yaml — 스파인 ID 단일 원장 (projects/devlog_dev_plugin)
+# 화면→요구사항→팩→task→commit 추적 그래프의 연결 원장. 전역 유일 채번.
+manifest_version: 1
+counters:
+  PRM: 300
+  Q: 2
+  PACK: {}
+  SPEC:
+    next: 1
+  T: {}
+screens:
+- id: SCR-MAIN
+  status: confirmed
+  version: 5
+  template: DP-MAIN
+  from_template: DP-MAIN@v1
+  next_seq: { CMP: 4, REQ: 7, NOTE: 3, NFR: 1 }
+  components:
+  - CMP-MAIN.timer
+  - CMP-MAIN.filterbar
+  - CMP-MAIN.postlist
+  requirements:
+  - REQ-MAIN.001
+  - REQ-MAIN.002
+  - REQ-MAIN.003
+  - REQ-MAIN.004
+  - REQ-MAIN.005
+  - REQ-MAIN.006
+  notes:
+  - NOTE-MAIN.001
+  - NOTE-MAIN.002
+- id: SCR-POST-DETAIL
+  status: confirmed
+  version: 3
+  template: DP-MAIN
+  from_template: DP-MAIN@v1
+  next_seq: { CMP: 4, REQ: 3, NOTE: 2, NFR: 1 }
+  components:
+  - CMP-POST-DETAIL.backlink
+  - CMP-POST-DETAIL.article
+  - CMP-POST-DETAIL.tagbadge
+  requirements:
+  - REQ-POST-DETAIL.001
+  - REQ-POST-DETAIL.002
+  notes:
+  - NOTE-POST-DETAIL.001
+- id: SCR-DASHBOARD
+  status: confirmed
+  version: 4
+  template: DP-MAIN
+  from_template: DP-MAIN@v1
+  next_seq: { CMP: 6, REQ: 3, NOTE: 3, NFR: 1 }
+  components:
+  - CMP-DASHBOARD.statTotal
+  - CMP-DASHBOARD.statWeek
+  - CMP-DASHBOARD.statStreak
+  - CMP-DASHBOARD.grass
+  - CMP-DASHBOARD.weekchart
+  requirements:
+  - REQ-DASHBOARD.001
+  - REQ-DASHBOARD.002
+  notes:
+  - NOTE-DASHBOARD.001
+  - NOTE-DASHBOARD.002
+entities:
+- id: ENT-POST
+  version: 1
+  owner_screens: [SCR-MAIN, SCR-POST-DETAIL]
+- id: ENT-STUDY-LOG
+  version: 1
+  owner_screens: [SCR-MAIN, SCR-DASHBOARD]
+packs:
+- id: PACK-BLOG
+  version: 1
+  screens: [SCR-MAIN, SCR-POST-DETAIL]
+- id: PACK-STUDY
+  version: 1
+  screens: [SCR-MAIN, SCR-DASHBOARD]
+journeys:
+- id: JRN-BROWSE-POST
+  version: 1
+- id: JRN-STUDY-SESSION
+  version: 1
+design_pages:
+- id: DP-MAIN
+  version: 1
+  slots: [header, content, footer]
